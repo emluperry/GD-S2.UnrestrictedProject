@@ -7,21 +7,44 @@ using UnityEngine.InputSystem;
 public class PlayerMovement : MonoBehaviour
 {
     private PlayerInput _input;
-    private InputAction _moveInput;
+
+    //input
+    private InputAction _moveInputAction;
+    private Vector2 _moveInput;
+    private Coroutine _movementCoroutine;
 
     private void Awake()
     {
         _input = GetComponent<PlayerInput>();
-        _moveInput = _input.currentActionMap.FindAction("Move");
+        _moveInputAction = _input.currentActionMap.FindAction("Move");
 
-        _moveInput.performed += Input_MovePerformed();
-        _moveInput.canceled += Input_MoveCancelled();
+        _moveInputAction.performed += Input_MovePerformed;
+        _moveInputAction.canceled += Input_MoveCancelled;
     }
 
     #region INPUTS
 
+    private void Input_MovePerformed(InputAction.CallbackContext ctx)
+    {
+        _moveInput = ctx.ReadValue<Vector2>();
+
+        if(_moveInput.sqrMagnitude > 0)
+        {
+            _movementCoroutine = StartCoroutine(c_MovementCoroutine());
+        }
+    }
+
+    private void Input_MoveCancelled(InputAction.CallbackContext ctx)
+    {
+        _moveInput = ctx.ReadValue<Vector2>();
+
+        StopCoroutine(_movementCoroutine);
+    }
 
     #endregion
 
-
+    private IEnumerator c_MovementCoroutine()
+    {
+        yield return null;
+    }
 }
