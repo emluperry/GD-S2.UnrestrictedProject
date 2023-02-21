@@ -6,12 +6,20 @@ using UnityEngine.InputSystem;
 
 public class PlayerMovement : MonoBehaviour
 {
-    private PlayerInput _input;
-
     //input
+    private PlayerInput _input;
+    //movement input
     private InputAction _moveInputAction;
-    private Vector2 _moveInput;
+    private Vector3 _moveInput;
     private Coroutine _movementCoroutine;
+    private bool _isMoving = false;
+
+    //components
+    private Rigidbody _rb;
+
+    [Header("Movement")]
+    [SerializeField][Min(0f)] private float _maxSpeed = 5;
+    [SerializeField][Min(0f)] private float _maxAccelerationForce;
 
     private void Awake()
     {
@@ -20,31 +28,42 @@ public class PlayerMovement : MonoBehaviour
 
         _moveInputAction.performed += Input_MovePerformed;
         _moveInputAction.canceled += Input_MoveCancelled;
+
+        _rb = GetComponent<Rigidbody>();
     }
 
     #region INPUTS
 
     private void Input_MovePerformed(InputAction.CallbackContext ctx)
     {
-        _moveInput = ctx.ReadValue<Vector2>();
+        Vector2 input = ctx.ReadValue<Vector2>();
+        _moveInput = new Vector3(input.x, 0, input.y);
 
         if(_moveInput.sqrMagnitude > 0)
         {
+            _isMoving = true;
             _movementCoroutine = StartCoroutine(c_MovementCoroutine());
         }
     }
 
     private void Input_MoveCancelled(InputAction.CallbackContext ctx)
     {
-        _moveInput = ctx.ReadValue<Vector2>();
+        _moveInput = Vector3.zero;
+        _isMoving = false;
 
-        StopCoroutine(_movementCoroutine);
+        if(_movementCoroutine != null)
+            StopCoroutine(_movementCoroutine);
     }
 
     #endregion
 
     private IEnumerator c_MovementCoroutine()
     {
-        yield return null;
+        while(_isMoving)
+        {
+            yield return new WaitForFixedUpdate();
+
+            _rb.AddForce(_moveInput * _maxSpeed, ForceMode.Force);
+        }
     }
 }
