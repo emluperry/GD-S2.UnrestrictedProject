@@ -10,16 +10,19 @@ public class PlayerMovement : MonoBehaviour
     private PlayerInput _input;
     //movement input
     private InputAction _moveInputAction;
-    private Vector3 _moveInput;
+    private Vector3 _moveDirection;
     private Coroutine _movementCoroutine;
     private bool _isMoving = false;
 
     //components
     private Rigidbody _rb;
 
+    [Header("External References")]
+    [SerializeField] private Transform _cameraTransform;
+
     [Header("Movement")]
     [SerializeField][Min(0f)] private float _maxSpeed = 5;
-    [SerializeField][Min(0f)] private float _maxAccelerationForce;
+    [SerializeField][Min(0f)] private float _maxAccelerationForce = 2;
 
     private void Awake()
     {
@@ -37,9 +40,12 @@ public class PlayerMovement : MonoBehaviour
     private void Input_MovePerformed(InputAction.CallbackContext ctx)
     {
         Vector2 input = ctx.ReadValue<Vector2>();
-        _moveInput = new Vector3(input.x, 0, input.y);
+        Vector3 moveInput = new Vector3(input.x, 0, input.y);
 
-        if(_moveInput.sqrMagnitude > 0)
+        _moveDirection = _cameraTransform.TransformDirection(moveInput);
+        _moveDirection = new Vector3(_moveDirection.x, 0, _moveDirection.z);
+
+        if(moveInput.sqrMagnitude > 0 && _movementCoroutine == null)
         {
             _isMoving = true;
             _movementCoroutine = StartCoroutine(c_MovementCoroutine());
@@ -48,11 +54,15 @@ public class PlayerMovement : MonoBehaviour
 
     private void Input_MoveCancelled(InputAction.CallbackContext ctx)
     {
-        _moveInput = Vector3.zero;
+        Debug.Log("Move cancelled");
+        _moveDirection = Vector3.zero;
         _isMoving = false;
 
         if(_movementCoroutine != null)
+        {
             StopCoroutine(_movementCoroutine);
+            _movementCoroutine = null;
+        }
     }
 
     #endregion
@@ -63,7 +73,18 @@ public class PlayerMovement : MonoBehaviour
         {
             yield return new WaitForFixedUpdate();
 
-            _rb.AddForce(_moveInput * _maxSpeed, ForceMode.Force);
+            Vector3 maxVelocity = _moveDirection.normalized * _maxSpeed;
+            Vector3 deltaVelocity = maxVelocity - new Vector3(_rb.velocity.x, 0, _rb.velocity.z);
+
+            Vector3 deltaAcceleration = deltaVelocity / Time.fixedDeltaTime;
+            deltaAcceleration = Vector3.ClampMagnitude(deltaAcceleration, _maxAccelerationForce);
+
+            _rb.AddForce(deltaAcceleration, ForceMode.Force);
         }
+    }
+
+    private IEnumerator c_StoppingCoroutine()
+    {
+        yield return new WaitForFixedUpdate();
     }
 }
