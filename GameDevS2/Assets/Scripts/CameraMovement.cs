@@ -80,12 +80,13 @@ public class CameraMovement : MonoBehaviour
 
             //handle vertical rotation
 
-            //float deltaVertical = _maxRotateSpeed * Time.fixedDeltaTime * _rotateDirection.y;
+            float deltaVertical = _maxRotateSpeed * Time.fixedDeltaTime * _rotateDirection.y;
 
             //calculate axis - perpendicular to forward vector
-            //Vector3 HorizontalAxis = Vector3.Cross
+            Vector2 xzValues = new Vector2(transform.forward.x, transform.forward.z).normalized;
+            Vector2 axis = Vector2.Perpendicular(xzValues);
 
-            //transform.RotateAround(_playerTransform.position, Vector3.)
+            transform.RotateAround(_playerTransform.position, new Vector3(axis.x, 0, axis.y), -deltaVertical);
         }
     }
 }
