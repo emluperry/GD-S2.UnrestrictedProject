@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 
 public class CameraMovement : MonoBehaviour
@@ -19,6 +18,7 @@ public class CameraMovement : MonoBehaviour
     [Header("Rotation")]
     private Quaternion _initialRotation;
     private float _maxDistFromPlayer;
+    [SerializeField][Min(0f)] private float _maxRotationBoundary = 20;
 
     [SerializeField][Min(0f)] private float _maxRotateSpeed = 5;
     private Coroutine _rotateCoroutine;
@@ -86,6 +86,18 @@ public class CameraMovement : MonoBehaviour
             Vector2 xzValues = new Vector2(transform.forward.x, transform.forward.z).normalized;
             Vector2 axis = Vector2.Perpendicular(xzValues);
 
+            float diff = 0;
+            if(transform.eulerAngles.x - deltaVertical > 90 - _maxRotationBoundary)
+            {
+                diff = (transform.eulerAngles.x - deltaVertical) - (90 - _maxRotationBoundary);
+                deltaVertical -= diff;
+            }
+            else if(transform.eulerAngles.x - deltaVertical < _maxRotationBoundary)
+            {
+                diff = _maxRotationBoundary - (transform.eulerAngles.x - deltaVertical);
+                deltaVertical += diff;
+            }
+                
             transform.RotateAround(_playerTransform.position, new Vector3(axis.x, 0, axis.y), -deltaVertical);
         }
     }
