@@ -23,6 +23,7 @@ public class PlayerMovement : MonoBehaviour
     [Header("Movement")]
     [SerializeField][Min(0f)] private float _maxSpeed = 5;
     [SerializeField][Min(0f)] private float _maxAccelerationForce = 2;
+    [SerializeField][Min(0f)] private float _brakingForce = 5;
 
     private void Awake()
     {
@@ -45,7 +46,13 @@ public class PlayerMovement : MonoBehaviour
         _moveDirection = _cameraTransform.TransformDirection(moveInput);
         _moveDirection = new Vector3(_moveDirection.x, 0, _moveDirection.z);
 
-        if(moveInput.sqrMagnitude > 0 && _movementCoroutine == null)
+        if (_movementCoroutine != null)
+        {
+            StopCoroutine(_movementCoroutine);
+            _movementCoroutine = null;
+        }
+
+        if (moveInput.sqrMagnitude > 0 && _movementCoroutine == null)
         {
             _isMoving = true;
             _movementCoroutine = StartCoroutine(c_MovementCoroutine());
@@ -63,6 +70,7 @@ public class PlayerMovement : MonoBehaviour
             StopCoroutine(_movementCoroutine);
             _movementCoroutine = null;
         }
+        _movementCoroutine = StartCoroutine(c_StoppingCoroutine());
     }
 
     #endregion
@@ -85,6 +93,16 @@ public class PlayerMovement : MonoBehaviour
 
     private IEnumerator c_StoppingCoroutine()
     {
-        yield return new WaitForFixedUpdate();
+        while (_rb.velocity.sqrMagnitude >= 1)
+        {
+            yield return new WaitForFixedUpdate();
+
+            Vector3 deltaVelocity = - new Vector3(_rb.velocity.x, 0, _rb.velocity.z);
+
+            Vector3 deltaAcceleration = deltaVelocity / Time.fixedDeltaTime;
+            deltaAcceleration = Vector3.ClampMagnitude(deltaAcceleration, _brakingForce);
+
+            _rb.AddForce(deltaAcceleration, ForceMode.Force);
+        }
     }
 }

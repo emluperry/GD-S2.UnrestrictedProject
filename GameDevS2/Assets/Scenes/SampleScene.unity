@@ -567,6 +567,7 @@ MonoBehaviour:
   _cameraTransform: {fileID: 330585546}
   _maxSpeed: 10
   _maxAccelerationForce: 20
+  _brakingForce: 10
 --- !u!1 &1226180246
 GameObject:
   m_ObjectHideFlags: 0
