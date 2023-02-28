@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 
 public class CameraMovement : MonoBehaviour
@@ -30,6 +31,7 @@ public class CameraMovement : MonoBehaviour
     [Header("Rotation")]
     [SerializeField][Min(0f)] private float _maxRotationBoundary = 20;
     [SerializeField][Min(0f)] private float _maxRotateSpeed = 5;
+    [SerializeField][Min(0f)] private float _autoRotateSpeed = 20;
     private Coroutine _rotateCoroutine;
     private bool _isRotating = false;
 
@@ -111,10 +113,24 @@ public class CameraMovement : MonoBehaviour
         {
             yield return new WaitForFixedUpdate();
 
+            //move to player
             oldPos = transform.position;
             transform.position = _playerTransform.position - transform.forward * _maxDistFromPlayer;
 
             _deltaDistance = Vector3.Distance(transform.position, oldPos);
+
+            //if not facing direction of movement, rotate slowly behind character
+            Vector2 CameraDirectionValues = new Vector2(transform.forward.x, transform.forward.z).normalized;
+            Vector2 PlayerDirectionValues = new Vector2(_playerTransform.forward.x, _playerTransform.forward.z).normalized;
+
+            float totalAngle = Vector2.SignedAngle(CameraDirectionValues, PlayerDirectionValues) * -1;
+
+            if (totalAngle < 0)
+                totalAngle = Mathf.Clamp(totalAngle, -_autoRotateSpeed, 0);
+            else
+                totalAngle = Mathf.Clamp(totalAngle, 0, _autoRotateSpeed);
+
+            RotateHorizontally(Mathf.Min(_autoRotateSpeed, totalAngle));
         }
     }
 
@@ -145,9 +161,7 @@ public class CameraMovement : MonoBehaviour
 
             //handle horizontal rotation
 
-            float deltaHorizontal = _maxRotateSpeed * Time.fixedDeltaTime * _rotateDirection.x;
-
-            transform.RotateAround(_playerTransform.position, Vector3.up, deltaHorizontal);
+            RotateHorizontally(_maxRotateSpeed * _rotateDirection.x);
 
             //handle vertical rotation
 
@@ -171,5 +185,10 @@ public class CameraMovement : MonoBehaviour
                 
             transform.RotateAround(_playerTransform.position, new Vector3(axis.x, 0, axis.y), -deltaVertical);
         }
+    }
+
+    private void RotateHorizontally(float maxAngle)
+    {
+        transform.RotateAround(_playerTransform.position, Vector3.up, maxAngle * Time.fixedDeltaTime);
     }
 }

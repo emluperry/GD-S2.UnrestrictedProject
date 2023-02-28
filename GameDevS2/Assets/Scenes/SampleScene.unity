@@ -260,6 +260,7 @@ MonoBehaviour:
   _focusSpeed: 0.5
   _maxRotationBoundary: 20
   _maxRotateSpeed: 70
+  _autoRotateSpeed: 25
 --- !u!1 &410087039
 GameObject:
   m_ObjectHideFlags: 0
