@@ -255,8 +255,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _playerTransform: {fileID: 1183508223}
+  _maxDistFromPlayer: 5
+  _decelerationFactor: 0.65
+  _focusSpeed: 0.5
   _maxRotationBoundary: 20
-  _maxRotateSpeed: 45
+  _maxRotateSpeed: 70
 --- !u!1 &410087039
 GameObject:
   m_ObjectHideFlags: 0
@@ -538,7 +541,7 @@ MonoBehaviour:
   _cameraTransform: {fileID: 330585546}
   _maxSpeed: 10
   _maxAccelerationForce: 20
-  _brakingForce: 10
+  _brakingForce: 100
   _maxRotationSpeed: 4500
   _rotationDampener: 10
 --- !u!1 &1226180246

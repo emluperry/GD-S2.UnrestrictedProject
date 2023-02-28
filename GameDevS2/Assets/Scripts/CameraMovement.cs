@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -8,6 +9,9 @@ public class CameraMovement : MonoBehaviour
     //input
     private PlayerInput _input;
 
+    //movement input
+    private InputAction _moveInputAction;
+
     //rotation input
     private InputAction _cameraInputAction;
     private Vector3 _rotateDirection;
@@ -15,29 +19,63 @@ public class CameraMovement : MonoBehaviour
     [Header("External References")]
     [SerializeField] private Transform _playerTransform;
 
-    [Header("Rotation")]
-    private Quaternion _initialRotation;
-    private float _maxDistFromPlayer;
-    [SerializeField][Min(0f)] private float _maxRotationBoundary = 20;
+    [Header("Movement")]
+    [SerializeField][Min(0f)] private float _maxDistFromPlayer = 5;
+    [SerializeField][Min(0f)] private float _decelerationFactor = 0.9f;
+    [SerializeField][Min(0f)] private float _focusSpeed = 0.5f;
+    private float _deltaDistance = 0;
+    private Coroutine _moveCoroutine;
+    private bool _isMoving = false;
 
+    [Header("Rotation")]
+    [SerializeField][Min(0f)] private float _maxRotationBoundary = 20;
     [SerializeField][Min(0f)] private float _maxRotateSpeed = 5;
     private Coroutine _rotateCoroutine;
-    private bool _isRotating;
+    private bool _isRotating = false;
 
     // Start is called before the first frame update
     void Awake()
     {
         _input = _playerTransform.GetComponent<PlayerInput>();
+        _moveInputAction = _input.currentActionMap.FindAction("Move");
         _cameraInputAction = _input.currentActionMap.FindAction("Look");
+
+        _moveInputAction.performed += Input_MovePerformed;
+        _moveInputAction.canceled += Input_MoveCancelled;
 
         _cameraInputAction.performed += Input_LookPerformed;
         _cameraInputAction.canceled += Input_LookCancelled;
-
-        _initialRotation = transform.rotation;
-        _maxDistFromPlayer = (_playerTransform.position - transform.position).magnitude;
     }
 
     #region INPUTS
+
+    private void Input_MovePerformed(InputAction.CallbackContext ctx)
+    {
+        if(_moveCoroutine != null)
+        {
+            StopCoroutine(_moveCoroutine);
+            _moveCoroutine = null;
+        }
+
+        if(ctx.ReadValue<Vector2>().sqrMagnitude > 0)
+        {
+            _isMoving = true;
+            _moveCoroutine = StartCoroutine(c_FollowCoroutine());
+        }
+    }
+
+    private void Input_MoveCancelled(InputAction.CallbackContext ctx)
+    {
+        _isMoving = false;
+
+        if(_moveCoroutine != null)
+        {
+            StopCoroutine(_moveCoroutine);
+            _moveCoroutine = null;
+        }
+
+        _moveCoroutine = StartCoroutine(c_FocusCoroutine());
+    }
 
     private void Input_LookPerformed(InputAction.CallbackContext ctx)
     {
@@ -65,6 +103,39 @@ public class CameraMovement : MonoBehaviour
     }
 
     #endregion
+
+    private IEnumerator c_FollowCoroutine()
+    {
+        Vector3 oldPos;
+        while(_isMoving)
+        {
+            yield return new WaitForFixedUpdate();
+
+            oldPos = transform.position;
+            transform.position = _playerTransform.position - transform.forward * _maxDistFromPlayer;
+
+            _deltaDistance = Vector3.Distance(transform.position, oldPos);
+        }
+    }
+
+    private IEnumerator c_FocusCoroutine()
+    {
+        yield return new WaitForFixedUpdate();
+
+        float minDeltaDistance = _focusSpeed * Time.fixedDeltaTime;
+
+        while (Vector3.Distance(transform.position, _playerTransform.position - transform.forward * _maxDistFromPlayer) > 0.01f)
+        {
+            yield return new WaitForFixedUpdate();
+
+            _deltaDistance *= _decelerationFactor;
+
+            transform.position = Vector3.MoveTowards(transform.position, _playerTransform.position - transform.forward * _maxDistFromPlayer, Mathf.Max(_deltaDistance, minDeltaDistance));
+        }
+
+        transform.position = _playerTransform.position - transform.forward * _maxDistFromPlayer;
+        _deltaDistance = 0;
+    }
 
     private IEnumerator c_RotateCoroutine()
     {

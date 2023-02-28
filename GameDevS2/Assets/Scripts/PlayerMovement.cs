@@ -104,7 +104,6 @@ public class PlayerMovement : MonoBehaviour
             rotAxis.Normalize();
 
             rotDegrees -= (rotDegrees > 180) ? 360 : 0;
-            Debug.Log(rotDegrees);
 
             float rotRadians = rotDegrees * Mathf.Deg2Rad;
 
