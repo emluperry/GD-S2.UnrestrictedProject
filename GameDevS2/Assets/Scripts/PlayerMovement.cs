@@ -25,6 +25,10 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField][Min(0f)] private float _maxAccelerationForce = 2;
     [SerializeField][Min(0f)] private float _brakingForce = 5;
 
+    [Header("Rotation")]
+    [SerializeField][Min(0f)] private float _maxRotationSpeed = 5;
+    [SerializeField][Min(0f)] private float _rotationDampener = 3;
+
     private void Awake()
     {
         _input = GetComponent<PlayerInput>();
@@ -78,6 +82,7 @@ public class PlayerMovement : MonoBehaviour
     {
         while(_isMoving)
         {
+            //update velocity
             yield return new WaitForFixedUpdate();
 
             Vector3 maxVelocity = _moveDirection.normalized * _maxSpeed;
@@ -87,6 +92,23 @@ public class PlayerMovement : MonoBehaviour
             deltaAcceleration = Vector3.ClampMagnitude(deltaAcceleration, _maxAccelerationForce);
 
             _rb.AddForce(deltaAcceleration, ForceMode.Force);
+
+            //turn to input direction
+
+            Quaternion targetRotation = Quaternion.LookRotation(_moveDirection, Vector3.up);
+            Quaternion toGoal = targetRotation * Quaternion.Inverse(transform.rotation);
+
+            Vector3 rotAxis;
+            float rotDegrees;
+            toGoal.ToAngleAxis(out rotDegrees, out rotAxis);
+            rotAxis.Normalize();
+
+            rotDegrees -= (rotDegrees > 180) ? 360 : 0;
+            Debug.Log(rotDegrees);
+
+            float rotRadians = rotDegrees * Mathf.Deg2Rad;
+
+            _rb.AddTorque((rotAxis * (rotRadians * _maxRotationSpeed * Time.fixedDeltaTime)) - (_rb.angularVelocity * _rotationDampener));
         }
     }
 

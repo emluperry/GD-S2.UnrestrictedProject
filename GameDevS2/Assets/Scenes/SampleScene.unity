@@ -206,8 +206,8 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1183508223}
-  m_RootOrder: -1
+  m_Father: {fileID: 0}
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 31.307, y: 0, z: 0}
 --- !u!114 &330585547
 MonoBehaviour:
@@ -255,6 +255,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _playerTransform: {fileID: 1183508223}
+  _maxRotationBoundary: 20
   _maxRotateSpeed: 45
 --- !u!1 &410087039
 GameObject:
@@ -472,9 +473,8 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 601617889}
-  - {fileID: 330585546}
   m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1183508224
 MonoBehaviour:
@@ -539,6 +539,8 @@ MonoBehaviour:
   _maxSpeed: 10
   _maxAccelerationForce: 20
   _brakingForce: 10
+  _maxRotationSpeed: 4500
+  _rotationDampener: 10
 --- !u!1 &1226180246
 GameObject:
   m_ObjectHideFlags: 0

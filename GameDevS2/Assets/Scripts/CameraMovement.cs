@@ -27,7 +27,7 @@ public class CameraMovement : MonoBehaviour
     // Start is called before the first frame update
     void Awake()
     {
-        _input = GetComponentInParent<PlayerInput>();
+        _input = _playerTransform.GetComponent<PlayerInput>();
         _cameraInputAction = _input.currentActionMap.FindAction("Look");
 
         _cameraInputAction.performed += Input_LookPerformed;
