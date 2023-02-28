@@ -61,7 +61,6 @@ public class PlayerMovement : MonoBehaviour
 
     private void Input_MoveCancelled(InputAction.CallbackContext ctx)
     {
-        Debug.Log("Move cancelled");
         _moveDirection = Vector3.zero;
         _isMoving = false;
 
