@@ -29,6 +29,7 @@ public class EnemySpawner : MonoBehaviour
         }
 
         //start battle
+        GetComponent<MeshRenderer>().enabled = false;
         foreach (Transform child in transform)
         {
             child.gameObject.SetActive(true);
