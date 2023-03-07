@@ -17,9 +17,8 @@ public class PlayerAttack : MonoBehaviour
     [Header("Attacking")]
     [SerializeField][Min(0f)] private float _maxAttackDelay = 0.5f;
     private float _currentAttackDelay = 0;
-    //[SerializeField][Min(0f)] private float _minJumpForce = 3500f; //min height: 3.5? max height: 5?
-    //[SerializeField][Min(0f)] private float _extraJumpForce = 50f;
-    //[SerializeField][Min(0f)] private float _maxButtonHoldDuration = 1f;
+
+    //targeting component
     private EntityHealth _targetHealth;
 
     private void Awake()
@@ -29,6 +28,8 @@ public class PlayerAttack : MonoBehaviour
 
         _attackInputAction.performed += Input_AttackPerformed;
         _attackInputAction.canceled += Input_AttackCancelled;
+
+        GetComponent<EnemyTargeting>().onTargetChanged += SetTarget;
     }
 
     #region INPUTS
@@ -39,8 +40,6 @@ public class PlayerAttack : MonoBehaviour
 
         if(_attackingCoroutine == null && _isAttackPressed)
         {
-            Debug.Log("Attacking...");
-            _targetHealth = FindObjectOfType<EntityHealth>();
             _attackingCoroutine = StartCoroutine(c_AttackingCoroutine());
         }
     }
@@ -56,8 +55,10 @@ public class PlayerAttack : MonoBehaviour
     {
         yield return new WaitForFixedUpdate();
 
-        if(_targetHealth != null)
+        if (_targetHealth != null)
             _targetHealth.TakeDamage(5);
+        else
+            Debug.Log("Nothing to target! Do forward raycast here in future");
 
         while(_currentAttackDelay < _maxAttackDelay)
         {
@@ -67,5 +68,13 @@ public class PlayerAttack : MonoBehaviour
 
         _currentAttackDelay = 0;
         _attackingCoroutine = null;
+    }
+
+    private void SetTarget(GameObject target)
+    {
+        if (target == null)
+            _targetHealth = null;
+        else
+            _targetHealth = target.GetComponent<EntityHealth>();
     }
 }

@@ -1,0 +1,128 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.InputSystem;
+
+public class EnemyTargeting : MonoBehaviour
+{
+    private List<GameObject> _targetArray = new List<GameObject>();
+    private int _currentTargetIndex = -1;
+
+    //input
+    private PlayerInput _input;
+
+    //jump input
+    private InputAction _targetInputAction;
+    private bool _isTargetPressed;
+
+    [Header("Targeting")]
+    [SerializeField] private float _targetSwapMaxDelay = 1f;
+    private float _currentSwapDelay = 1f;
+
+    public Action<GameObject> onTargetChanged;
+
+    private void Awake()
+    {
+        _input = GetComponent<PlayerInput>();
+        _targetInputAction = _input.currentActionMap.FindAction("Target");
+
+        _targetInputAction.performed += Input_TargetPerformed;
+        _targetInputAction.canceled += Input_TargetCancelled;
+
+        _currentSwapDelay = _targetSwapMaxDelay;
+    }
+
+    #region INPUTS
+
+    private void Input_TargetPerformed(InputAction.CallbackContext ctx)
+    {
+        _isTargetPressed = ctx.ReadValueAsButton();
+
+        if (_isTargetPressed && _targetArray.Count > 0 && _currentSwapDelay >= _targetSwapMaxDelay)
+        {
+            _currentTargetIndex++;
+
+            if(_currentTargetIndex >= _targetArray.Count)
+            {
+                _currentTargetIndex = -1;
+            }
+
+            StartCoroutine(c_TargetSwapCoroutine());
+        }
+    }
+
+    private void Input_TargetCancelled(InputAction.CallbackContext ctx)
+    {
+        _isTargetPressed = false;
+    }
+
+    #endregion
+
+    private IEnumerator c_TargetSwapCoroutine()
+    {
+        //set other components
+        if(_currentTargetIndex == -1)
+            onTargetChanged?.Invoke(null);
+        else
+        {
+            onTargetChanged?.Invoke(_targetArray[_currentTargetIndex]);
+        }
+
+        _currentSwapDelay = 0;
+
+        while(_currentSwapDelay < _targetSwapMaxDelay)
+        {
+            yield return new WaitForFixedUpdate();
+
+            _currentSwapDelay += Time.fixedDeltaTime;
+        }
+    }
+
+    public void SetEnemyList(EntityHealth[] enemyHealth)
+    {
+        ClearTargetList();
+        _targetArray = new List<GameObject>();
+
+        for(int i = 0; i < enemyHealth.Length; i++)
+        {
+            _targetArray.Add(enemyHealth[i].gameObject);
+            enemyHealth[i].onDead += RemoveEnemy;
+        }
+    }
+
+    private void RemoveEnemy()
+    {
+        for(int i = 0; i < _targetArray.Count; i++)
+        {
+            if (_targetArray[i].TryGetComponent(out EntityHealth health) && health.GetIsDead())
+            {
+                health.onDead -= RemoveEnemy;
+                _targetArray.Remove(_targetArray[i]);
+
+                if(_currentTargetIndex >= _targetArray.Count)
+                {
+                    _currentTargetIndex = _targetArray.Count - 1;
+                    onTargetChanged?.Invoke(_targetArray[_currentTargetIndex]);
+                }
+            }
+        }
+    }
+
+    private void ClearTargetList()
+    {
+        for (int i = 0; i < _targetArray.Count; i++)
+        {
+            if (_targetArray[i].TryGetComponent(out EntityHealth health))
+            {
+                health.onDead -= RemoveEnemy;
+            }
+            _targetArray.Remove(_targetArray[i]);
+        }
+
+        _targetArray.Clear();
+
+        _currentTargetIndex = -1;
+        onTargetChanged?.Invoke(null);
+    }
+}

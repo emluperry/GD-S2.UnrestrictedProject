@@ -594,17 +594,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: EnemyEncounter
       objectReference: {fileID: 0}
-    - target: {fileID: 1998363833597144297, guid: 8b11252afca37ff40898bf9f0dbc0ecc,
-        type: 3}
-      propertyPath: _enemiesToSpawn.Array.size
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1998363833597144297, guid: 8b11252afca37ff40898bf9f0dbc0ecc,
-        type: 3}
-      propertyPath: _enemiesToSpawn.Array.data[0]
-      value: 
-      objectReference: {fileID: 6782260923424439368, guid: dbbdc428fe812a348b8ac2bd124983fd,
-        type: 3}
     m_RemovedComponents: []
     m_AddedGameObjects: []
   m_SourcePrefab: {fileID: 100100000, guid: 8b11252afca37ff40898bf9f0dbc0ecc, type: 3}
@@ -702,6 +691,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player
       objectReference: {fileID: 0}
+    - target: {fileID: 4712099641825242513, guid: c33648354625d6844a8e2fe828a770a6,
+        type: 3}
+      propertyPath: m_TagString
+      value: Player
+      objectReference: {fileID: 0}
     - target: {fileID: 4712099641825242517, guid: c33648354625d6844a8e2fe828a770a6,
         type: 3}
       propertyPath: m_RootOrder
@@ -760,22 +754,3 @@ PrefabInstance:
     m_RemovedComponents: []
     m_AddedGameObjects: []
   m_SourcePrefab: {fileID: 100100000, guid: c33648354625d6844a8e2fe828a770a6, type: 3}
---- !u!1 &4712099643007683435 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 4712099641825242513, guid: c33648354625d6844a8e2fe828a770a6,
-    type: 3}
-  m_PrefabInstance: {fileID: 4712099643007683434}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &4712099643007683436
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4712099643007683435}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3e4225e8a7ce50a4389bd56e22e47002, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _maxAttackDelay: 0.5

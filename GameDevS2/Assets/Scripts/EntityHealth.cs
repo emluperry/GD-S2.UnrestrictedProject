@@ -7,6 +7,7 @@ public class EntityHealth : MonoBehaviour
 {
     [SerializeField] private int _maxHealth = 10;
     private int _health = 0;
+    private bool _isDead = false;
 
     public Action onDead;
 
@@ -17,12 +18,21 @@ public class EntityHealth : MonoBehaviour
 
     public void TakeDamage(int dmg)
     {
+        if (_isDead)
+            return;
+
         _health -= dmg;
 
         if(_health <= 0)
         {
             //die
+            _isDead = true;
             onDead?.Invoke();
         }
+    }
+
+    public bool GetIsDead()
+    {
+        return _isDead;
     }
 }

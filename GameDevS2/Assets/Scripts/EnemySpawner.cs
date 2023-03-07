@@ -5,7 +5,8 @@ using UnityEngine;
 
 public class EnemySpawner : MonoBehaviour
 {
-    private Collider m_Trigger;
+    private Collider _trigger;
+    [SerializeField] private GameObject _walls;
 
     [SerializeField] private GameObject[] _enemiesToSpawn;
     private EntityHealth[] _enemiesHealth;
@@ -13,11 +14,14 @@ public class EnemySpawner : MonoBehaviour
 
     private void Awake()
     {
-        m_Trigger = GetComponent<Collider>();
+        _trigger = GetComponent<Collider>();
     }
 
     private void OnTriggerEnter(Collider other)
     {
+        if (!other.CompareTag("Player"))
+            return;
+
         _currentLivingEnemies = _enemiesToSpawn.Length;
 
         _enemiesHealth = new EntityHealth[_currentLivingEnemies];
@@ -28,14 +32,13 @@ public class EnemySpawner : MonoBehaviour
             _enemiesHealth[i].onDead += CheckBattleState;
         }
 
+        other.GetComponent<EnemyTargeting>().SetEnemyList(_enemiesHealth);
+
         //start battle
         GetComponent<MeshRenderer>().enabled = false;
-        foreach (Transform child in transform)
-        {
-            child.gameObject.SetActive(true);
-        }
+        _trigger.enabled = false;
 
-        m_Trigger.enabled = false;
+        _walls.SetActive(true);
     }
 
     private void CheckBattleState()
@@ -44,10 +47,7 @@ public class EnemySpawner : MonoBehaviour
 
         if(_currentLivingEnemies <= 0)
         {
-            foreach (Transform child in transform)
-            {
-                gameObject.SetActive(false);
-            }
+            gameObject.SetActive(false);
         }
     }
 }
