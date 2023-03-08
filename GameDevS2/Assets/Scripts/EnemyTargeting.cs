@@ -39,13 +39,16 @@ public class EnemyTargeting : MonoBehaviour
     {
         _isTargetPressed = ctx.ReadValueAsButton();
 
-        if (_isTargetPressed && _targetArray.Count > 0 && _currentSwapDelay >= _targetSwapMaxDelay)
+        if (_isTargetPressed && _currentSwapDelay >= _targetSwapMaxDelay)
         {
-            _currentTargetIndex++;
-
-            if(_currentTargetIndex >= _targetArray.Count)
+            if(_targetArray.Count > 0)
             {
-                _currentTargetIndex = -1;
+                _currentTargetIndex++;
+
+                if (_currentTargetIndex >= _targetArray.Count)
+                {
+                    _currentTargetIndex = -1;
+                }
             }
 
             StartCoroutine(c_TargetSwapCoroutine());

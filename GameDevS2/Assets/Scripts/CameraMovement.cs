@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 
 public class CameraMovement : MonoBehaviour
@@ -16,6 +15,10 @@ public class CameraMovement : MonoBehaviour
     //rotation input
     private InputAction _cameraInputAction;
     private Vector3 _rotateDirection;
+
+    //targeting
+    private Transform _targetTransform;
+    Coroutine _targetCoroutine;
 
     [Header("External References")]
     [SerializeField] private Transform _playerTransform;
@@ -32,6 +35,7 @@ public class CameraMovement : MonoBehaviour
     [SerializeField][Min(0f)] private float _maxRotationBoundary = 20;
     [SerializeField][Min(0f)] private float _maxRotateSpeed = 5;
     [SerializeField][Min(0f)] private float _autoRotateSpeed = 20;
+    [SerializeField][Min(0f)] private float _forwardRotateSpeed = 90;
     private Coroutine _rotateCoroutine;
     private bool _isRotating = false;
 
@@ -47,6 +51,8 @@ public class CameraMovement : MonoBehaviour
 
         _cameraInputAction.performed += Input_LookPerformed;
         _cameraInputAction.canceled += Input_LookCancelled;
+
+        _playerTransform.GetComponent<EnemyTargeting>().onTargetChanged += SetTarget;
     }
 
     #region INPUTS
@@ -126,9 +132,9 @@ public class CameraMovement : MonoBehaviour
             float totalAngle = Vector2.SignedAngle(CameraDirectionValues, PlayerDirectionValues) * -1;
 
             if (totalAngle < 0)
-                totalAngle = Mathf.Clamp(totalAngle, -_autoRotateSpeed, 0);
+                totalAngle = Mathf.Clamp(totalAngle, -_autoRotateSpeed * Time.fixedDeltaTime , 0);
             else
-                totalAngle = Mathf.Clamp(totalAngle, 0, _autoRotateSpeed);
+                totalAngle = Mathf.Clamp(totalAngle, 0, _autoRotateSpeed * Time.fixedDeltaTime);
 
             RotateHorizontally(Mathf.Min(_autoRotateSpeed, totalAngle));
         }
@@ -161,34 +167,118 @@ public class CameraMovement : MonoBehaviour
 
             //handle horizontal rotation
 
-            RotateHorizontally(_maxRotateSpeed * _rotateDirection.x);
+            RotateHorizontally(_maxRotateSpeed * _rotateDirection.x * Time.fixedDeltaTime);
 
             //handle vertical rotation
 
             float deltaVertical = _maxRotateSpeed * Time.fixedDeltaTime * _rotateDirection.y;
 
-            //calculate axis - perpendicular to forward vector
-            Vector2 xzValues = new Vector2(transform.forward.x, transform.forward.z).normalized;
-            Vector2 axis = Vector2.Perpendicular(xzValues);
-
-            float diff = 0;
-            if(transform.eulerAngles.x - deltaVertical > 90 - _maxRotationBoundary)
-            {
-                diff = (transform.eulerAngles.x - deltaVertical) - (90 - _maxRotationBoundary);
-                deltaVertical -= diff;
-            }
-            else if(transform.eulerAngles.x - deltaVertical < _maxRotationBoundary)
-            {
-                diff = _maxRotationBoundary - (transform.eulerAngles.x - deltaVertical);
-                deltaVertical += diff;
-            }
-                
-            transform.RotateAround(_playerTransform.position, new Vector3(axis.x, 0, axis.y), -deltaVertical);
+            RotateVertically(deltaVertical);
         }
+    }
+
+    private IEnumerator c_ForwardFocusCoroutine()
+    {
+        Vector2 CameraDirectionValues = new Vector2(transform.forward.x, transform.forward.z).normalized;
+        Vector2 PlayerDirectionValues = new Vector2(_playerTransform.forward.x, _playerTransform.forward.z).normalized;
+
+        float totalAngle = Vector2.SignedAngle(CameraDirectionValues, PlayerDirectionValues) * -1;
+
+        while (Mathf.Abs(totalAngle) > 1)
+        {
+            if (totalAngle < 0)
+                totalAngle = Mathf.Clamp(totalAngle, -_forwardRotateSpeed * Time.fixedDeltaTime, 0);
+            else
+                totalAngle = Mathf.Clamp(totalAngle, 0, _forwardRotateSpeed * Time.fixedDeltaTime);
+
+            RotateHorizontally(totalAngle);
+
+            yield return new WaitForFixedUpdate();
+
+            CameraDirectionValues = new Vector2(transform.forward.x, transform.forward.z).normalized;
+            PlayerDirectionValues = new Vector2(_playerTransform.forward.x, _playerTransform.forward.z).normalized;
+
+            totalAngle = Vector2.SignedAngle(CameraDirectionValues, PlayerDirectionValues) * -1;
+        }
+    }
+
+    private IEnumerator c_TargetFocusCoroutine()
+    {
+        Vector2 CameraDirectionValues = new Vector2(transform.forward.x, transform.forward.z).normalized;
+        Vector3 direction = (_targetTransform.position - _playerTransform.position).normalized;
+        Vector2 FocusDirectionValues = new Vector2(direction.x, direction.z);
+
+        float totalAngle = Vector2.SignedAngle(CameraDirectionValues, FocusDirectionValues) * -1;
+
+        while (Mathf.Abs(totalAngle) > 1)
+        {
+            //rotate horizontally
+            if (totalAngle < 0)
+                totalAngle = Mathf.Clamp(totalAngle, -_forwardRotateSpeed * Time.fixedDeltaTime, 0);
+            else
+                totalAngle = Mathf.Clamp(totalAngle, 0, _forwardRotateSpeed * Time.fixedDeltaTime);
+
+            RotateHorizontally(totalAngle);
+
+            yield return new WaitForFixedUpdate();
+
+            CameraDirectionValues = new Vector2(transform.forward.x, transform.forward.z).normalized;
+            direction = (_targetTransform.position - _playerTransform.position).normalized;
+            FocusDirectionValues = new Vector2(direction.x, direction.z);
+
+            totalAngle = Vector2.SignedAngle(CameraDirectionValues, FocusDirectionValues) * -1;
+        }
+    }
+
+    private void RotateVertically(float deltaVertical)
+    {
+        //calculate axis - perpendicular to forward vector
+        Vector2 xzValues = new Vector2(transform.forward.x, transform.forward.z).normalized;
+        Vector2 axis = Vector2.Perpendicular(xzValues);
+
+        //clamp within boundaries
+        float diff = 0;
+        if (transform.eulerAngles.x - deltaVertical > 90 - _maxRotationBoundary)
+        {
+            diff = (transform.eulerAngles.x - deltaVertical) - (90 - _maxRotationBoundary);
+            deltaVertical -= diff;
+        }
+        else if (transform.eulerAngles.x - deltaVertical < _maxRotationBoundary)
+        {
+            diff = _maxRotationBoundary - (transform.eulerAngles.x - deltaVertical);
+            deltaVertical += diff;
+        }
+
+        transform.RotateAround(_playerTransform.position, new Vector3(axis.x, 0, axis.y), -deltaVertical);
     }
 
     private void RotateHorizontally(float maxAngle)
     {
-        transform.RotateAround(_playerTransform.position, Vector3.up, maxAngle * Time.fixedDeltaTime);
+        transform.RotateAround(_playerTransform.position, Vector3.up, maxAngle);
+    }
+
+    private void SetTarget(GameObject target)
+    {
+        if (target == null)
+        {
+            _targetTransform = null;
+            if(_targetCoroutine != null)
+            {
+                StopCoroutine(_targetCoroutine);
+                _targetCoroutine = null;
+            }
+
+            _targetCoroutine = StartCoroutine(c_ForwardFocusCoroutine());
+        }
+        else
+        {
+            _targetTransform = target.transform;
+
+            if (_targetCoroutine != null)
+            {
+                StopCoroutine(_targetCoroutine);
+                _targetCoroutine = null;
+            }
+        }
     }
 }
