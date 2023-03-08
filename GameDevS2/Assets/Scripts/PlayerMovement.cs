@@ -10,6 +10,7 @@ public class PlayerMovement : MonoBehaviour
     private PlayerInput _input;
     //movement input
     private InputAction _moveInputAction;
+    private Vector3 _moveInput;
     private Vector3 _moveDirection;
     private Coroutine _movementCoroutine;
     private bool _isMoving = false;
@@ -45,10 +46,7 @@ public class PlayerMovement : MonoBehaviour
     private void Input_MovePerformed(InputAction.CallbackContext ctx)
     {
         Vector2 input = ctx.ReadValue<Vector2>();
-        Vector3 moveInput = new Vector3(input.x, 0, input.y);
-
-        _moveDirection = _cameraTransform.TransformDirection(moveInput);
-        _moveDirection = new Vector3(_moveDirection.x, 0, _moveDirection.z);
+        _moveInput = new Vector3(input.x, 0, input.y);
 
         if (_movementCoroutine != null)
         {
@@ -56,7 +54,7 @@ public class PlayerMovement : MonoBehaviour
             _movementCoroutine = null;
         }
 
-        if (moveInput.sqrMagnitude > 0 && _movementCoroutine == null)
+        if (_moveInput.sqrMagnitude > 0 && _movementCoroutine == null)
         {
             _isMoving = true;
             _movementCoroutine = StartCoroutine(c_MovementCoroutine());
@@ -65,7 +63,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void Input_MoveCancelled(InputAction.CallbackContext ctx)
     {
-        _moveDirection = Vector3.zero;
+        _moveInput = Vector3.zero;
         _isMoving = false;
 
         if(_movementCoroutine != null)
@@ -82,9 +80,13 @@ public class PlayerMovement : MonoBehaviour
     {
         while(_isMoving)
         {
-            //update velocity
             yield return new WaitForFixedUpdate();
 
+            //update input direction
+            _moveDirection = _cameraTransform.TransformDirection(_moveInput);
+            _moveDirection = new Vector3(_moveDirection.x, 0, _moveDirection.z);
+
+            //update velocity
             Vector3 maxVelocity = _moveDirection.normalized * _maxSpeed;
             Vector3 deltaVelocity = maxVelocity - new Vector3(_rb.velocity.x, 0, _rb.velocity.z);
 

@@ -102,8 +102,16 @@ public class EnemyTargeting : MonoBehaviour
 
                 if(_currentTargetIndex >= _targetArray.Count)
                 {
-                    _currentTargetIndex = _targetArray.Count - 1;
-                    onTargetChanged?.Invoke(_targetArray[_currentTargetIndex]);
+                    if(_targetArray.Count > 0)
+                    {
+                        _currentTargetIndex = _targetArray.Count - 1;
+                        onTargetChanged?.Invoke(_targetArray[_currentTargetIndex]);
+                    }
+                    else
+                    {
+                        _currentTargetIndex = -1;
+                        onTargetChanged?.Invoke(null);
+                    }
                 }
             }
         }
