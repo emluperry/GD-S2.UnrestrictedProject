@@ -210,7 +210,7 @@ public class CameraMovement : MonoBehaviour
 
         float totalAngle = Vector2.SignedAngle(CameraDirectionValues, FocusDirectionValues) * -1;
 
-        while (Mathf.Abs(totalAngle) > 1)
+        while (true)
         {
             //rotate horizontally
             if (totalAngle < 0)
@@ -279,6 +279,8 @@ public class CameraMovement : MonoBehaviour
                 StopCoroutine(_targetCoroutine);
                 _targetCoroutine = null;
             }
+
+            _targetCoroutine = StartCoroutine(c_TargetFocusCoroutine());
         }
     }
 }
