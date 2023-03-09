@@ -29,7 +29,7 @@ public class PlayerAttack : MonoBehaviour
         _attackInputAction.performed += Input_AttackPerformed;
         _attackInputAction.canceled += Input_AttackCancelled;
 
-        GetComponent<EnemyTargeting>().onTargetChanged += SetTarget;
+        GetComponent<PlayerTargeting>().onTargetChanged += SetTarget;
     }
 
     #region INPUTS

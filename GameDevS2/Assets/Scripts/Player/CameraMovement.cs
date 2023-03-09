@@ -59,7 +59,7 @@ public class CameraMovement : MonoBehaviour
         _cameraInputAction.performed += Input_LookPerformed;
         _cameraInputAction.canceled += Input_LookCancelled;
 
-        _playerTransform.GetComponent<EnemyTargeting>().onTargetChanged += SetTarget;
+        _playerTransform.GetComponent<PlayerTargeting>().onTargetChanged += SetTarget;
         _playerJumpComponent = _playerTransform.GetComponent<PlayerJump>();
         _playerRb = _playerTransform.GetComponent<Rigidbody>();
     }

@@ -32,7 +32,7 @@ public class EnemySpawner : MonoBehaviour
             _enemiesHealth[i].onDead += CheckBattleState;
         }
 
-        other.GetComponent<EnemyTargeting>().SetEnemyList(_enemiesHealth);
+        other.GetComponent<PlayerTargeting>().SetEnemyList(_enemiesHealth);
 
         //start battle
         GetComponent<MeshRenderer>().enabled = false;

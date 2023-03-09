@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class EnemyTargeting : MonoBehaviour
+public class PlayerTargeting : MonoBehaviour
 {
     private List<GameObject> _targetArray = new List<GameObject>();
     private int _currentTargetIndex = -1;
