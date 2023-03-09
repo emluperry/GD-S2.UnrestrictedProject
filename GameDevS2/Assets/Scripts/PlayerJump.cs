@@ -58,7 +58,7 @@ public class PlayerJump : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (Physics.Raycast(transform.position, Vector3.down, out RaycastHit hit, 1))
+        if (Physics.Raycast(transform.position, Vector3.down, out RaycastHit hit, 1f))
         {
             _isGrounded = true;
         }
@@ -66,6 +66,11 @@ public class PlayerJump : MonoBehaviour
         {
             _isGrounded = false;
         }
+    }
+
+    public bool GetIsGrounded()
+    {
+        return _isGrounded;
     }
 
     private IEnumerator c_JumpingCoroutine()

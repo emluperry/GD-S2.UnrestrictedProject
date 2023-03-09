@@ -11,6 +11,7 @@ public class CameraMovement : MonoBehaviour
 
     //movement input
     private InputAction _moveInputAction;
+    private InputAction _jumpInputAction;
 
     //rotation input
     private InputAction _cameraInputAction;
@@ -22,6 +23,8 @@ public class CameraMovement : MonoBehaviour
 
     [Header("External References")]
     [SerializeField] private Transform _playerTransform;
+    private Rigidbody _playerRb;
+    private PlayerJump _playerJumpComponent;
 
     [Header("Movement")]
     [SerializeField][Min(0f)] private float _maxDistFromPlayer = 5;
@@ -44,15 +47,21 @@ public class CameraMovement : MonoBehaviour
     {
         _input = _playerTransform.GetComponent<PlayerInput>();
         _moveInputAction = _input.currentActionMap.FindAction("Move");
+        _jumpInputAction = _input.currentActionMap.FindAction("Jump");
         _cameraInputAction = _input.currentActionMap.FindAction("Look");
 
         _moveInputAction.performed += Input_MovePerformed;
         _moveInputAction.canceled += Input_MoveCancelled;
 
+        _jumpInputAction.performed += Input_JumpPerformed;
+        _jumpInputAction.canceled += Input_JumpCancelled;
+
         _cameraInputAction.performed += Input_LookPerformed;
         _cameraInputAction.canceled += Input_LookCancelled;
 
         _playerTransform.GetComponent<EnemyTargeting>().onTargetChanged += SetTarget;
+        _playerJumpComponent = _playerTransform.GetComponent<PlayerJump>();
+        _playerRb = _playerTransform.GetComponent<Rigidbody>();
     }
 
     #region INPUTS
@@ -72,17 +81,29 @@ public class CameraMovement : MonoBehaviour
         }
     }
 
-    private void Input_MoveCancelled(InputAction.CallbackContext ctx)
+    private void Input_JumpPerformed(InputAction.CallbackContext ctx)
     {
-        _isMoving = false;
-
-        if(_moveCoroutine != null)
+        if (_moveCoroutine != null)
         {
             StopCoroutine(_moveCoroutine);
             _moveCoroutine = null;
         }
 
-        _moveCoroutine = StartCoroutine(c_FocusCoroutine());
+        if (ctx.ReadValueAsButton())
+        {
+            _isMoving = true;
+            _moveCoroutine = StartCoroutine(c_FollowCoroutine());
+        }
+    }
+
+    private void Input_MoveCancelled(InputAction.CallbackContext ctx)
+    {
+        _isMoving = false;
+    }
+    
+    private void Input_JumpCancelled(InputAction.CallbackContext ctx)
+    {
+        _isMoving = false;
     }
 
     private void Input_LookPerformed(InputAction.CallbackContext ctx)
@@ -115,7 +136,7 @@ public class CameraMovement : MonoBehaviour
     private IEnumerator c_FollowCoroutine()
     {
         Vector3 oldPos;
-        while(_isMoving)
+        while (_isMoving || !_playerJumpComponent.GetIsGrounded() || _playerRb.velocity.sqrMagnitude > Mathf.Epsilon)
         {
             yield return new WaitForFixedUpdate();
 
@@ -138,6 +159,8 @@ public class CameraMovement : MonoBehaviour
 
             RotateHorizontally(Mathf.Min(_autoRotateSpeed, totalAngle));
         }
+
+        _moveCoroutine = StartCoroutine(c_FocusCoroutine());
     }
 
     private IEnumerator c_FocusCoroutine()

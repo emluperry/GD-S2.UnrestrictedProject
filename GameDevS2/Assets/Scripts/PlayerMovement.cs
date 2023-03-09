@@ -64,6 +64,7 @@ public class PlayerMovement : MonoBehaviour
     private void Input_MoveCancelled(InputAction.CallbackContext ctx)
     {
         _moveInput = Vector3.zero;
+        _rb.angularVelocity = Vector3.zero;
         _isMoving = false;
 
         if(_movementCoroutine != null)
