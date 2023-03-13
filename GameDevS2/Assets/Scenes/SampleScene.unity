@@ -187,6 +187,12 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
+--- !u!1 &79755242 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4712099641825242513, guid: c33648354625d6844a8e2fe828a770a6,
+    type: 3}
+  m_PrefabInstance: {fileID: 4712099643007683434}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &83062416
 GameObject:
   m_ObjectHideFlags: 0
@@ -857,12 +863,26 @@ MonoBehaviour:
     type: 3}
   m_PrefabInstance: {fileID: 4712099643007683434}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 79755242}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 03aa962848d31714295a32b0ac8877f9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1183508231
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 79755242}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d20b9fc56cd8d744da62522aa62a70c8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _cards:
+  - {fileID: 0}
 --- !u!1 &1226180246
 GameObject:
   m_ObjectHideFlags: 0
