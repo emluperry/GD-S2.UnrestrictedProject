@@ -34,8 +34,10 @@ public class BattleManager : MonoBehaviour
 
         _activeSpawner = spawner;
 
+        //setup player
         _playerObject.SetEnemyList(enemiesHealth);
 
+        //setup enemies
         _currentLivingEnemies = enemiesHealth.Length;
         foreach(EntityHealth health in enemiesHealth)
         {
