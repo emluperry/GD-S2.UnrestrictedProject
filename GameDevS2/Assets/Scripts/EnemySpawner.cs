@@ -9,8 +9,8 @@ public class EnemySpawner : MonoBehaviour
     [SerializeField] private GameObject _walls;
 
     [SerializeField] private GameObject[] _enemiesToSpawn;
-    private EntityHealth[] _enemiesHealth;
-    private int _currentLivingEnemies;
+
+    public Action<EnemySpawner, EntityHealth[]> onEnemiesSpawned;
 
     private void Awake()
     {
@@ -22,17 +22,14 @@ public class EnemySpawner : MonoBehaviour
         if (!other.CompareTag("Player"))
             return;
 
-        _currentLivingEnemies = _enemiesToSpawn.Length;
-
-        _enemiesHealth = new EntityHealth[_currentLivingEnemies];
-        for (int i = 0; i < _currentLivingEnemies; i++)
+        EntityHealth[] enemiesHealth = new EntityHealth[_enemiesToSpawn.Length];
+        for (int i = 0; i < _enemiesToSpawn.Length; i++)
         {
-            GameObject obj = Instantiate(_enemiesToSpawn[i], transform);
-            _enemiesHealth[i] = obj.GetComponent<EntityHealth>();
-            _enemiesHealth[i].onDead += CheckBattleState;
+            EntityHealth health = Instantiate(_enemiesToSpawn[i], transform).GetComponent<EntityHealth>();
+            enemiesHealth[i] = health;
         }
 
-        other.GetComponent<PlayerTargeting>().SetEnemyList(_enemiesHealth);
+        onEnemiesSpawned?.Invoke(this, enemiesHealth);
 
         //start battle
         GetComponent<MeshRenderer>().enabled = false;
@@ -41,13 +38,8 @@ public class EnemySpawner : MonoBehaviour
         _walls.SetActive(true);
     }
 
-    private void CheckBattleState()
+    public void Deactivate()
     {
-        _currentLivingEnemies--;
-
-        if(_currentLivingEnemies <= 0)
-        {
-            gameObject.SetActive(false);
-        }
+        gameObject.SetActive(false);
     }
 }
