@@ -882,7 +882,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _cards:
-  - {fileID: 0}
+  - card: {fileID: 11400000, guid: 05f227111890a174d9041fb31f917524, type: 2}
+    amount: 3
+  - card: {fileID: 11400000, guid: def581ca309afed49b611fdb3cd9879e, type: 2}
+    amount: 2
+  _totalMaxCards: 20
+  _maxHandDraw: 5
+  _swapDelay: 0
+  _maxDrawDelay: 5
 --- !u!1 &1226180246
 GameObject:
   m_ObjectHideFlags: 0

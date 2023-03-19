@@ -36,6 +36,7 @@ public class BattleManager : MonoBehaviour
 
         //setup player
         _playerObject.SetEnemyList(enemiesHealth);
+        _playerObject.GetComponent<PlayerCards>().StartBattle();
 
         //setup enemies
         _currentLivingEnemies = enemiesHealth.Length;
@@ -54,6 +55,8 @@ public class BattleManager : MonoBehaviour
             _activeSpawner.Deactivate();
             _currentLivingEnemies = 0;
             _activeSpawner = null;
+
+            _playerObject.GetComponent<PlayerCards>().EndBattle();
         }
     }
 }

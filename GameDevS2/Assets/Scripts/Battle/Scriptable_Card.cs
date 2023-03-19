@@ -16,4 +16,9 @@ public class Scriptable_Card : ScriptableObject
     [SerializeField] private CARD_TYPE _cardType = CARD_TYPE.ATTACK;
     [SerializeField] private CARD_AFFINITY _cardAffinity = CARD_AFFINITY.BASIC;
     //any extra effects? array of 'Effect' derived classes? could be something like.. inflicts a burn, stuns the enemy for a moment, etc
+
+    public string GetName()
+    {
+        return _cardName;
+    }
 }
