@@ -43,6 +43,13 @@ public class PlayerCards : MonoBehaviour
 
     private Coroutine _handDrawCoroutine;
 
+    //events for UI updates
+    public Action onHandDraw;
+    //takes in index of used card
+    public Action<int> onCardUsed;
+    //takes in index of new card to select
+    public Action<int> onSelectedChanged;
+
     private void Awake()
     {
         _input = GetComponent<PlayerInput>();
@@ -133,6 +140,8 @@ public class PlayerCards : MonoBehaviour
         Scriptable_Card currentCard = _cards[currentCardType].card;
         Debug.Log("Current card: " + _currentHandIndex + " - " + currentCard.GetName());
 
+        onSelectedChanged?.Invoke(_currentHandIndex);
+
         float currentTime = 0;
         while (currentTime < _swapDelay)
         {
@@ -140,6 +149,8 @@ public class PlayerCards : MonoBehaviour
 
             currentTime += Time.fixedDeltaTime;
         }
+
+        _swapCoroutine = null;
     }
 
     private IEnumerator c_DelayHandDraw()
@@ -184,8 +195,16 @@ public class PlayerCards : MonoBehaviour
 
         Scriptable_Card card = _cards[cardType].card;
 
+        onCardUsed?.Invoke(_currentHandIndex);
+
         //decrease size of hand
         _currentHandSize--;
+
+        //update current hand index to keep within boundaries
+        if (_currentHandIndex >= _currentHandSize)
+            _currentHandIndex = 0;
+        else if (_currentHandIndex < 0)
+            _currentHandIndex = _currentHandSize - 1;
 
         //draw new hand if hand is now empty - will refresh deck if deck is now empty
         if (_currentHandSize <= 0 && _handDrawCoroutine == null)
@@ -254,6 +273,7 @@ public class PlayerCards : MonoBehaviour
             if (_currentDeckIndex >= _currentMaxCards) { break; }
         }
 
+        onHandDraw?.Invoke();
         Debug.Log("New hand size: " + _currentHandSize);
     }
 

@@ -318,7 +318,7 @@
                     "path": "<Gamepad>/leftShoulder",
                     "interactions": "",
                     "processors": "",
-                    "groups": "Keyboard&Mouse",
+                    "groups": "Gamepad",
                     "action": "Swap",
                     "isComposite": false,
                     "isPartOfComposite": true
