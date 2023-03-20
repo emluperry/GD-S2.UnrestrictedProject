@@ -29,6 +29,10 @@ public class PlayerCards : MonoBehaviour
     private int _swapInput;
     private Coroutine _swapCoroutine;
 
+    //input: discard & draw
+    private InputAction _drawInputAction;
+    private bool _drawInput;
+
     [Header("Cooldown Values")]
     //delay between swap inputs
     [SerializeField] private float _swapDelay = 0.5f;
@@ -44,6 +48,7 @@ public class PlayerCards : MonoBehaviour
         _input = GetComponent<PlayerInput>();
 
         _swapInputAction = _input.currentActionMap.FindAction("Swap");
+        _drawInputAction = _input.currentActionMap.FindAction("Draw");
     }
 
     #region INPUT
@@ -64,6 +69,17 @@ public class PlayerCards : MonoBehaviour
         _swapInput = 0;
     }
 
+    private void Input_DrawPerformed(InputAction.CallbackContext ctx)
+    {
+        bool input = ctx.ReadValueAsButton();
+
+        if(input && _handDrawCoroutine == null)
+        {
+            DiscardHand();
+            _handDrawCoroutine = StartCoroutine(c_DelayHandDraw());
+        }
+    }
+
     #endregion
 
     public void StartBattle()
@@ -71,6 +87,9 @@ public class PlayerCards : MonoBehaviour
         //input to swap active card
         _swapInputAction.performed += Input_SwapPerformed;
         _swapInputAction.canceled += Input_SwapCancelled;
+
+        //input to discard and draw hand
+        _drawInputAction.performed += Input_DrawPerformed;
 
         _currentHand = new List<int>();
 
@@ -236,5 +255,12 @@ public class PlayerCards : MonoBehaviour
         }
 
         Debug.Log("New hand size: " + _currentHandSize);
+    }
+
+    private void DiscardHand()
+    {
+        _currentHandSize = 0;
+        _currentHandIndex = 0;
+        _currentHand.Clear();
     }
 }

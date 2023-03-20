@@ -179,11 +179,12 @@ MonoBehaviour:
   - card: {fileID: 11400000, guid: 05f227111890a174d9041fb31f917524, type: 2}
     amount: 2
   - card: {fileID: 11400000, guid: def581ca309afed49b611fdb3cd9879e, type: 2}
-    amount: 3
+    amount: 4
   _totalMaxCards: 20
   _maxHandDraw: 5
   _swapDelay: 0.5
-  _maxDrawDelay: 5
+  _maxDrawDelay: 1
+  _maxDeckRefreshDelay: 5
 --- !u!1001 &4712099641940281331
 PrefabInstance:
   m_ObjectHideFlags: 0
