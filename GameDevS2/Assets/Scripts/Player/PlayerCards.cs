@@ -16,6 +16,7 @@ public class PlayerCards : MonoBehaviour
     //actual total deck size
     private int _currentMaxCards = 0;
     private int _currentDeckIndex = 0;
+    //hand draw size
     [SerializeField] private int _maxHandDraw = 5;
     private int _currentHandSize = 0;
     private int _currentHandIndex = 0;
@@ -23,14 +24,20 @@ public class PlayerCards : MonoBehaviour
     //input
     private PlayerInput _input;
     
-    //swapping
+    //input: swapping
     private InputAction _swapInputAction;
     private int _swapInput;
     private Coroutine _swapCoroutine;
 
     [Header("Cooldown Values")]
+    //delay between swap inputs
     [SerializeField] private float _swapDelay = 0.5f;
-    [SerializeField] private float _maxDrawDelay = 5f;
+    //delay between drawing a new hand - due to input or automatic
+    [SerializeField] private float _maxDrawDelay = 2f;
+    //delay between refreshing the empty deck to refill values
+    [SerializeField] private float _maxDeckRefreshDelay = 5f;
+
+    private Coroutine _handDrawCoroutine;
 
     private void Awake()
     {
@@ -80,6 +87,18 @@ public class PlayerCards : MonoBehaviour
         _swapInputAction.canceled -= Input_SwapCancelled;
 
         _currentHand.Clear();
+
+        if(_handDrawCoroutine != null)
+        {
+            StopCoroutine(_handDrawCoroutine);
+            _handDrawCoroutine = null;
+        }
+
+        if(_swapCoroutine != null)
+        {
+            StopCoroutine(_swapCoroutine);
+            _swapCoroutine = null;
+        }
     }
 
     private IEnumerator c_OnCardSwapped()
@@ -104,9 +123,40 @@ public class PlayerCards : MonoBehaviour
         }
     }
 
+    private IEnumerator c_DelayHandDraw()
+    {
+        float maxDelay = 0;
+        bool shouldReshuffleDeck = _currentDeckIndex >= _deckArray.Length;
+        if (shouldReshuffleDeck) //if deck is empty
+            maxDelay = _maxDeckRefreshDelay;
+        else
+            maxDelay = _maxDrawDelay;
+
+        float currentDrawDelay = 0;
+        while (currentDrawDelay < maxDelay)
+        {
+            yield return new WaitForFixedUpdate();
+
+            currentDrawDelay += Time.fixedDeltaTime;
+        }
+
+        //once delay is up, refresh deck values (if necessary)
+        if (shouldReshuffleDeck)
+        {
+            Debug.Log("Refreshing deck");
+            Shuffle(_deckArray);
+            _currentDeckIndex = 0;
+        }
+
+        //draw hand
+        DrawHand();
+
+        _handDrawCoroutine = null;
+    }
+
     public Scriptable_Card UseSelectedCard()
     {
-        if (_currentHandSize <= 0)
+        if (_currentHandSize <= 0 || _handDrawCoroutine != null) //defensive, may occur during hand refreshes
             return null;
 
         //remove from hand list
@@ -117,6 +167,11 @@ public class PlayerCards : MonoBehaviour
 
         //decrease size of hand
         _currentHandSize--;
+
+        //draw new hand if hand is now empty - will refresh deck if deck is now empty
+        if (_currentHandSize <= 0 && _handDrawCoroutine == null)
+            _handDrawCoroutine = StartCoroutine(c_DelayHandDraw());
+
         //return the removed card
         return card;
     }
@@ -179,5 +234,7 @@ public class PlayerCards : MonoBehaviour
             //if there are no cards left in deck, break; the loop
             if (_currentDeckIndex >= _currentMaxCards) { break; }
         }
+
+        Debug.Log("New hand size: " + _currentHandSize);
     }
 }
