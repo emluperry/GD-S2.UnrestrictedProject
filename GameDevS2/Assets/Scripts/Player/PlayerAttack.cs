@@ -8,7 +8,7 @@ public class PlayerAttack : MonoBehaviour
     //input
     private PlayerInput _input;
 
-    //jump input
+    //attack input
     private InputAction _attackInputAction;
     private bool _isAttackPressed;
 
@@ -17,9 +17,14 @@ public class PlayerAttack : MonoBehaviour
     [Header("Attacking")]
     [SerializeField][Min(0f)] private float _maxAttackDelay = 0.5f;
     private float _currentAttackDelay = 0;
+    [SerializeField][Min(0f)] private float _attackRaycastRange = 2f;
+    [SerializeField] private LayerMask _attackableLayers;
 
-    //targeting component
+    //targeted component
     private EntityHealth _targetHealth;
+
+    //saved components
+    private PlayerCards _playerCardsComponent;
 
     private void Awake()
     {
@@ -30,6 +35,8 @@ public class PlayerAttack : MonoBehaviour
         _attackInputAction.canceled += Input_AttackCancelled;
 
         GetComponent<PlayerTargeting>().onTargetChanged += SetTarget;
+
+        _playerCardsComponent = GetComponent<PlayerCards>();
     }
 
     #region INPUTS
@@ -55,12 +62,45 @@ public class PlayerAttack : MonoBehaviour
     {
         yield return new WaitForFixedUpdate();
 
-        if (_targetHealth != null)
-            _targetHealth.TakeDamage(5);
-        else
-            Debug.Log("Nothing to target! Do forward raycast here in future");
+        EntityHealth target = _targetHealth;
 
-        while(_currentAttackDelay < _maxAttackDelay)
+        if(target == null)
+        {
+            //forward raycast
+            if (Physics.Raycast(transform.position, transform.forward, out RaycastHit hitInfo, _attackRaycastRange, _attackableLayers, QueryTriggerInteraction.Ignore))
+            {
+                if (hitInfo.transform.gameObject.TryGetComponent(out EntityHealth health))
+                    target = health;
+            }
+            else
+            {
+                Debug.Log("Didn't hit anything - returning early.");
+                yield break;
+            }
+        }
+
+        //card logic here
+        Scriptable_Card currentCard = _playerCardsComponent.UseSelectedCard();
+
+        if (currentCard)
+        {
+            Debug.Log(currentCard.GetCardPower());
+            switch (currentCard.GetCardType())
+            {
+                case GDS2_Cards.CARD_TYPE.ATTACK:
+                    _targetHealth.TakeDamage(currentCard.GetCardPower());
+                    break;
+                case GDS2_Cards.CARD_TYPE.HEALTH:
+                    //try to heal player
+                    break;
+                case GDS2_Cards.CARD_TYPE.DEFENSE:
+                    //add to player defense
+                    break;
+            }
+            
+        }
+
+        while (_currentAttackDelay < _maxAttackDelay)
         {
             _currentAttackDelay += Time.fixedDeltaTime;
             yield return new WaitForFixedUpdate();

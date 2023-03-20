@@ -21,4 +21,14 @@ public class Scriptable_Card : ScriptableObject
     {
         return _cardName;
     }
+
+    public int GetCardPower()
+    {
+        return _cardPower;
+    }
+
+    public CARD_TYPE GetCardType()
+    {
+        return _cardType;
+    }
 }

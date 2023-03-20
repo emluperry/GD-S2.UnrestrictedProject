@@ -16,6 +16,7 @@ GameObject:
   - component: {fileID: 1183508227}
   - component: {fileID: 4712099643007683436}
   - component: {fileID: 3456276136509971084}
+  - component: {fileID: 1183508231}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -37,7 +38,7 @@ Transform:
   m_Children:
   - {fileID: 5111027943856267288}
   m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!54 &4712099641825242219
 Rigidbody:
@@ -145,6 +146,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _maxAttackDelay: 0.5
+  _attackRaycastRange: 2
+  _attackableLayers:
+    serializedVersion: 2
+    m_Bits: 0
 --- !u!114 &3456276136509971084
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -158,6 +163,27 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _targetSwapMaxDelay: 1
+--- !u!114 &1183508231
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4712099641825242513}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d20b9fc56cd8d744da62522aa62a70c8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _cards:
+  - card: {fileID: 11400000, guid: 05f227111890a174d9041fb31f917524, type: 2}
+    amount: 2
+  - card: {fileID: 11400000, guid: def581ca309afed49b611fdb3cd9879e, type: 2}
+    amount: 3
+  _totalMaxCards: 20
+  _maxHandDraw: 5
+  _swapDelay: 0.5
+  _maxDrawDelay: 5
 --- !u!1001 &4712099641940281331
 PrefabInstance:
   m_ObjectHideFlags: 0

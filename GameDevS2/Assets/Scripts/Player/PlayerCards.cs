@@ -104,6 +104,23 @@ public class PlayerCards : MonoBehaviour
         }
     }
 
+    public Scriptable_Card UseSelectedCard()
+    {
+        if (_currentHandSize <= 0)
+            return null;
+
+        //remove from hand list
+        int cardType = _currentHand[_currentHandIndex];
+        _currentHand.RemoveAt(_currentHandIndex);
+
+        Scriptable_Card card = _cards[cardType].card;
+
+        //decrease size of hand
+        _currentHandSize--;
+        //return the removed card
+        return card;
+    }
+
     private void InitialiseDeck()
     {
         _currentDeckIndex = 0;
