@@ -75,6 +75,7 @@ public class PlayerAttack : MonoBehaviour
             else
             {
                 Debug.Log("Didn't hit anything - returning early.");
+                _attackingCoroutine = null;
                 yield break;
             }
         }
