@@ -45,6 +45,7 @@ public class PlayerCards : MonoBehaviour
 
     //events for UI updates
     public Action<List<int>> onHandDraw;
+    public Action onDiscardHand;
     //takes in index of used card
     public Action<int> onCardUsed;
     //takes in index of new card to select
@@ -289,5 +290,7 @@ public class PlayerCards : MonoBehaviour
         _currentHandSize = 0;
         _currentHandIndex = 0;
         _currentHand.Clear();
+
+        onDiscardHand?.Invoke();
     }
 }

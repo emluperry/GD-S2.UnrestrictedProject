@@ -310,6 +310,7 @@ MonoBehaviour:
   _cardUIPrefab: {fileID: 7396236780942747039, guid: 3b53883b3e69bdf4e9f6a3464e53aefb,
     type: 3}
   _deckObject: {fileID: 1121535457}
+  _deckText: {fileID: 1677526862}
   _handLayoutGroup: {fileID: 52717271}
 --- !u!1 &177128052
 GameObject:

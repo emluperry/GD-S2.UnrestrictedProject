@@ -24,7 +24,7 @@ public class HUD_Manager : MonoBehaviour
 
     [SerializeField] private GameObject _cardUIPrefab;
     [SerializeField] private Image _deckObject;
-    private TextMeshProUGUI _deckText;
+    [SerializeField] private TextMeshProUGUI _deckText;
     [SerializeField] private HorizontalLayoutGroup _handLayoutGroup;
 
     private Inventory_Card_Value_Pair[] _deckList;
@@ -45,13 +45,20 @@ public class HUD_Manager : MonoBehaviour
         _handLayoutGroup.gameObject.SetActive(true);
 
         _deckList = deckList;
-        _currentCard = 0;
+        //get the size of the deck
+        int currentMaxCards = 0;
+        foreach (Inventory_Card_Value_Pair pair in _deckList)
+        {
+            currentMaxCards += pair.amount;
+        }
+        _deckText.text = currentMaxCards.ToString();
 
         //listen for events in player cards
-        if(_playerCardsComponent != null)
+        if (_playerCardsComponent != null)
         {
             _playerCardsComponent.onCardUsed += OnCardUsed;
             _playerCardsComponent.onHandDraw += OnHandDraw;
+            _playerCardsComponent.onDiscardHand += OnDiscardHand;
             _playerCardsComponent.onSelectedChanged += OnChangeSelection;
         }
     }
@@ -72,6 +79,7 @@ public class HUD_Manager : MonoBehaviour
         {
             _playerCardsComponent.onCardUsed -= OnCardUsed;
             _playerCardsComponent.onHandDraw -= OnHandDraw;
+            _playerCardsComponent.onDiscardHand -= OnDiscardHand;
             _playerCardsComponent.onSelectedChanged -= OnChangeSelection;
         }
     }
@@ -86,33 +94,42 @@ public class HUD_Manager : MonoBehaviour
 
     private void OnChangeSelection(int newIndex)
     {
-        _handLayoutGroup.transform.GetChild(_currentCard).GetComponent<UI_Card>().Deselect();
+        if(_handLayoutGroup.transform.childCount > 0)
+        {
+            _handLayoutGroup.transform.GetChild(_currentCard).GetComponent<UI_Card>().Deselect();
 
-        _handLayoutGroup.transform.GetChild(newIndex).GetComponent<UI_Card>().SetSelected();
-        _currentCard = newIndex;
+            _handLayoutGroup.transform.GetChild(newIndex).GetComponent<UI_Card>().SetSelected();
+            _currentCard = newIndex;
+        }
     }
 
     private void OnHandDraw(List<int> newHand)
     {
-        //discard previous hand
-        foreach(Transform card in _handLayoutGroup.transform)
-        {
-            Destroy(card.gameObject);
-        }
-
         //update deck value
         int.TryParse(_deckText.text, out int oldDeckValue);
-        int newDeckValue = Mathf.Max(oldDeckValue, 0);
+        int newDeckValue = Mathf.Max(oldDeckValue - newHand.Count, 0);
         _deckText.text = newDeckValue.ToString();
 
-        Debug.Log(newHand.Count);
         //update hand
         foreach(int cardType in newHand)
         {
-            GameObject card = Instantiate(_cardUIPrefab, _handLayoutGroup.transform);
+            GameObject card = Instantiate(_cardUIPrefab, new Vector3(0,0,0), Quaternion.identity ,_handLayoutGroup.transform);
             UI_Card uiComponent = card.GetComponent<UI_Card>();
             uiComponent.SetCardValue(_deckList[cardType].card.GetCardPower());
             //uiComponent.SetImage(_deckList[cardType].card.GetCardImage()); -- uncomment when this actually exists!!!
+
+            uiComponent.Deselect();
+        }
+
+        OnChangeSelection(0);
+    }
+
+    private void OnDiscardHand()
+    {
+        //discard previous hand
+        foreach (Transform card in _handLayoutGroup.transform)
+        {
+            Destroy(card.gameObject);
         }
     }
 }
