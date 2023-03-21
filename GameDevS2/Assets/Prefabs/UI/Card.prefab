@@ -299,6 +299,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7396236780942747038}
   - component: {fileID: 7396236780942747036}
+  - component: {fileID: 6174044691571554026}
   m_Layer: 5
   m_Name: Card
   m_TagString: Untagged
@@ -335,6 +336,21 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7396236780942747039}
   m_CullTransparentMesh: 1
+--- !u!114 &6174044691571554026
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7396236780942747039}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c748c0cc119e3714d9d2f16c948494d4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _cardImageComponent: {fileID: 7396236779603274276}
+  _tmpComponent: {fileID: 7396236780520480138}
+  _cardSection: {fileID: 7396236780164115031}
 --- !u!1 &7396236781100997844
 GameObject:
   m_ObjectHideFlags: 0

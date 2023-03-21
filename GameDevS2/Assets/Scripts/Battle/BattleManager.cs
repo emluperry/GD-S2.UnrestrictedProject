@@ -36,15 +36,16 @@ public class BattleManager : MonoBehaviour
 
         _activeSpawner = spawner;
 
-        //setup HUD
-        if(_hudManager != null)
-        {
-            _hudManager.StartBattle();
-        }
-
         //setup player
         _playerObject.SetEnemyList(enemiesHealth);
-        _playerObject.GetComponent<PlayerCards>().StartBattle();
+        PlayerCards playerCardsComponent = _playerObject.GetComponent<PlayerCards>();
+        playerCardsComponent.StartBattle();
+
+        //setup HUD
+        if (_hudManager != null)
+        {
+            _hudManager.StartBattle(playerCardsComponent.GetDeckList());
+        }
 
         //setup enemies
         _currentLivingEnemies = enemiesHealth.Length;

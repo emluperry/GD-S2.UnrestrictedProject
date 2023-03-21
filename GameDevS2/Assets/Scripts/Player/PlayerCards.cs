@@ -44,7 +44,7 @@ public class PlayerCards : MonoBehaviour
     private Coroutine _handDrawCoroutine;
 
     //events for UI updates
-    public Action onHandDraw;
+    public Action<List<int>> onHandDraw;
     //takes in index of used card
     public Action<int> onCardUsed;
     //takes in index of new card to select
@@ -105,6 +105,11 @@ public class PlayerCards : MonoBehaviour
         Shuffle(_deckArray);
 
         DrawHand();
+    }
+
+    public Inventory_Card_Value_Pair[] GetDeckList()
+    {
+        return _cards;
     }
 
     public void EndBattle()
@@ -206,6 +211,8 @@ public class PlayerCards : MonoBehaviour
         else if (_currentHandIndex < 0)
             _currentHandIndex = _currentHandSize - 1;
 
+        onSelectedChanged?.Invoke(_currentHandIndex);
+
         //draw new hand if hand is now empty - will refresh deck if deck is now empty
         if (_currentHandSize <= 0 && _handDrawCoroutine == null)
             _handDrawCoroutine = StartCoroutine(c_DelayHandDraw());
@@ -273,7 +280,7 @@ public class PlayerCards : MonoBehaviour
             if (_currentDeckIndex >= _currentMaxCards) { break; }
         }
 
-        onHandDraw?.Invoke();
+        onHandDraw?.Invoke(_currentHand);
         Debug.Log("New hand size: " + _currentHandSize);
     }
 
