@@ -116,7 +116,7 @@ public class HUD_Manager : MonoBehaviour
             GameObject card = Instantiate(_cardUIPrefab, new Vector3(0,0,0), Quaternion.identity ,_handLayoutGroup.transform);
             UI_Card uiComponent = card.GetComponent<UI_Card>();
             uiComponent.SetCardValue(_deckList[cardType].card.GetCardPower());
-            //uiComponent.SetImage(_deckList[cardType].card.GetCardImage()); -- uncomment when this actually exists!!!
+            uiComponent.SetImage(_deckList[cardType].card.GetSprite());
 
             uiComponent.Deselect();
         }

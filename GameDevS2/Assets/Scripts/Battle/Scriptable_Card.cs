@@ -31,4 +31,9 @@ public class Scriptable_Card : ScriptableObject
     {
         return _cardType;
     }
+
+    public Sprite GetSprite()
+    {
+        return _cardImage;
+    }
 }
