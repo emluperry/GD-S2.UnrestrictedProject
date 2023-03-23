@@ -10,5 +10,4 @@ public class Scene_SceneInfo
     public int levelNum = -1;
     public string sceneName = "name";
     public bool isPausable = false;
-    public bool isBossLevel = false;
 }

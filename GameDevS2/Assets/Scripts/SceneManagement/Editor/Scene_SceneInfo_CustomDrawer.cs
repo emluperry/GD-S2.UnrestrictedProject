@@ -13,13 +13,11 @@ public class Scene_SceneInfo_CustomDrawer : PropertyDrawer
         // Calculate rects
         float quarterWidth = position.width / 4;
         float eighthWidth = quarterWidth / 2;
-        var keyRect = new Rect(position.x, position.y, eighthWidth, position.height);
-        var valueRect = new Rect(position.x + eighthWidth, position.y, quarterWidth, position.height);
-        var intRect = new Rect(position.x + (3 * eighthWidth), position.y, eighthWidth, position.height);
-        var boolTextRect = new Rect(position.x + (2 * quarterWidth), position.y, eighthWidth, position.height);
-        var boolRect = new Rect(position.x + (5 * eighthWidth), position.y, eighthWidth, position.height);
-        var bossBoolTextRect = new Rect(position.x + (3 * quarterWidth), position.y, eighthWidth, position.height);
-        var bossBoolRect = new Rect(position.x + (7 * eighthWidth), position.y, eighthWidth, position.height);
+        var keyRect = new Rect(position.x, position.y, quarterWidth, position.height);
+        var valueRect = new Rect(position.x + quarterWidth, position.y, quarterWidth, position.height);
+        var intRect = new Rect(position.x + (2 * quarterWidth), position.y, eighthWidth, position.height);
+        var boolTextRect = new Rect(position.x + (5 * eighthWidth), position.y, eighthWidth, position.height);
+        var boolRect = new Rect(position.x + (3 * quarterWidth), position.y, eighthWidth, position.height);
 
         // Draw label
         position = EditorGUI.PrefixLabel(position, GUIUtility.GetControlID(FocusType.Passive), label);
@@ -34,8 +32,6 @@ public class Scene_SceneInfo_CustomDrawer : PropertyDrawer
         EditorGUI.PropertyField(intRect, property.FindPropertyRelative("levelNum"), GUIContent.none);
         EditorGUI.LabelField(boolTextRect, new GUIContent("Pause?"));
         EditorGUI.PropertyField(boolRect, property.FindPropertyRelative("isPausable"), GUIContent.none);
-        EditorGUI.LabelField(bossBoolTextRect, new GUIContent("Boss?"));
-        EditorGUI.PropertyField(bossBoolRect, property.FindPropertyRelative("isBossLevel"), GUIContent.none);
 
         // Set indent back to what it was
         EditorGUI.indentLevel = indent;

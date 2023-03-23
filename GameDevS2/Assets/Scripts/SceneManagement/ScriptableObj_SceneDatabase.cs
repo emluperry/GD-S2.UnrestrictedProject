@@ -61,18 +61,4 @@ public class ScriptableObj_SceneDatabase : ScriptableObject
         Debug.Log("Invalid scene type: returning false.");
         return false;
     }
-
-    public bool IsBossLevel(int levelNum)
-    {
-        foreach (Scene_SceneInfo pair in scenePairs)
-        {
-            if (pair.sEnum == SCENES.LEVEL && pair.levelNum == levelNum)
-            {
-                return pair.isBossLevel;
-            }
-        }
-
-        Debug.Log("Invalid level number: returning false.");
-        return false;
-    }
 }
