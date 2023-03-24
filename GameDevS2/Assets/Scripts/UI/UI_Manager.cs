@@ -56,7 +56,7 @@ public class UI_Manager : MonoBehaviour
         if(_uiStack.Count > 0)
             _uiStack.Peek().gameObject.SetActive(false);
 
-        if(screen == UI_SCREENS.BACK)
+        if (screen == UI_SCREENS.BACK)
         {
             UnloadUIScreen(_uiStack.Pop());
 
@@ -71,7 +71,7 @@ public class UI_Manager : MonoBehaviour
 
             StartListeningForEvents(uiScreen);
 
-            if(screen == UI_SCREENS.SETTINGS)
+            if(screen == UI_SCREENS.PAUSE)
             {
                 onLoadSettings?.Invoke(uiScreen);
             }

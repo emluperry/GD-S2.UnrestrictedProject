@@ -8,6 +8,12 @@ using TMPro;
 
 public class UI_OnClickButton : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler
 {
+    enum BUTTON_TYPE
+    {
+        TEXT,
+        ICON
+    }
+
     private bool _staysActive = false;
 
     private Color _imageColour = Color.white;
@@ -17,17 +23,28 @@ public class UI_OnClickButton : MonoBehaviour, IPointerClickHandler, IPointerEnt
     [SerializeField] private Color _textHoverColour = Color.black;
 
     private Image _imageRenderer;
+    [SerializeField] private BUTTON_TYPE _buttonType = BUTTON_TYPE.TEXT;
     private TextMeshProUGUI _textRenderer;
+    private Image _iconRenderer;
 
     public Action onButtonClicked;
 
     private void Awake()
     {
-        _imageRenderer = GetComponent<Image>();
+        Image[] images = GetComponentsInChildren<Image>();
+        _imageRenderer = images[0];
         _imageColour = _imageRenderer.color;
 
-        _textRenderer = GetComponentInChildren<TextMeshProUGUI>();
-        _textColour = _textRenderer.color;
+        if(_buttonType == BUTTON_TYPE.TEXT)
+        {
+            _textRenderer = GetComponentInChildren<TextMeshProUGUI>();
+            _textColour = _textRenderer.color;
+        }
+        else if(_buttonType == BUTTON_TYPE.ICON && images.Length > 1)
+        {
+            _iconRenderer = images[1];
+            _textColour = _iconRenderer.color;
+        }
     }
 
     public void OnPointerClick(PointerEventData eventData)
@@ -80,6 +97,18 @@ public class UI_OnClickButton : MonoBehaviour, IPointerClickHandler, IPointerEnt
             else
             {
                 _textRenderer.color = _textColour;
+            }
+        }
+
+        if (_iconRenderer)
+        {
+            if (isActive)
+            {
+                _iconRenderer.color = _textHoverColour;
+            }
+            else
+            {
+                _iconRenderer.color = _textColour;
             }
         }
     }

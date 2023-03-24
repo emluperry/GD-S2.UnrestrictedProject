@@ -14,6 +14,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   scenePairs:
   - sEnum: 1
-    levelNum: 0
+    levelNum: -1
     sceneName: Persistent_Managers
     isPausable: 0
+  - sEnum: 2
+    levelNum: -1
+    sceneName: UI Test Scene
+    isPausable: 0
+  - sEnum: 3
+    levelNum: 1
+    sceneName: SampleScene
+    isPausable: 1
+  - sEnum: 4
+    levelNum: 1
+    sceneName: SampleScene
+    isPausable: 1

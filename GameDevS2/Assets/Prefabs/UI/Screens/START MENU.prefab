@@ -477,7 +477,7 @@ MonoBehaviour:
   _sceneButtons:
   - button: {fileID: 8307014297216574074}
     scene: 0
-    levelNum: 0
+    levelNum: -1
 --- !u!1001 &1706117634513442648
 PrefabInstance:
   m_ObjectHideFlags: 0

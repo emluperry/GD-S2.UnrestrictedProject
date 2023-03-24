@@ -6,9 +6,7 @@ namespace UI_Enums
         BACK,
         LOADING,
         START,
-        LEVEL_SELECT,
-        PAUSE,
-        SETTINGS,
-        CREDITS
+        FILE_SELECT,
+        PAUSE
     }
 }

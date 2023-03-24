@@ -5,9 +5,9 @@ namespace Scene_Enums
         QUIT,
         SCENE_MANAGEMENT,
         START,
+        LOAD_FILE,
         LEVEL,
         WIN,
-        LOSE,
-        TEST
+        LOSE
     }
 }

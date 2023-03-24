@@ -98,14 +98,6 @@ public class Scene_Manager : MonoBehaviour
         _uiManager.SetupPauseUI(_sceneDatabase.IsScenePausable(sceneEnum, levelNum));
     }
 
-    private void HandleBossEnd(bool wasWon)
-    {
-        if (wasWon)
-            LoadNextLevel();
-        else
-            LoadScene(SCENES.LEVEL, _currentLevel);
-    }
-
     private void LoadNextLevel()
     {
         LoadScene(SCENES.LEVEL, _currentLevel + 1);

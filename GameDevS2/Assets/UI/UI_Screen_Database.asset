@@ -13,5 +13,15 @@ MonoBehaviour:
   m_Name: UI_Screen_Database
   m_EditorClassIdentifier: 
   UIPairs:
-  - screen: 0
-    prefab: {fileID: 0}
+  - screen: 2
+    prefab: {fileID: 8031828230337952808, guid: 42feebfc7ee76e34fb0128f818471d69,
+      type: 3}
+  - screen: 3
+    prefab: {fileID: 8997037327499197424, guid: 9c838a2e540cbbd4dbcab56c1df9220c,
+      type: 3}
+  - screen: 4
+    prefab: {fileID: 2689308857815389554, guid: 13e9bef9926395744a2109460fba909d,
+      type: 3}
+  - screen: 5
+    prefab: {fileID: 9057895859289191339, guid: 26255d672c73b5841a7246cab9903de3,
+      type: 3}
