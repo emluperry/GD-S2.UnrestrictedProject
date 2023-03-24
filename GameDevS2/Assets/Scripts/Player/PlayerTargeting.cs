@@ -4,15 +4,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class PlayerTargeting : MonoBehaviour
+public class PlayerTargeting : MonoBehaviour, IInput
 {
     private List<GameObject> _targetArray = new List<GameObject>();
     private int _currentTargetIndex = -1;
 
-    //input
-    private PlayerInput _input;
-
-    //jump input
+    //target input
     private InputAction _targetInputAction;
     private bool _isTargetPressed;
 
@@ -24,13 +21,15 @@ public class PlayerTargeting : MonoBehaviour
 
     private void Awake()
     {
-        _input = GetComponent<PlayerInput>();
-        _targetInputAction = _input.currentActionMap.FindAction("Target");
+        _currentSwapDelay = _targetSwapMaxDelay;
+    }
+
+    public void SetupInput(Dictionary<string, InputAction> inputs)
+    {
+        _targetInputAction = inputs["Target"];
 
         _targetInputAction.performed += Input_TargetPerformed;
         _targetInputAction.canceled += Input_TargetCancelled;
-
-        _currentSwapDelay = _targetSwapMaxDelay;
     }
 
     #region INPUTS

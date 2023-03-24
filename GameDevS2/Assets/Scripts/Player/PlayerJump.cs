@@ -4,11 +4,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class PlayerJump : MonoBehaviour
+public class PlayerJump : MonoBehaviour, IInput
 {
-    //input
-    private PlayerInput _input;
-
     //jump input
     private InputAction _jumpInputAction;
     private bool _isJumpDown;
@@ -27,13 +24,15 @@ public class PlayerJump : MonoBehaviour
 
     private void Awake()
     {
-        _input = GetComponent<PlayerInput>();
-        _jumpInputAction = _input.currentActionMap.FindAction("Jump");
+        _rb = GetComponent<Rigidbody>();
+    }
+
+    public void SetupInput(Dictionary<string, InputAction> inputs)
+    {
+        _jumpInputAction = inputs["Jump"];
 
         _jumpInputAction.performed += Input_JumpPerformed;
         _jumpInputAction.canceled += Input_JumpCancelled;
-
-        _rb = GetComponent<Rigidbody>();
     }
 
     #region INPUTS

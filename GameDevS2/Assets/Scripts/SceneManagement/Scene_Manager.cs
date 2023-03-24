@@ -5,6 +5,7 @@ using UnityEngine.SceneManagement;
 
 using Scene_Enums;
 using System;
+using UnityEngine.InputSystem;
 
 public class Scene_Manager : MonoBehaviour
 {
@@ -12,8 +13,10 @@ public class Scene_Manager : MonoBehaviour
 
     [SerializeField] private UI_Manager _uiManager;
     [SerializeField] private Settings_Manager _settingsManager;
+    [SerializeField] private Input_Manager _inputManager;
 
     private int _currentLevel = -1;
+    [SerializeField] private bool _debugSetupPlayerControls = false;
 
     private void Awake()
     {
@@ -24,6 +27,10 @@ public class Scene_Manager : MonoBehaviour
         if (_settingsManager == null)
         {
             _settingsManager = FindObjectOfType<Settings_Manager>();
+        }
+        if (_inputManager == null)
+        {
+            _inputManager = FindObjectOfType<Input_Manager>();
         }
 
         if (_uiManager)
@@ -44,6 +51,18 @@ public class Scene_Manager : MonoBehaviour
         {
             AsyncOperation loadOp = SceneManager.LoadSceneAsync(_sceneDatabase.GetSceneName(SCENES.START), LoadSceneMode.Additive);
             loadOp.completed += SceneLoaded;
+        }
+
+        if (_uiManager && _inputManager)
+        {
+            //setup pause
+            //set action references for UI control once coded
+            _uiManager.GetComponent<UI_PauseHandler>().SetInputActions(_inputManager.GetPauseInputActions());
+
+            if(_debugSetupPlayerControls)
+            {
+                _inputManager.SetupLevelInput();
+            }
         }
     }
 
@@ -113,14 +132,17 @@ public class Scene_Manager : MonoBehaviour
         _uiManager.SetupPreexistingUI();
 
         if(_currentLevel > -1)
+        {
+            _inputManager.SetupLevelInput();
             SetupLevelListeners();
+        }
 
         op.completed -= SceneLoaded;
     }
 
     private void SetupLevelListeners()
     {
-
+        
     }
 
     private void RemoveLevelListeners()

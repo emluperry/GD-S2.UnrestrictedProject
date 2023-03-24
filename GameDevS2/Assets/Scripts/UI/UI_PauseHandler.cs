@@ -7,19 +7,15 @@ using UnityEngine.InputSystem;
 
 public class UI_PauseHandler : MonoBehaviour
 {
-    private PlayerInput _input;
-
     private bool _pauseInputFlag = true;
     private bool _isPaused = false;
 
     public Action<bool> onLoadPause;
 
-    public void Awake()
+    public void SetInputActions(Dictionary<string, InputAction> inputActions)
     {
-        _input = GetComponent<PlayerInput>();
-
-        _input.currentActionMap.FindAction("Pause").performed += Handle_Pause_Performed;
-        _input.currentActionMap.FindAction("Pause").canceled += Handle_Pause_Cancelled;
+        inputActions["Pause"].performed += Handle_Pause_Performed;
+        inputActions["Pause"].canceled += Handle_Pause_Cancelled;
     }
 
     private void Handle_Pause_Performed(InputAction.CallbackContext context)

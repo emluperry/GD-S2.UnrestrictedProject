@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class PlayerCards : MonoBehaviour
+public class PlayerCards : MonoBehaviour, IInput
 {
     [SerializeField] private Inventory_Card_Value_Pair[] _cards;
     private int[] _deckArray;
@@ -21,9 +21,6 @@ public class PlayerCards : MonoBehaviour
     private int _currentHandSize = 0;
     private int _currentHandIndex = 0;
 
-    //input
-    private PlayerInput _input;
-    
     //input: swapping
     private InputAction _swapInputAction;
     private int _swapInput;
@@ -51,12 +48,10 @@ public class PlayerCards : MonoBehaviour
     //takes in index of new card to select
     public Action<int> onSelectedChanged;
 
-    private void Awake()
+    public void SetupInput(Dictionary<string, InputAction> inputs)
     {
-        _input = GetComponent<PlayerInput>();
-
-        _swapInputAction = _input.currentActionMap.FindAction("Swap");
-        _drawInputAction = _input.currentActionMap.FindAction("Draw");
+        _swapInputAction = inputs["Swap"];
+        _drawInputAction = inputs["Draw"];
     }
 
     #region INPUT

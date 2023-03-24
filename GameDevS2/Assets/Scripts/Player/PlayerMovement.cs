@@ -4,14 +4,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class PlayerMovement : MonoBehaviour
+public class PlayerMovement : MonoBehaviour, IInput
 {
-    //input
-    private PlayerInput _input;
     //movement input
     private InputAction _moveInputAction;
     private Vector3 _moveInput;
     private Vector3 _moveDirection;
+
     private Coroutine _movementCoroutine;
     private bool _isMoving = false;
 
@@ -32,13 +31,15 @@ public class PlayerMovement : MonoBehaviour
 
     private void Awake()
     {
-        _input = GetComponent<PlayerInput>();
-        _moveInputAction = _input.currentActionMap.FindAction("Move");
+        _rb = GetComponent<Rigidbody>();
+    }
+
+    public void SetupInput(Dictionary<string, InputAction> inputs)
+    {
+        _moveInputAction = inputs["Move"];
 
         _moveInputAction.performed += Input_MovePerformed;
         _moveInputAction.canceled += Input_MoveCancelled;
-
-        _rb = GetComponent<Rigidbody>();
     }
 
     #region INPUTS

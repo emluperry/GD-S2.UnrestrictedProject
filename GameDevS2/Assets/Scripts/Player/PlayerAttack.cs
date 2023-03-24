@@ -3,11 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class PlayerAttack : MonoBehaviour
+public class PlayerAttack : MonoBehaviour, IInput
 {
-    //input
-    private PlayerInput _input;
-
     //attack input
     private InputAction _attackInputAction;
     private bool _isAttackPressed;
@@ -28,15 +25,19 @@ public class PlayerAttack : MonoBehaviour
 
     private void Awake()
     {
-        _input = GetComponent<PlayerInput>();
-        _attackInputAction = _input.currentActionMap.FindAction("Attack");
-
-        _attackInputAction.performed += Input_AttackPerformed;
-        _attackInputAction.canceled += Input_AttackCancelled;
+        
 
         GetComponent<PlayerTargeting>().onTargetChanged += SetTarget;
 
         _playerCardsComponent = GetComponent<PlayerCards>();
+    }
+
+    public void SetupInput(Dictionary<string, InputAction> inputs)
+    {
+        _attackInputAction = inputs["Attack"];
+
+        _attackInputAction.performed += Input_AttackPerformed;
+        _attackInputAction.canceled += Input_AttackCancelled;
     }
 
     #region INPUTS
@@ -85,7 +86,6 @@ public class PlayerAttack : MonoBehaviour
 
         if (currentCard)
         {
-            Debug.Log(currentCard.GetCardPower());
             switch (currentCard.GetCardType())
             {
                 case GDS2_Cards.CARD_TYPE.ATTACK:

@@ -47,3 +47,5 @@ MonoBehaviour:
   _sceneDatabase: {fileID: 11400000, guid: 4b376ddcc4bf08444b1fa53190e0490a, type: 2}
   _uiManager: {fileID: 0}
   _settingsManager: {fileID: 0}
+  _inputManager: {fileID: 0}
+  _debugSetupPlayerControls: 0
