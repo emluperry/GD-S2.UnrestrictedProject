@@ -106,6 +106,7 @@ public class UI_Manager : MonoBehaviour
         if(screen != null)
         {
             StopListeningForEvents(screen);
+            screen.DeactivateInput();
 
             Destroy(screen.gameObject);
         }

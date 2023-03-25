@@ -31,25 +31,29 @@ public class UI_Navigation : MonoBehaviour, IInput
 
         foreach(HorizontalOrVerticalLayoutGroup group in _shoulderToggleGroups)
         {
-            shoulderButtonList.AddRange(group.GetComponentsInChildren<UI_OnClickButton>());
+            shoulderButtonList.AddRange(group.GetComponentsInChildren<UI_OnClickButton>(true));
         }
 
         _clickableShoulderObjects = new UI_OnClickButton[shoulderButtonList.Count];
         shoulderButtonList.CopyTo(0, _clickableShoulderObjects, 0, shoulderButtonList.Count);
-
-        if (_clickableShoulderObjects.Length > 0)
-            _clickableShoulderObjects[0].ActivateButtonSelection();
 
         //move buttons
         List<UI_OnClickButton> moveButtonList = new List<UI_OnClickButton>();
 
         foreach (HorizontalOrVerticalLayoutGroup group in _movementToggleGroups)
         {
-            moveButtonList.AddRange(group.GetComponentsInChildren<UI_OnClickButton>());
+            moveButtonList.AddRange(group.GetComponentsInChildren<UI_OnClickButton>(true));
         }
 
         _clickableMoveObjects = new UI_OnClickButton[moveButtonList.Count];
         moveButtonList.CopyTo(0, _clickableMoveObjects, 0, moveButtonList.Count);
+    }
+
+    private void Start()
+    {
+        if (_clickableShoulderObjects.Length > 0)
+            _clickableShoulderObjects[0].ActivateButtonSelection();
+
 
         if (_clickableMoveObjects.Length > 0)
             _clickableMoveObjects[0].ActivateButtonSelection();
@@ -142,6 +146,27 @@ public class UI_Navigation : MonoBehaviour, IInput
             _clickableShoulderObjects[_currentShoulderIndex].ActivateButtonSelection();
             _clickableShoulderObjects[_currentShoulderIndex].ClickButton();
 
+            //set move button index to first in current area
+            int originalIndex = _currentMoveIndex;
+            bool foundNextButton = false;
+
+            foreach(UI_OnClickButton button in _clickableMoveObjects)
+            {
+                if(button.gameObject.activeInHierarchy)
+                {
+                    foundNextButton = true;
+                    break;
+                }
+            }
+
+            if (foundNextButton)
+            {
+                //update new button
+                _clickableMoveObjects[_currentMoveIndex].ActivateButtonSelection();
+            }
+            else
+                _currentMoveIndex = 0;
+
             //start timer
             _delayCoroutine = StartCoroutine(c_DelayTimer());
         }
@@ -150,7 +175,7 @@ public class UI_Navigation : MonoBehaviour, IInput
     private void Input_MovePerformed(InputAction.CallbackContext ctx)
     {
         Vector2 input = ctx.ReadValue<Vector2>();
-        int moveInput = Mathf.RoundToInt(input.y); //only doing vertical movement for now, would like to look into horizontal
+        int moveInput = Mathf.RoundToInt(-input.y); //only doing vertical movement for now, would like to look into horizontal
 
         if (moveInput != 0 && _delayCoroutine == null)
         {
@@ -158,15 +183,33 @@ public class UI_Navigation : MonoBehaviour, IInput
             _clickableMoveObjects[_currentMoveIndex].DeactivateButtonSelection();
 
             //update index
-            _currentMoveIndex += moveInput;
+            int originalIndex = _currentMoveIndex;
+            bool foundNextButton = false;
 
-            if (_currentMoveIndex >= _clickableMoveObjects.Length)
+            do
+            {
+                _currentMoveIndex += moveInput;
+
+                if (_currentMoveIndex >= _clickableMoveObjects.Length)
+                    _currentMoveIndex = 0;
+                else if (_currentMoveIndex < 0)
+                    _currentMoveIndex = _clickableMoveObjects.Length - 1;
+
+                if (_clickableMoveObjects[_currentMoveIndex].gameObject.activeInHierarchy)
+                {
+                    foundNextButton = true;
+                    break;
+                }
+
+            } while (_currentMoveIndex != originalIndex);
+
+            if (foundNextButton)
+            {
+                //update new button
+                _clickableMoveObjects[_currentMoveIndex].ActivateButtonSelection();
+            }
+            else
                 _currentMoveIndex = 0;
-            else if (_currentMoveIndex < 0)
-                _currentMoveIndex = _clickableMoveObjects.Length - 1;
-
-            //update new button
-            _clickableMoveObjects[_currentMoveIndex].ActivateButtonSelection();
 
             //start timer
             _delayCoroutine = StartCoroutine(c_DelayTimer());

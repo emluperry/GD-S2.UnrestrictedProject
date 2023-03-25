@@ -233,6 +233,7 @@ GameObject:
   - component: {fileID: 2689308857815389548}
   - component: {fileID: 2689308857815389555}
   - component: {fileID: 2689308857815389551}
+  - component: {fileID: 2579765413661131754}
   m_Layer: 5
   m_Name: FILE SELECT
   m_TagString: Untagged
@@ -350,6 +351,22 @@ MonoBehaviour:
   - button: {fileID: 6204316884556096700}
     scene: 3
     levelNum: 3
+--- !u!114 &2579765413661131754
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2689308857815389554}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 30b91e49632bb624fb205a9a4484c487, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _shoulderToggleGroups: []
+  _movementToggleGroups:
+  - {fileID: 2689308856483803544}
+  _inputDelay: 0.05
 --- !u!1 &2689308858051882671
 GameObject:
   m_ObjectHideFlags: 0
@@ -502,7 +519,7 @@ PrefabInstance:
     - target: {fileID: 7743584645036652449, guid: 10c6c615484b2d84b8c9c8bddaa54914,
         type: 3}
       propertyPath: m_fontSize
-      value: 31.55
+      value: 31.6
       objectReference: {fileID: 0}
     - target: {fileID: 7743584645717213832, guid: 10c6c615484b2d84b8c9c8bddaa54914,
         type: 3}
@@ -651,7 +668,7 @@ PrefabInstance:
     - target: {fileID: 7743584645036652449, guid: 10c6c615484b2d84b8c9c8bddaa54914,
         type: 3}
       propertyPath: m_fontSize
-      value: 31.55
+      value: 31.6
       objectReference: {fileID: 0}
     - target: {fileID: 7743584645717213832, guid: 10c6c615484b2d84b8c9c8bddaa54914,
         type: 3}
@@ -800,7 +817,7 @@ PrefabInstance:
     - target: {fileID: 7743584645036652449, guid: 10c6c615484b2d84b8c9c8bddaa54914,
         type: 3}
       propertyPath: m_fontSize
-      value: 31.55
+      value: 31.6
       objectReference: {fileID: 0}
     - target: {fileID: 7743584645717213832, guid: 10c6c615484b2d84b8c9c8bddaa54914,
         type: 3}
@@ -949,7 +966,7 @@ PrefabInstance:
     - target: {fileID: 7743584645036652449, guid: 10c6c615484b2d84b8c9c8bddaa54914,
         type: 3}
       propertyPath: m_fontSize
-      value: 31.55
+      value: 31.6
       objectReference: {fileID: 0}
     - target: {fileID: 7743584645717213832, guid: 10c6c615484b2d84b8c9c8bddaa54914,
         type: 3}
