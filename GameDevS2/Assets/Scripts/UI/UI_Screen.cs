@@ -3,11 +3,15 @@ using UnityEngine;
 
 using UI_Enums;
 using Scene_Enums;
+using System.Collections.Generic;
+using UnityEngine.InputSystem;
 
-public class UI_Screen_Buttons : MonoBehaviour
+public class UI_Screen : MonoBehaviour
 {
     [SerializeField] protected UI_ButtonInfo[] _uiButtons;
     [SerializeField] protected Scene_ButtonInfo[] _sceneButtons;
+
+    protected UI_Navigation _navigationComponent;
 
     public Action<UI_SCREENS> onChangeUIScreen;
     public Action<SCENES, int> onChangeScene;
@@ -30,6 +34,11 @@ public class UI_Screen_Buttons : MonoBehaviour
         {
             anim.onChangeUIScreen += HandleUIButton;
         }
+
+        if(TryGetComponent(out UI_Navigation navi))
+        {
+            _navigationComponent = navi;
+        }
     }
 
     protected virtual void OnDestroy()
@@ -49,6 +58,30 @@ public class UI_Screen_Buttons : MonoBehaviour
         if (TryGetComponent(out UI_ScreenAnimation anim))
         {
             anim.onChangeUIScreen -= HandleUIButton;
+        }
+    }
+
+    public virtual void SetupInput(Dictionary<string, InputAction> inputs)
+    {
+        if(_navigationComponent != null)
+        {
+            _navigationComponent.SetupInput(inputs);
+        }
+    }
+
+    public virtual void ActivateInput()
+    {
+        if (_navigationComponent != null)
+        {
+            _navigationComponent.SetupInput();
+        }
+    }
+
+    public virtual void DeactivateInput()
+    {
+        if(_navigationComponent != null)
+        {
+            _navigationComponent.DisableInput();
         }
     }
 

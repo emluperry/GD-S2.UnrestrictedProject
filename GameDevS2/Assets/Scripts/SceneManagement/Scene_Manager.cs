@@ -55,11 +55,9 @@ public class Scene_Manager : MonoBehaviour
 
         if (_uiManager && _inputManager)
         {
-            //setup pause
-            //set action references for UI control once coded
-            _uiManager.GetComponent<UI_PauseHandler>().SetInputActions(_inputManager.GetPauseInputActions());
+            _uiManager.SetUIInputActions(_inputManager.GetUIInputActions());
 
-            if(_debugSetupPlayerControls)
+            if(_debugSetupPlayerControls) //DEBUG ONLY FUNCTION: necessary to test levels without going through extra scenes
             {
                 _inputManager.SetupLevelInput();
             }

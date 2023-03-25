@@ -5,8 +5,6 @@ using UnityEngine.InputSystem;
 
 public class PlayerInitialiser : MonoBehaviour
 {
-    private bool _hasInitialised = false;
-
     public void InitialisePlayerInput(Dictionary<string, InputAction> inputs)
     {
         IInput[] inputComponents = GetComponents<IInput>();
@@ -17,7 +15,5 @@ public class PlayerInitialiser : MonoBehaviour
                 component.SetupInput(inputs);
             }
         }
-
-        _hasInitialised = true;
     }
 }

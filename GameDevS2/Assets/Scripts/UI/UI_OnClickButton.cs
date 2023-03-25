@@ -49,6 +49,11 @@ public class UI_OnClickButton : MonoBehaviour, IPointerClickHandler, IPointerEnt
 
     public void OnPointerClick(PointerEventData eventData)
     {
+        ClickButton();
+    }
+
+    public void ClickButton()
+    {
         onButtonClicked?.Invoke();
 
         UpdateButtonColour(false);
@@ -56,10 +61,20 @@ public class UI_OnClickButton : MonoBehaviour, IPointerClickHandler, IPointerEnt
 
     public void OnPointerEnter(PointerEventData eventData)
     {
+        ActivateButtonSelection();
+    }
+
+    public void ActivateButtonSelection()
+    {
         UpdateButtonColour(true);
     }
 
     public void OnPointerExit(PointerEventData eventData)
+    {
+        DeactivateButtonSelection();
+    }
+
+    public void DeactivateButtonSelection()
     {
         UpdateButtonColour(false);
     }

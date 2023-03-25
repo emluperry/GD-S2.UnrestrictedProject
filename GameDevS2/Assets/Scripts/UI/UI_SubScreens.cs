@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class UI_SubScreens : UI_Screen_Buttons
+public class UI_SubScreens : UI_Screen
 {
     protected UI_SubScreenInfo _currentScreen;
 

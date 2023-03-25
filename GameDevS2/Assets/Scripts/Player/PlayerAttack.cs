@@ -25,8 +25,6 @@ public class PlayerAttack : MonoBehaviour, IInput
 
     private void Awake()
     {
-        
-
         GetComponent<PlayerTargeting>().onTargetChanged += SetTarget;
 
         _playerCardsComponent = GetComponent<PlayerCards>();

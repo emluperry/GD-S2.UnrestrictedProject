@@ -54,7 +54,7 @@ public class Settings_Manager : MonoBehaviour
         }
     }
 
-    public void ListenForSettingsUI(UI_Screen_Buttons screen)
+    public void ListenForSettingsUI(UI_Screen screen)
     {
         _settingsScreen = screen.GetComponentInChildren<UI_Settings>(true);
         _settingsScreen.updateValue += UpdateValueToPreference;

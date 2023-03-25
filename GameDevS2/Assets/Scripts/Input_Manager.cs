@@ -23,20 +23,14 @@ public class Input_Manager : MonoBehaviour
         FindObjectOfType<CameraMovement>().SetupInput(playerInputs);
     }
 
-    public Dictionary<string, InputAction> GetUIInputAction()
-    {
-        Dictionary<string, InputAction> inputDict = new Dictionary<string, InputAction>();
-
-        //inputDict.Add("Pause", _input.currentActionMap.FindAction("Pause"));
-
-        return inputDict;
-    }
-
-    public Dictionary<string, InputAction> GetPauseInputActions()
+    public Dictionary<string, InputAction> GetUIInputActions()
     {
         Dictionary<string, InputAction> inputDict = new Dictionary<string, InputAction>();
 
         inputDict.Add("Pause", _input.currentActionMap.FindAction("Pause"));
+        inputDict.Add("Move", _input.currentActionMap.FindAction("Move"));
+        inputDict.Add("Swap", _input.currentActionMap.FindAction("Swap"));
+        inputDict.Add("Attack", _input.currentActionMap.FindAction("Attack"));
 
         return inputDict;
     }

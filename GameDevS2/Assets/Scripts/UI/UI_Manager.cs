@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UI_Enums;
 using Scene_Enums;
+using UnityEngine.InputSystem;
+using UnityEngine.Device;
 
 public class UI_Manager : MonoBehaviour
 {
@@ -12,11 +14,14 @@ public class UI_Manager : MonoBehaviour
     private Dictionary<UI_SCREENS, GameObject> _UIPrefabs = new Dictionary<UI_SCREENS, GameObject>();
     private GameObject _loadScreenInstance;
 
-    private Stack<UI_Screen_Buttons> _uiStack = new Stack<UI_Screen_Buttons>();
+    private Stack<UI_Screen> _uiStack = new Stack<UI_Screen>();
+
+    private UI_PauseHandler _pauseHandler;
+    private Dictionary<string, InputAction> _uiInputActions;
 
     public Action<SCENES, int> onChangeScene;
     public Action onLoadUI;
-    public Action<UI_Screen_Buttons> onLoadSettings;
+    public Action<UI_Screen> onLoadSettings;
 
     private void Awake()
     {
@@ -25,25 +30,34 @@ public class UI_Manager : MonoBehaviour
             _UIPrefabs.Add(pair.screen, pair.prefab);
         }
 
+        _pauseHandler = GetComponent<UI_PauseHandler>();
+
         SetupPreexistingUI();
+    }
+
+    public void SetUIInputActions(Dictionary<string, InputAction> inputs)
+    {
+        _uiInputActions = inputs;
+        _pauseHandler.SetInputActions(inputs);
     }
 
     public void SetupPreexistingUI()
     {
-        UI_Screen_Buttons[] currentScreens = FindObjectsOfType<UI_Screen_Buttons>();
-        foreach (UI_Screen_Buttons screen in currentScreens)
+        UI_Screen[] currentScreens = FindObjectsOfType<UI_Screen>();
+        foreach (UI_Screen screen in currentScreens)
         {
             _uiStack.Push(screen);
             StartListeningForEvents(screen);
+            screen.SetupInput(_uiInputActions);
         }
     }
 
     public void SetupPauseUI(bool allowPausing)
     {
         if(allowPausing)
-            GetComponent<UI_PauseHandler>().onLoadPause += HandlePauseEvent;
+            _pauseHandler.onLoadPause += HandlePauseEvent;
         else
-            GetComponent<UI_PauseHandler>().onLoadPause -= HandlePauseEvent;
+            _pauseHandler.onLoadPause -= HandlePauseEvent;
     }
 
     private void OnDestroy()
@@ -54,18 +68,25 @@ public class UI_Manager : MonoBehaviour
     private void LoadUI(UI_SCREENS screen)
     {
         if(_uiStack.Count > 0)
+        {
+            _uiStack.Peek().DeactivateInput();
             _uiStack.Peek().gameObject.SetActive(false);
+        }
 
         if (screen == UI_SCREENS.BACK)
         {
             UnloadUIScreen(_uiStack.Pop());
 
             if (_uiStack.Count > 0)
+            {
+                _uiStack.Peek().ActivateInput();
                 _uiStack.Peek().gameObject.SetActive(true);
+            }
         }
         else
         {
-            UI_Screen_Buttons uiScreen = Instantiate(_UIPrefabs[screen], transform).GetComponent<UI_Screen_Buttons>();
+            UI_Screen uiScreen = Instantiate(_UIPrefabs[screen], transform).GetComponent<UI_Screen>();
+            uiScreen.SetupInput(_uiInputActions);
 
             _uiStack.Push(uiScreen);
 
@@ -80,7 +101,7 @@ public class UI_Manager : MonoBehaviour
         onLoadUI?.Invoke();
     }
 
-    private void UnloadUIScreen(UI_Screen_Buttons screen)
+    private void UnloadUIScreen(UI_Screen screen)
     {
         if(screen != null)
         {
@@ -110,13 +131,13 @@ public class UI_Manager : MonoBehaviour
         _uiStack.Clear();
     }
 
-    private void StartListeningForEvents(UI_Screen_Buttons screen)
+    private void StartListeningForEvents(UI_Screen screen)
     {
         screen.onChangeUIScreen += LoadUI;
         screen.onChangeScene += CallSceneChange;
     }
 
-    private void StopListeningForEvents(UI_Screen_Buttons screen)
+    private void StopListeningForEvents(UI_Screen screen)
     {
         screen.onChangeUIScreen -= LoadUI;
         screen.onChangeScene -= CallSceneChange;
