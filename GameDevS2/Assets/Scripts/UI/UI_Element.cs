@@ -15,8 +15,8 @@ public class UI_Element : MonoBehaviour
 
     public UI_ELEMENT_TYPE type { protected set; get; } = UI_ELEMENT_TYPE.BUTTON;
 
-    public bool _staysActive { protected set; get; } = false;
-    protected bool _selectedElement = false;
+    protected bool _staysActive = false;
+    public bool selectedElement { protected set; get; } = false;
 
     [Header("Colours")]
     protected Color _imageColour = Color.white;
@@ -34,11 +34,6 @@ public class UI_Element : MonoBehaviour
 
     protected virtual void Awake()
     {
-        if(TryGetComponent(out UI_Slider slider))
-        {
-            type = UI_ELEMENT_TYPE.SLIDER;
-        }
-
         _imageRenderer = GetComponentInChildren<Image>();
         _imageColour = _imageRenderer.color;
 
@@ -60,13 +55,13 @@ public class UI_Element : MonoBehaviour
 
     public virtual void SelectElement()
     {
-        _selectedElement = true;
+        selectedElement = true;
         UpdateButtonColour(true);
     }
 
     public virtual void DeselectElement()
     {
-        _selectedElement = false;
+        selectedElement = false;
         UpdateButtonColour(false);
     }
 
@@ -109,15 +104,15 @@ public class UI_Element : MonoBehaviour
             }
         }
 
-        if (_selectedElementRenderer && _selectedElement)
+        if (_selectedElementRenderer)
         {
-            if (isActive)
+            if (isActive && selectedElement)
             {
-                _textRenderer.color = _textHoverColour;
+                _selectedElementRenderer.color = _elementSelectedColour;
             }
             else
             {
-                _textRenderer.color = _textColour;
+                _selectedElementRenderer.color = _selectableElementColour;
             }
         }
     }

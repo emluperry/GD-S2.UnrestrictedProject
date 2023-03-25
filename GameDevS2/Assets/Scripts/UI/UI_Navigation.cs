@@ -6,7 +6,6 @@ using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
 using UI_Enums;
-using UnityEngine.Windows;
 
 public class UI_Navigation : MonoBehaviour, IInput
 {
@@ -23,6 +22,7 @@ public class UI_Navigation : MonoBehaviour, IInput
     private InputAction _moveInputAction;
     private InputAction _selectInputAction;
 
+    [Header("Input Values")]
     [SerializeField] private float _inputDelay = 0.05f;
     private Coroutine _delayCoroutine;
 
@@ -122,7 +122,7 @@ public class UI_Navigation : MonoBehaviour, IInput
         float input = ctx.ReadValue<float>();
         int swapInput = Mathf.RoundToInt(input);
 
-        if (swapInput != 0 && _delayCoroutine == null)
+        if (swapInput != 0 && _delayCoroutine == null && _clickableShoulderObjects.Length > 0)
         {
             //exit old element
             _clickableShoulderObjects[_currentShoulderIndex].DeactivateButtonSelection();
@@ -154,44 +154,57 @@ public class UI_Navigation : MonoBehaviour, IInput
 
         if (input.sqrMagnitude > 0 && _delayCoroutine == null)
         {
-            //exit old element
-            if (_currentUIElement != null)
+            //check if navigation or editing element
+            if (input.x != 0 && _currentUIElement.selectedElement)
             {
-                _currentUIElement.DeselectElement();
-                _currentUIElement.DeactivateButtonSelection();
-            }
-
-            //find next element based on input
-            bool foundNextButton = false;
-
-            //if there is no active element, get first element
-            if (_currentUIElement == null)
-            {
-                _currentUIElement = _movementParent.GetComponentInChildren<UI_Element>();
-                foundNextButton = _currentUIElement != null;
-            }
-            else //otherwise check inputs
-            {
-                //horizontal input first
-                if (input.x != 0)
+                //update if slider and ignore further inputs
+                if (_currentUIElement.type == UI_ELEMENT_TYPE.SLIDER)
                 {
-                    foundNextButton = NavigateToNextNode<HorizontalLayoutGroup>(Mathf.RoundToInt(input.x));
+                    _currentUIElement.GetComponent<UI_Slider>().IncrementSliderValue(Mathf.RoundToInt(input.x));
+                    _currentUIElement.ActivateButtonSelection();
                 }
-                
-                if (input.y != 0 && !foundNextButton) //vertical input second, skip if found a button horizontally
-                {
-                    foundNextButton = NavigateToNextNode<VerticalLayoutGroup>(Mathf.RoundToInt(-input.y));
-                }
-
-            }
-
-            //update button - do nothing if none
-            if (foundNextButton)
-            {
-                _currentUIElement.ActivateButtonSelection();
             }
             else
-                _currentUIElement = null;
+            {
+                //exit old element
+                if (_currentUIElement != null)
+                {
+                    _currentUIElement.DeselectElement();
+                    _currentUIElement.DeactivateButtonSelection();
+                }
+
+                //find next element based on input
+                bool foundNextButton = false;
+
+                //if there is no active element, get first element
+                if (_currentUIElement == null)
+                {
+                    _currentUIElement = _movementParent.GetComponentInChildren<UI_Element>();
+                    foundNextButton = _currentUIElement != null;
+                }
+                else //otherwise check inputs
+                {
+                    //horizontal input first
+                    if (input.x != 0)
+                    {
+                        foundNextButton = NavigateToNextNode<HorizontalLayoutGroup>(Mathf.RoundToInt(input.x));
+                    }
+
+                    if (input.y != 0 && !foundNextButton) //vertical input second, skip if found a button horizontally
+                    {
+                        foundNextButton = NavigateToNextNode<VerticalLayoutGroup>(Mathf.RoundToInt(-input.y));
+                    }
+
+                }
+
+                //update button - do nothing if none
+                if (foundNextButton)
+                {
+                    _currentUIElement.ActivateButtonSelection();
+                }
+                else
+                    _currentUIElement = null;
+            }
 
             //start timer
             _delayCoroutine = StartCoroutine(c_DelayTimer());

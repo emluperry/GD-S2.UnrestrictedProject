@@ -33,7 +33,7 @@ public class Settings_Manager : MonoBehaviour
         SetSceneValues();
     }
 
-    public void SetSceneValues()
+    public void SetSceneValues() //not for audio!!
     {
         
     }
