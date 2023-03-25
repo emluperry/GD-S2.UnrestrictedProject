@@ -12,10 +12,9 @@ public class UI_Navigation : MonoBehaviour, IInput
     private UI_OnClickButton[] _clickableShoulderObjects;
     private int _currentShoulderIndex = 0;
 
-    //stores layout group(s) that can be toggled with movement input
-    [SerializeField] private HorizontalOrVerticalLayoutGroup[] _movementToggleGroups;
-    private UI_OnClickButton[] _clickableMoveObjects;
-    private int _currentMoveIndex = 0;
+    //parent transform containing buttons toggled by movement input - could be more efficient, ie by storing a shorter tree on awake, but this is functional
+    [SerializeField] private Transform _movementParent;
+    private UI_OnClickButton _currentMoveButton;
 
     private InputAction _swapInputAction;
     private InputAction _moveInputAction;
@@ -38,15 +37,7 @@ public class UI_Navigation : MonoBehaviour, IInput
         shoulderButtonList.CopyTo(0, _clickableShoulderObjects, 0, shoulderButtonList.Count);
 
         //move buttons
-        List<UI_OnClickButton> moveButtonList = new List<UI_OnClickButton>();
-
-        foreach (HorizontalOrVerticalLayoutGroup group in _movementToggleGroups)
-        {
-            moveButtonList.AddRange(group.GetComponentsInChildren<UI_OnClickButton>(true));
-        }
-
-        _clickableMoveObjects = new UI_OnClickButton[moveButtonList.Count];
-        moveButtonList.CopyTo(0, _clickableMoveObjects, 0, moveButtonList.Count);
+        _currentMoveButton = _movementParent.GetComponentInChildren<UI_OnClickButton>();
     }
 
     private void Start()
@@ -54,9 +45,8 @@ public class UI_Navigation : MonoBehaviour, IInput
         if (_clickableShoulderObjects.Length > 0)
             _clickableShoulderObjects[0].ActivateButtonSelection();
 
-
-        if (_clickableMoveObjects.Length > 0)
-            _clickableMoveObjects[0].ActivateButtonSelection();
+        if (_currentMoveButton != null)
+            _currentMoveButton.ActivateButtonSelection();
     }
 
     public void SetupInput(Dictionary<string, InputAction> inputs)
@@ -146,26 +136,8 @@ public class UI_Navigation : MonoBehaviour, IInput
             _clickableShoulderObjects[_currentShoulderIndex].ActivateButtonSelection();
             _clickableShoulderObjects[_currentShoulderIndex].ClickButton();
 
-            //set move button index to first in current area
-            int originalIndex = _currentMoveIndex;
-            bool foundNextButton = false;
-
-            foreach(UI_OnClickButton button in _clickableMoveObjects)
-            {
-                if(button.gameObject.activeInHierarchy)
-                {
-                    foundNextButton = true;
-                    break;
-                }
-            }
-
-            if (foundNextButton)
-            {
-                //update new button
-                _clickableMoveObjects[_currentMoveIndex].ActivateButtonSelection();
-            }
-            else
-                _currentMoveIndex = 0;
+            //set move button to first in current area - first active button
+            _currentMoveButton = _movementParent.GetComponentInChildren<UI_OnClickButton>();
 
             //start timer
             _delayCoroutine = StartCoroutine(c_DelayTimer());
@@ -175,41 +147,92 @@ public class UI_Navigation : MonoBehaviour, IInput
     private void Input_MovePerformed(InputAction.CallbackContext ctx)
     {
         Vector2 input = ctx.ReadValue<Vector2>();
-        int moveInput = Mathf.RoundToInt(-input.y); //only doing vertical movement for now, would like to look into horizontal
 
-        if (moveInput != 0 && _delayCoroutine == null)
+        if (input.sqrMagnitude > 0 && _delayCoroutine == null)
         {
             //exit old button
-            _clickableMoveObjects[_currentMoveIndex].DeactivateButtonSelection();
+            if (_currentMoveButton != null)
+                _currentMoveButton.DeactivateButtonSelection();
 
-            //update index
-            int originalIndex = _currentMoveIndex;
+            //find next button based on input
             bool foundNextButton = false;
 
-            do
+            //if there is no active button, get first button
+            if (_currentMoveButton == null)
             {
-                _currentMoveIndex += moveInput;
-
-                if (_currentMoveIndex >= _clickableMoveObjects.Length)
-                    _currentMoveIndex = 0;
-                else if (_currentMoveIndex < 0)
-                    _currentMoveIndex = _clickableMoveObjects.Length - 1;
-
-                if (_clickableMoveObjects[_currentMoveIndex].gameObject.activeInHierarchy)
+                _currentMoveButton = _movementParent.GetComponentInChildren<UI_OnClickButton>();
+                foundNextButton = _currentMoveButton != null;
+            }
+            else //otherwise check inputs
+            {
+                //horizontal input first
+                if (input.x != 0)
                 {
-                    foundNextButton = true;
-                    break;
+                    Transform currentNode = _currentMoveButton.transform;
+                    Transform parent = currentNode.parent;
+
+                    while (parent != _movementParent.parent)
+                    {
+                        if (parent.TryGetComponent(out HorizontalLayoutGroup layoutGroup))
+                        {
+                            int siblingIndex = currentNode.GetSiblingIndex();
+                            siblingIndex += Mathf.RoundToInt(input.x);
+
+                            if (siblingIndex >= parent.childCount)
+                                siblingIndex = 0;
+                            else if (siblingIndex < 0)
+                                siblingIndex = parent.childCount - 1;
+
+                            _currentMoveButton = parent.GetChild(siblingIndex).GetComponentInChildren<UI_OnClickButton>();
+                            foundNextButton = true;
+                            break;
+                        }
+                        else
+                        {
+                            currentNode = parent;
+                            parent = currentNode.parent;
+                        }
+                    }
+                }
+                
+                if (input.y != 0 && !foundNextButton) //vertical input second, skip if found a button horizontally
+                {
+                    Transform currentNode = _currentMoveButton.transform;
+                    Transform parent = currentNode.parent;
+
+                    while (parent != _movementParent.parent)
+                    {
+                        if (parent.TryGetComponent(out VerticalLayoutGroup layoutGroup))
+                        {
+                            int siblingIndex = currentNode.GetSiblingIndex();
+                            siblingIndex += Mathf.RoundToInt(-input.y);
+
+                            if (siblingIndex >= parent.childCount)
+                                siblingIndex = 0;
+                            else if (siblingIndex < 0)
+                                siblingIndex = parent.childCount - 1;
+
+                            _currentMoveButton = parent.GetChild(siblingIndex).GetComponentInChildren<UI_OnClickButton>();
+                            foundNextButton = true;
+                            break;
+                        }
+                        else
+                        {
+                            currentNode = parent;
+                            parent = currentNode.parent;
+                        }
+                    }
                 }
 
-            } while (_currentMoveIndex != originalIndex);
+            }
 
+            //update button - do nothing if none
             if (foundNextButton)
             {
-                //update new button
-                _clickableMoveObjects[_currentMoveIndex].ActivateButtonSelection();
+                _currentMoveButton.ActivateButtonSelection();
             }
             else
-                _currentMoveIndex = 0;
+                _currentMoveButton = null;
 
             //start timer
             _delayCoroutine = StartCoroutine(c_DelayTimer());
@@ -218,9 +241,9 @@ public class UI_Navigation : MonoBehaviour, IInput
 
     private void Input_SelectPerformed(InputAction.CallbackContext ctx)
     {
-        if(ctx.ReadValueAsButton())
+        if(ctx.ReadValueAsButton() && _currentMoveButton != null && _currentMoveButton.gameObject.activeInHierarchy)
         {
-            _clickableMoveObjects[_currentMoveIndex].ClickButton();
+            _currentMoveButton.ClickButton();
         }
     }
 }

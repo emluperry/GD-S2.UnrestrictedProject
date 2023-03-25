@@ -364,8 +364,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _shoulderToggleGroups: []
-  _movementToggleGroups:
-  - {fileID: 2689308856483803544}
+  _movementParent: {fileID: 2689308856483803551}
   _inputDelay: 0.05
 --- !u!1 &2689308858051882671
 GameObject:

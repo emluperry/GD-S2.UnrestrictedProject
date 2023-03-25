@@ -492,8 +492,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _shoulderToggleGroups: []
-  _movementToggleGroups:
-  - {fileID: 8997037326213734170}
+  _movementParent: {fileID: 8997037326213734173}
   _inputDelay: 0.05
 --- !u!1001 &1706117634513442648
 PrefabInstance:
