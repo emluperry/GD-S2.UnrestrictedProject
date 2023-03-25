@@ -205,7 +205,7 @@ public class UI_Navigation : MonoBehaviour, IInput
 
         while (parent != _movementParent.parent)
         {
-            if (parent.TryGetComponent(out HorizontalLayoutGroup layoutGroup))
+            if (parent.TryGetComponent(out T layoutGroup))
             {
                 int currentSiblingIndex = currentNode.GetSiblingIndex();
                 int siblingIndex = currentSiblingIndex;
