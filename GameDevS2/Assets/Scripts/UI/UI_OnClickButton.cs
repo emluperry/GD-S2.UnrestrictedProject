@@ -1,10 +1,5 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.UI;
 using UnityEngine.EventSystems;
-using TMPro;
 
 public class UI_OnClickButton : UI_Element, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler
 {
@@ -12,14 +7,14 @@ public class UI_OnClickButton : UI_Element, IPointerClickHandler, IPointerEnterH
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        ClickButton();
+        SelectElement();
     }
 
-    public void ClickButton()
+    public override void SelectElement()
     {
         onButtonClicked?.Invoke();
 
-        UpdateButtonColour(false);
+        base.DeselectElement();
     }
 
     public void OnPointerEnter(PointerEventData eventData)

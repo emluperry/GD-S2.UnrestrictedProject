@@ -295,6 +295,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _imageHoverColour: {r: 0.089711644, g: 0.0965782, b: 0.3018868, a: 1}
   _textHoverColour: {r: 0.5801887, g: 0.7176511, b: 1, a: 1}
+  _elementSelectedColour: {r: 0, g: 0, b: 0, a: 1}
+  _selectedElementRenderer: {fileID: 4020671502814186049}
 --- !u!1 &4020671502516204864
 GameObject:
   m_ObjectHideFlags: 0

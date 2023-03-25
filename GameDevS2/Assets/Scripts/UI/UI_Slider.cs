@@ -9,6 +9,6 @@ public class UI_Slider : Slider
 
         value = Mathf.Clamp(value, minValue, maxValue);
 
-        //onValueChanged?.Invoke(amount);
+        onValueChanged?.Invoke(amount);
     }
 }

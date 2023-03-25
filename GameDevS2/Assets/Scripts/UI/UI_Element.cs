@@ -1,9 +1,9 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
-using TMPro;
 
 using UI_Enums;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 
 public class UI_Element : MonoBehaviour
 {
@@ -15,16 +15,22 @@ public class UI_Element : MonoBehaviour
 
     public UI_ELEMENT_TYPE type { protected set; get; } = UI_ELEMENT_TYPE.BUTTON;
 
-    protected bool _staysActive = false;
+    public bool _staysActive { protected set; get; } = false;
+    protected bool _selectedElement = false;
 
+    [Header("Colours")]
     protected Color _imageColour = Color.white;
     [SerializeField] protected Color _imageHoverColour = Color.white;
 
     protected Color _textColour = Color.white;
     [SerializeField] protected Color _textHoverColour = Color.black;
 
+    protected Color _selectableElementColour = Color.white;
+    [SerializeField] protected Color _elementSelectedColour = Color.black;
+
     protected Image _imageRenderer;
     protected MaskableGraphic _textRenderer;
+    [SerializeField] MaskableGraphic _selectedElementRenderer;
 
     protected virtual void Awake()
     {
@@ -35,6 +41,9 @@ public class UI_Element : MonoBehaviour
 
         _imageRenderer = GetComponentInChildren<Image>();
         _imageColour = _imageRenderer.color;
+
+        if (_selectedElementRenderer)
+            _selectableElementColour = _selectedElementRenderer.color;
 
         List<Transform> transforms = new List<Transform>(GetComponentsInChildren<Transform>());
         transforms.Remove(transform);
@@ -49,12 +58,24 @@ public class UI_Element : MonoBehaviour
         }
     }
 
-    public void ActivateButtonSelection()
+    public virtual void SelectElement()
+    {
+        _selectedElement = true;
+        UpdateButtonColour(true);
+    }
+
+    public virtual void DeselectElement()
+    {
+        _selectedElement = false;
+        UpdateButtonColour(false);
+    }
+
+    public virtual void ActivateButtonSelection()
     {
         UpdateButtonColour(true);
     }
 
-    public void DeactivateButtonSelection()
+    public virtual void DeactivateButtonSelection()
     {
         UpdateButtonColour(false);
     }
@@ -77,6 +98,18 @@ public class UI_Element : MonoBehaviour
         }
 
         if (_textRenderer)
+        {
+            if (isActive)
+            {
+                _textRenderer.color = _textHoverColour;
+            }
+            else
+            {
+                _textRenderer.color = _textColour;
+            }
+        }
+
+        if (_selectedElementRenderer && _selectedElement)
         {
             if (isActive)
             {
