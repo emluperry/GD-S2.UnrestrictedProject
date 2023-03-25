@@ -9,4 +9,10 @@ namespace UI_Enums
         FILE_SELECT,
         PAUSE
     }
+
+    public enum UI_ELEMENT_TYPE
+    {
+        BUTTON,
+        SLIDER
+    }
 }

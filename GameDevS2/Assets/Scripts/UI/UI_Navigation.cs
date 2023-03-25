@@ -5,6 +5,8 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
+using UI_Enums;
+
 public class UI_Navigation : MonoBehaviour, IInput
 {
     //stores layout group that can be toggled with shoulder buttons (or q/e)
@@ -14,7 +16,7 @@ public class UI_Navigation : MonoBehaviour, IInput
 
     //parent transform containing buttons toggled by movement input - could be more efficient, ie by storing a shorter tree on awake, but this is functional
     [SerializeField] private Transform _movementParent;
-    private UI_OnClickButton _currentMoveButton;
+    private UI_Element _currentUIElement;
 
     private InputAction _swapInputAction;
     private InputAction _moveInputAction;
@@ -37,7 +39,7 @@ public class UI_Navigation : MonoBehaviour, IInput
         shoulderButtonList.CopyTo(0, _clickableShoulderObjects, 0, shoulderButtonList.Count);
 
         //move buttons
-        _currentMoveButton = _movementParent.GetComponentInChildren<UI_OnClickButton>();
+        _currentUIElement = _movementParent.GetComponentInChildren<UI_Element>();
     }
 
     private void Start()
@@ -45,8 +47,8 @@ public class UI_Navigation : MonoBehaviour, IInput
         if (_clickableShoulderObjects.Length > 0)
             _clickableShoulderObjects[0].ActivateButtonSelection();
 
-        if (_currentMoveButton != null)
-            _currentMoveButton.ActivateButtonSelection();
+        if (_currentUIElement != null)
+            _currentUIElement.ActivateButtonSelection();
     }
 
     public void SetupInput(Dictionary<string, InputAction> inputs)
@@ -137,7 +139,8 @@ public class UI_Navigation : MonoBehaviour, IInput
             _clickableShoulderObjects[_currentShoulderIndex].ClickButton();
 
             //set move button to first in current area - first active button
-            _currentMoveButton = _movementParent.GetComponentInChildren<UI_OnClickButton>();
+            _currentUIElement = _movementParent.GetComponentInChildren<UI_Element>();
+            _currentUIElement.ActivateButtonSelection();
 
             //start timer
             _delayCoroutine = StartCoroutine(c_DelayTimer());
@@ -151,40 +154,53 @@ public class UI_Navigation : MonoBehaviour, IInput
         if (input.sqrMagnitude > 0 && _delayCoroutine == null)
         {
             //exit old button
-            if (_currentMoveButton != null)
-                _currentMoveButton.DeactivateButtonSelection();
+            if (_currentUIElement != null)
+                _currentUIElement.DeactivateButtonSelection();
 
             //find next button based on input
             bool foundNextButton = false;
 
             //if there is no active button, get first button
-            if (_currentMoveButton == null)
+            if (_currentUIElement == null)
             {
-                _currentMoveButton = _movementParent.GetComponentInChildren<UI_OnClickButton>();
-                foundNextButton = _currentMoveButton != null;
+                _currentUIElement = _movementParent.GetComponentInChildren<UI_Element>();
+                foundNextButton = _currentUIElement != null;
             }
             else //otherwise check inputs
             {
                 //horizontal input first
                 if (input.x != 0)
                 {
-                    Transform currentNode = _currentMoveButton.transform;
+                    Transform currentNode = _currentUIElement.transform;
                     Transform parent = currentNode.parent;
 
                     while (parent != _movementParent.parent)
                     {
                         if (parent.TryGetComponent(out HorizontalLayoutGroup layoutGroup))
                         {
-                            int siblingIndex = currentNode.GetSiblingIndex();
-                            siblingIndex += Mathf.RoundToInt(input.x);
+                            int currentSiblingIndex = currentNode.GetSiblingIndex();
+                            int siblingIndex = currentSiblingIndex;
 
-                            if (siblingIndex >= parent.childCount)
-                                siblingIndex = 0;
-                            else if (siblingIndex < 0)
-                                siblingIndex = parent.childCount - 1;
+                            //check each child in order
+                            do
+                            {
+                                siblingIndex += Mathf.RoundToInt(input.x);
 
-                            _currentMoveButton = parent.GetChild(siblingIndex).GetComponentInChildren<UI_OnClickButton>();
-                            foundNextButton = true;
+                                if (siblingIndex >= parent.childCount)
+                                    siblingIndex = 0;
+                                else if (siblingIndex < 0)
+                                    siblingIndex = parent.childCount - 1;
+
+                                UI_Element tempElement = parent.GetChild(siblingIndex).GetComponentInChildren<UI_Element>();
+                                if(tempElement != null)
+                                {
+                                    _currentUIElement = tempElement;
+                                    break;
+                                }
+                            }
+                            while (siblingIndex != currentSiblingIndex);
+
+                            foundNextButton = _currentUIElement != null;
                             break;
                         }
                         else
@@ -197,23 +213,36 @@ public class UI_Navigation : MonoBehaviour, IInput
                 
                 if (input.y != 0 && !foundNextButton) //vertical input second, skip if found a button horizontally
                 {
-                    Transform currentNode = _currentMoveButton.transform;
+                    Transform currentNode = _currentUIElement.transform;
                     Transform parent = currentNode.parent;
 
                     while (parent != _movementParent.parent)
                     {
                         if (parent.TryGetComponent(out VerticalLayoutGroup layoutGroup))
                         {
-                            int siblingIndex = currentNode.GetSiblingIndex();
-                            siblingIndex += Mathf.RoundToInt(-input.y);
+                            int currentSiblingIndex = currentNode.GetSiblingIndex();
+                            int siblingIndex = currentSiblingIndex;
 
-                            if (siblingIndex >= parent.childCount)
-                                siblingIndex = 0;
-                            else if (siblingIndex < 0)
-                                siblingIndex = parent.childCount - 1;
+                            //check each child in order
+                            do
+                            {
+                                siblingIndex += Mathf.RoundToInt(-input.y);
 
-                            _currentMoveButton = parent.GetChild(siblingIndex).GetComponentInChildren<UI_OnClickButton>();
-                            foundNextButton = true;
+                                if (siblingIndex >= parent.childCount)
+                                    siblingIndex = 0;
+                                else if (siblingIndex < 0)
+                                    siblingIndex = parent.childCount - 1;
+
+                                UI_Element tempElement = parent.GetChild(siblingIndex).GetComponentInChildren<UI_Element>();
+                                if (tempElement != null)
+                                {
+                                    _currentUIElement = tempElement;
+                                    break;
+                                }
+                            }
+                            while (siblingIndex != currentSiblingIndex);
+
+                            foundNextButton = _currentUIElement != null;
                             break;
                         }
                         else
@@ -229,10 +258,10 @@ public class UI_Navigation : MonoBehaviour, IInput
             //update button - do nothing if none
             if (foundNextButton)
             {
-                _currentMoveButton.ActivateButtonSelection();
+                _currentUIElement.ActivateButtonSelection();
             }
             else
-                _currentMoveButton = null;
+                _currentUIElement = null;
 
             //start timer
             _delayCoroutine = StartCoroutine(c_DelayTimer());
@@ -241,9 +270,10 @@ public class UI_Navigation : MonoBehaviour, IInput
 
     private void Input_SelectPerformed(InputAction.CallbackContext ctx)
     {
-        if(ctx.ReadValueAsButton() && _currentMoveButton != null && _currentMoveButton.gameObject.activeInHierarchy)
+        if(ctx.ReadValueAsButton() && _currentUIElement != null && _currentUIElement.gameObject.activeInHierarchy)
         {
-            _currentMoveButton.ClickButton();
+            if(_currentUIElement.type == UI_ELEMENT_TYPE.BUTTON)
+                _currentUIElement.GetComponent<UI_OnClickButton>().ClickButton();
         }
     }
 }
