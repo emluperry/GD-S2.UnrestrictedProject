@@ -472,6 +472,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 99a5517c7d5c6b6438f1a85779598f5f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  screenType: 3
   _uiButtons:
   - button: {fileID: 1747058317617635340}
     screen: 4

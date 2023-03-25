@@ -22,8 +22,7 @@ public class UI_PauseHandler : MonoBehaviour
     {
         if(_pauseInputFlag && context.ReadValueAsButton())
         {
-            _isPaused = !_isPaused;
-            onLoadPause?.Invoke(_isPaused);
+            TogglePause();
             _pauseInputFlag = false;
         }
     }
@@ -32,5 +31,11 @@ public class UI_PauseHandler : MonoBehaviour
     {
         if (!context.ReadValueAsButton())
             _pauseInputFlag = true;
+    }
+
+    public void TogglePause()
+    {
+        _isPaused = !_isPaused;
+        onLoadPause?.Invoke(_isPaused);
     }
 }

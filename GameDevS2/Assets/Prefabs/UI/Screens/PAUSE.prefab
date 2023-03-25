@@ -660,6 +660,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c83fc1abecb375e4d8379ec3c8c5c3d4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  screenType: 5
   _uiButtons:
   - button: {fileID: 8225693814507649886}
     screen: 1

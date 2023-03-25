@@ -8,6 +8,7 @@ using UnityEngine.InputSystem;
 
 public class UI_Screen : MonoBehaviour
 {
+    [SerializeField] public UI_SCREENS screenType = UI_SCREENS.NONE;
     [SerializeField] protected UI_ButtonInfo[] _uiButtons;
     [SerializeField] protected Scene_ButtonInfo[] _sceneButtons;
 

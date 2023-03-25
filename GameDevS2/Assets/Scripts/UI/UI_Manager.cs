@@ -75,12 +75,19 @@ public class UI_Manager : MonoBehaviour
 
         if (screen == UI_SCREENS.BACK)
         {
-            UnloadUIScreen(_uiStack.Pop());
-
-            if (_uiStack.Count > 0)
+            if (_uiStack.Peek().screenType == UI_SCREENS.PAUSE)
             {
-                _uiStack.Peek().ActivateInput();
-                _uiStack.Peek().gameObject.SetActive(true);
+                _pauseHandler.TogglePause();
+            }
+            else
+            {
+                UnloadUIScreen(_uiStack.Pop());
+
+                if (_uiStack.Count > 0)
+                {
+                    _uiStack.Peek().ActivateInput();
+                    _uiStack.Peek().gameObject.SetActive(true);
+                }
             }
         }
         else
