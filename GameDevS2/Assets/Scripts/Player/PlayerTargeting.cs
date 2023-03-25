@@ -32,6 +32,15 @@ public class PlayerTargeting : MonoBehaviour, IInput
         _targetInputAction.canceled += Input_TargetCancelled;
     }
 
+    private void OnDestroy()
+    {
+        if (_targetInputAction != null)
+        {
+            _targetInputAction.performed += Input_TargetPerformed;
+            _targetInputAction.canceled += Input_TargetCancelled;
+        }
+    }
+
     #region INPUTS
 
     private void Input_TargetPerformed(InputAction.CallbackContext ctx)

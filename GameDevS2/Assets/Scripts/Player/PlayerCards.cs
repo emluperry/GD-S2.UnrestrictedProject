@@ -6,6 +6,8 @@ using UnityEngine.InputSystem;
 
 public class PlayerCards : MonoBehaviour, IInput
 {
+    private bool _isInCombat = false;
+
     [SerializeField] private Inventory_Card_Value_Pair[] _cards;
     private int[] _deckArray;
     private List<int> _currentHand;
@@ -54,6 +56,12 @@ public class PlayerCards : MonoBehaviour, IInput
         _drawInputAction = inputs["Draw"];
     }
 
+    private void OnDestroy()
+    {
+        if(_isInCombat)
+            EndBattle();
+    }
+
     #region INPUT
 
     private void Input_SwapPerformed(InputAction.CallbackContext ctx)
@@ -87,6 +95,8 @@ public class PlayerCards : MonoBehaviour, IInput
 
     public void StartBattle()
     {
+        _isInCombat = true;
+
         //input to swap active card
         _swapInputAction.performed += Input_SwapPerformed;
         _swapInputAction.canceled += Input_SwapCancelled;
@@ -110,6 +120,8 @@ public class PlayerCards : MonoBehaviour, IInput
 
     public void EndBattle()
     {
+        _isInCombat = false;
+
         _swapInputAction.performed -= Input_SwapPerformed;
         _swapInputAction.canceled -= Input_SwapCancelled;
 

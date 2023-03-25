@@ -35,6 +35,15 @@ public class PlayerJump : MonoBehaviour, IInput
         _jumpInputAction.canceled += Input_JumpCancelled;
     }
 
+    private void OnDestroy()
+    {
+        if (_jumpInputAction != null)
+        {
+            _jumpInputAction.performed -= Input_JumpPerformed;
+            _jumpInputAction.canceled -= Input_JumpCancelled;
+        }
+    }
+
     #region INPUTS
 
     private void Input_JumpPerformed(InputAction.CallbackContext ctx)

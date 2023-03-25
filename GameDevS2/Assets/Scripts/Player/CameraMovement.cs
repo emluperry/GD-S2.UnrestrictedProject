@@ -62,6 +62,21 @@ public class CameraMovement : MonoBehaviour, IInput
         _cameraInputAction.canceled += Input_LookCancelled;
     }
 
+    private void OnDestroy()
+    {
+        if(_moveInputAction != null)
+        {
+            _moveInputAction.performed -= Input_MovePerformed;
+            _moveInputAction.canceled -= Input_MoveCancelled;
+
+            _jumpInputAction.performed -= Input_JumpPerformed;
+            _jumpInputAction.canceled -= Input_JumpCancelled;
+
+            _cameraInputAction.performed -= Input_LookPerformed;
+            _cameraInputAction.canceled -= Input_LookCancelled;
+        }
+    }
+
     #region INPUTS
 
     private void Input_MovePerformed(InputAction.CallbackContext ctx)

@@ -42,6 +42,15 @@ public class PlayerMovement : MonoBehaviour, IInput
         _moveInputAction.canceled += Input_MoveCancelled;
     }
 
+    private void OnDestroy()
+    {
+        if (_moveInputAction != null)
+        {
+            _moveInputAction.performed -= Input_MovePerformed;
+            _moveInputAction.canceled -= Input_MoveCancelled;
+        }
+    }
+
     #region INPUTS
 
     private void Input_MovePerformed(InputAction.CallbackContext ctx)

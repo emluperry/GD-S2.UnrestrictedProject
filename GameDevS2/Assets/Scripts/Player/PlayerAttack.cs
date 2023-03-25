@@ -38,6 +38,15 @@ public class PlayerAttack : MonoBehaviour, IInput
         _attackInputAction.canceled += Input_AttackCancelled;
     }
 
+    private void OnDestroy()
+    {
+        if (_attackInputAction != null)
+        {
+            _attackInputAction.performed -= Input_AttackPerformed;
+            _attackInputAction.canceled -= Input_AttackCancelled;
+        }
+    }
+
     #region INPUTS
 
     private void Input_AttackPerformed(InputAction.CallbackContext ctx)
