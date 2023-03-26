@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class PlayerCards : MonoBehaviour, IInput
+public class PlayerCards : MonoBehaviour, IInput, IPausable
 {
     private bool _isInCombat = false;
 
@@ -50,6 +50,8 @@ public class PlayerCards : MonoBehaviour, IInput
     //takes in index of new card to select
     public Action<int> onSelectedChanged;
 
+    private bool _isPaused = false;
+
     public void SetupInput(Dictionary<string, InputAction> inputs)
     {
         _swapInputAction = inputs["Swap"];
@@ -66,6 +68,9 @@ public class PlayerCards : MonoBehaviour, IInput
 
     private void Input_SwapPerformed(InputAction.CallbackContext ctx)
     {
+        if (_isPaused)
+            return;
+
         float input = ctx.ReadValue<float>();
         _swapInput = Mathf.RoundToInt(input);
 
@@ -82,6 +87,9 @@ public class PlayerCards : MonoBehaviour, IInput
 
     private void Input_DrawPerformed(InputAction.CallbackContext ctx)
     {
+        if (_isPaused)
+            return;
+
         bool input = ctx.ReadValueAsButton();
 
         if(input && _handDrawCoroutine == null)
@@ -158,6 +166,7 @@ public class PlayerCards : MonoBehaviour, IInput
         float currentTime = 0;
         while (currentTime < _swapDelay)
         {
+            yield return new WaitUntil(() => !_isPaused);
             yield return new WaitForFixedUpdate();
 
             currentTime += Time.fixedDeltaTime;
@@ -178,6 +187,7 @@ public class PlayerCards : MonoBehaviour, IInput
         float currentDrawDelay = 0;
         while (currentDrawDelay < maxDelay)
         {
+            yield return new WaitUntil(() => !_isPaused);
             yield return new WaitForFixedUpdate();
 
             currentDrawDelay += Time.fixedDeltaTime;
@@ -299,5 +309,10 @@ public class PlayerCards : MonoBehaviour, IInput
         _currentHand.Clear();
 
         onDiscardHand?.Invoke();
+    }
+
+    public void PauseGame(bool isPaused)
+    {
+        _isPaused = isPaused;
     }
 }

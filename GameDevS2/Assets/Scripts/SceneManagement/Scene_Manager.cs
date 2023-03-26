@@ -16,7 +16,7 @@ public class Scene_Manager : MonoBehaviour
     [SerializeField] private Input_Manager _inputManager;
 
     private int _currentLevel = -1;
-    [SerializeField] private bool _debugSetupPlayerControls = false;
+    [SerializeField] private bool _debugSetupLevelListeners = false;
 
     private void Awake()
     {
@@ -57,9 +57,9 @@ public class Scene_Manager : MonoBehaviour
         {
             _uiManager.SetUIInputActions(_inputManager.GetUIInputActions());
 
-            if(_debugSetupPlayerControls) //DEBUG ONLY FUNCTION: necessary to test levels without going through extra scenes
+            if(_debugSetupLevelListeners) //DEBUG ONLY FUNCTION: necessary to test levels without going through extra scenes
             {
-                _inputManager.SetupLevelInput();
+                SetupLevelListeners();
             }
         }
     }
@@ -131,7 +131,6 @@ public class Scene_Manager : MonoBehaviour
 
         if(_currentLevel > -1)
         {
-            _inputManager.SetupLevelInput();
             SetupLevelListeners();
         }
 
@@ -140,12 +139,14 @@ public class Scene_Manager : MonoBehaviour
 
     private void SetupLevelListeners()
     {
-        
+        // how do i reduce the amount of 'find obj of type' uses? spawn player through game manager and get that instead?
+        FindObjectOfType<PlayerInitialiser>().InitialisePauseEvents(ref _uiManager.pauseHandler.onLoadPause);
+        _inputManager.SetupLevelInput();
     }
 
     private void RemoveLevelListeners()
     {
-
+        FindObjectOfType<PlayerInitialiser>().StopListeningForPause(ref _uiManager.pauseHandler.onLoadPause);
     }
 
     private void QuitApp()

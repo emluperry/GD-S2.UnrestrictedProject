@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class PlayerTargeting : MonoBehaviour, IInput
+public class PlayerTargeting : MonoBehaviour, IInput, IPausable
 {
     private List<GameObject> _targetArray = new List<GameObject>();
     private int _currentTargetIndex = -1;
@@ -18,6 +18,8 @@ public class PlayerTargeting : MonoBehaviour, IInput
     private float _currentSwapDelay = 1f;
 
     public Action<GameObject> onTargetChanged;
+
+    private bool _isPaused = false;
 
     private void Awake()
     {
@@ -45,6 +47,9 @@ public class PlayerTargeting : MonoBehaviour, IInput
 
     private void Input_TargetPerformed(InputAction.CallbackContext ctx)
     {
+        if (_isPaused)
+            return;
+
         _isTargetPressed = ctx.ReadValueAsButton();
 
         if (_isTargetPressed && _currentSwapDelay >= _targetSwapMaxDelay)
@@ -65,6 +70,9 @@ public class PlayerTargeting : MonoBehaviour, IInput
 
     private void Input_TargetCancelled(InputAction.CallbackContext ctx)
     {
+        if (_isPaused)
+            return;
+
         _isTargetPressed = false;
     }
 
@@ -84,6 +92,7 @@ public class PlayerTargeting : MonoBehaviour, IInput
 
         while(_currentSwapDelay < _targetSwapMaxDelay)
         {
+            yield return new WaitUntil(() => !_isPaused);
             yield return new WaitForFixedUpdate();
 
             _currentSwapDelay += Time.fixedDeltaTime;
@@ -143,5 +152,10 @@ public class PlayerTargeting : MonoBehaviour, IInput
 
         _currentTargetIndex = -1;
         onTargetChanged?.Invoke(null);
+    }
+
+    public void PauseGame(bool isPaused)
+    {
+        _isPaused = isPaused;
     }
 }

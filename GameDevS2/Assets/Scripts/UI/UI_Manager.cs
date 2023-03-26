@@ -16,7 +16,7 @@ public class UI_Manager : MonoBehaviour
 
     private Stack<UI_Screen> _uiStack = new Stack<UI_Screen>();
 
-    private UI_PauseHandler _pauseHandler;
+    public UI_PauseHandler pauseHandler { private set; get; }
     private Dictionary<string, InputAction> _uiInputActions;
 
     public Action<SCENES, int> onChangeScene;
@@ -30,7 +30,7 @@ public class UI_Manager : MonoBehaviour
             _UIPrefabs.Add(pair.screen, pair.prefab);
         }
 
-        _pauseHandler = GetComponent<UI_PauseHandler>();
+        pauseHandler = GetComponent<UI_PauseHandler>();
 
         SetupPreexistingUI();
     }
@@ -38,7 +38,7 @@ public class UI_Manager : MonoBehaviour
     public void SetUIInputActions(Dictionary<string, InputAction> inputs)
     {
         _uiInputActions = inputs;
-        _pauseHandler.SetInputActions(inputs);
+        pauseHandler.SetInputActions(inputs);
     }
 
     public void SetupPreexistingUI()
@@ -55,9 +55,13 @@ public class UI_Manager : MonoBehaviour
     public void SetupPauseUI(bool allowPausing)
     {
         if(allowPausing)
-            _pauseHandler.onLoadPause += HandlePauseEvent;
+        {
+            pauseHandler.onLoadPause += HandlePauseEvent;
+        }
         else
-            _pauseHandler.onLoadPause -= HandlePauseEvent;
+        {
+            pauseHandler.onLoadPause -= HandlePauseEvent;
+        }
     }
 
     private void OnDestroy()
@@ -77,7 +81,7 @@ public class UI_Manager : MonoBehaviour
         {
             if (_uiStack.Peek().screenType == UI_SCREENS.PAUSE)
             {
-                _pauseHandler.TogglePause();
+                pauseHandler.TogglePause();
             }
             else
             {

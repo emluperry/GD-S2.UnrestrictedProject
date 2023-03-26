@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class PlayerMovement : MonoBehaviour, IInput
+public class PlayerMovement : MonoBehaviour, IInput, IPausable
 {
     //movement input
     private InputAction _moveInputAction;
@@ -28,6 +28,8 @@ public class PlayerMovement : MonoBehaviour, IInput
     [Header("Rotation")]
     [SerializeField][Min(0f)] private float _maxRotationSpeed = 5;
     [SerializeField][Min(0f)] private float _rotationDampener = 3;
+
+    private bool _isPaused = false;
 
     private void Awake()
     {
@@ -55,6 +57,9 @@ public class PlayerMovement : MonoBehaviour, IInput
 
     private void Input_MovePerformed(InputAction.CallbackContext ctx)
     {
+        if (_isPaused)
+            return;
+
         Vector2 input = ctx.ReadValue<Vector2>();
         _moveInput = new Vector3(input.x, 0, input.y);
 
@@ -73,6 +78,9 @@ public class PlayerMovement : MonoBehaviour, IInput
 
     private void Input_MoveCancelled(InputAction.CallbackContext ctx)
     {
+        if (_isPaused)
+            return;
+
         _moveInput = Vector3.zero;
         _rb.angularVelocity = Vector3.zero;
         _isMoving = false;
@@ -91,6 +99,7 @@ public class PlayerMovement : MonoBehaviour, IInput
     {
         while(_isMoving)
         {
+            yield return new WaitUntil(() => !_isPaused);
             yield return new WaitForFixedUpdate();
 
             //update input direction
@@ -128,6 +137,7 @@ public class PlayerMovement : MonoBehaviour, IInput
     {
         while (_rb.velocity.sqrMagnitude >= 1)
         {
+            yield return new WaitUntil(() => !_isPaused);
             yield return new WaitForFixedUpdate();
 
             Vector3 deltaVelocity = - new Vector3(_rb.velocity.x, 0, _rb.velocity.z);
@@ -137,5 +147,10 @@ public class PlayerMovement : MonoBehaviour, IInput
 
             _rb.AddForce(deltaAcceleration, ForceMode.Force);
         }
+    }
+
+    public void PauseGame(bool isPaused)
+    {
+        _isPaused = isPaused;
     }
 }

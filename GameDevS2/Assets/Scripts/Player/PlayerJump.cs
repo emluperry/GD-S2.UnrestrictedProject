@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class PlayerJump : MonoBehaviour, IInput
+public class PlayerJump : MonoBehaviour, IInput, IPausable
 {
     //jump input
     private InputAction _jumpInputAction;
@@ -21,6 +21,8 @@ public class PlayerJump : MonoBehaviour, IInput
     [SerializeField][Min(0f)] private float _minJumpForce = 3500f; //min height: 3.5? max height: 5?
     [SerializeField][Min(0f)] private float _extraJumpForce = 50f;
     [SerializeField][Min(0f)] private float _maxButtonHoldDuration = 1f;
+
+    private bool _isPaused = false;
 
     private void Awake()
     {
@@ -48,6 +50,9 @@ public class PlayerJump : MonoBehaviour, IInput
 
     private void Input_JumpPerformed(InputAction.CallbackContext ctx)
     {
+        if (_isPaused)
+            return;
+
         _isJumpDown = ctx.ReadValueAsButton();
 
         if (_isJumpDown && _isGrounded && _jumpingCoroutine == null)
@@ -58,6 +63,9 @@ public class PlayerJump : MonoBehaviour, IInput
 
     private void Input_JumpCancelled(InputAction.CallbackContext ctx)
     {
+        if (_isPaused)
+            return;
+
         _isJumpDown = false;
         _jumpHeldDuration = 0;
     }
@@ -93,6 +101,7 @@ public class PlayerJump : MonoBehaviour, IInput
 
         while (_isJumpDown && _jumpHeldDuration < _maxButtonHoldDuration)
         {
+            yield return new WaitUntil(() => !_isPaused);
             yield return new WaitForFixedUpdate();
 
             _jumpHeldDuration += Time.fixedDeltaTime;
@@ -102,5 +111,11 @@ public class PlayerJump : MonoBehaviour, IInput
         }
 
         _jumpingCoroutine = null;
+    }
+
+    public void PauseGame(bool isPaused)
+    {
+        _isPaused = isPaused;
+        _rb.useGravity = !isPaused;
     }
 }

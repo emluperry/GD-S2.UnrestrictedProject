@@ -141,7 +141,8 @@ public class UI_Navigation : MonoBehaviour, IInput
 
             //set move button to first in current area - first active button
             _currentUIElement = _movementParent.GetComponentInChildren<UI_Element>();
-            _currentUIElement.ActivateButtonSelection();
+            if(_currentUIElement != null)
+                _currentUIElement.ActivateButtonSelection();
 
             //start timer
             _delayCoroutine = StartCoroutine(c_DelayTimer());

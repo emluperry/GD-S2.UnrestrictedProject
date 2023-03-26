@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class PlayerAttack : MonoBehaviour, IInput
+public class PlayerAttack : MonoBehaviour, IInput, IPausable
 {
     //attack input
     private InputAction _attackInputAction;
@@ -22,6 +22,8 @@ public class PlayerAttack : MonoBehaviour, IInput
 
     //saved components
     private PlayerCards _playerCardsComponent;
+
+    private bool _isPaused = false;
 
     private void Awake()
     {
@@ -51,6 +53,9 @@ public class PlayerAttack : MonoBehaviour, IInput
 
     private void Input_AttackPerformed(InputAction.CallbackContext ctx)
     {
+        if (_isPaused)
+            return;
+
         _isAttackPressed = ctx.ReadValueAsButton();
 
         if(_attackingCoroutine == null && _isAttackPressed)
@@ -112,6 +117,7 @@ public class PlayerAttack : MonoBehaviour, IInput
         {
             _currentAttackDelay += Time.fixedDeltaTime;
             yield return new WaitForFixedUpdate();
+            yield return new WaitUntil(() => !_isPaused);
         }
 
         _currentAttackDelay = 0;
@@ -124,5 +130,10 @@ public class PlayerAttack : MonoBehaviour, IInput
             _targetHealth = null;
         else
             _targetHealth = target.GetComponent<EntityHealth>();
+    }
+
+    public void PauseGame(bool isPaused)
+    {
+        _isPaused = isPaused;
     }
 }
