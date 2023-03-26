@@ -28,29 +28,20 @@ public class UI_Element : MonoBehaviour
     protected Color _selectableElementColour = Color.white;
     [SerializeField] protected Color _elementSelectedColour = Color.black;
 
-    protected Image _imageRenderer;
-    protected MaskableGraphic _textRenderer;
+    [SerializeField] protected MaskableGraphic _imageRenderer;
+    [SerializeField] protected MaskableGraphic _textRenderer;
     [SerializeField] MaskableGraphic _selectedElementRenderer;
 
     protected virtual void Awake()
     {
-        _imageRenderer = GetComponentInChildren<Image>();
-        _imageColour = _imageRenderer.color;
+        if(_imageRenderer)
+            _imageColour = _imageRenderer.color;
+
+        if(_textRenderer)
+            _textColour = _textRenderer.color;
 
         if (_selectedElementRenderer)
             _selectableElementColour = _selectedElementRenderer.color;
-
-        List<Transform> transforms = new List<Transform>(GetComponentsInChildren<Transform>());
-        transforms.Remove(transform);
-        foreach(Transform tf in transforms)
-        {
-            if(tf.TryGetComponent(out MaskableGraphic graphic))
-            {
-                _textRenderer = graphic;
-                _textColour = _textRenderer.color;
-                break;
-            }
-        }
     }
 
     public virtual void SelectElement()

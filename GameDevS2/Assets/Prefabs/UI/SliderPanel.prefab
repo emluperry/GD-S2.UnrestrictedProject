@@ -96,14 +96,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 0.48584908, b: 0.48584908, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
+  m_Sprite: {fileID: 21300000, guid: 9dddfce9972cfb44c854e29834c76a0c, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -172,14 +172,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 0.7216981, b: 0.7216981, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
+  m_Sprite: {fileID: 21300000, guid: f28043aee266e1b47b97ea0337bcfe42, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -242,9 +242,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 902afb26e29f95346a5ab82fb64c8241, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _imageHoverColour: {r: 0.5801887, g: 0.7176511, b: 1, a: 1}
-  _textHoverColour: {r: 0.501513, g: 0.7047802, b: 0.9245283, a: 1}
-  _elementSelectedColour: {r: 0.089711644, g: 0.0965782, b: 0.3018868, a: 1}
+  _imageHoverColour: {r: 1, g: 0.48584908, b: 0.48584908, a: 1}
+  _textHoverColour: {r: 1, g: 0.24056602, b: 0.24056602, a: 1}
+  _elementSelectedColour: {r: 0.2924528, g: 0, b: 0, a: 1}
+  _imageRenderer: {fileID: 4020671501368165097}
+  _textRenderer: {fileID: 4020671501361915607}
   _selectedElementRenderer: {fileID: 4020671502814186049}
   _incrementAmount: 0.1
 --- !u!114 &2786605104584726992
@@ -294,7 +296,7 @@ MonoBehaviour:
   m_MinValue: 0
   m_MaxValue: 1
   m_WholeNumbers: 0
-  m_Value: 0
+  m_Value: 0.5
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -493,14 +495,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 0.7216981, b: 0.7216981, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
+  m_Sprite: {fileID: 21300000, guid: 1b5e935d323f8314696e0c1eb4dcdf9a, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
