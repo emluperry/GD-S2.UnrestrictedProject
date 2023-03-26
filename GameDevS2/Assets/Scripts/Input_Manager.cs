@@ -30,7 +30,8 @@ public class Input_Manager : MonoBehaviour
         inputDict.Add("Pause", _input.currentActionMap.FindAction("Pause"));
         inputDict.Add("Move", _input.currentActionMap.FindAction("Move"));
         inputDict.Add("Swap", _input.currentActionMap.FindAction("Swap"));
-        inputDict.Add("Attack", _input.currentActionMap.FindAction("Attack"));
+        inputDict.Add("Select", _input.currentActionMap.FindAction("Select"));
+        inputDict.Add("Cancel", _input.currentActionMap.FindAction("Cancel"));
 
         return inputDict;
     }

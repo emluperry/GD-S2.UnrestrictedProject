@@ -71,7 +71,7 @@ public class UI_Navigation : MonoBehaviour, IInput
         _moveInputAction.canceled += Input_MoveCancelled;
 
 
-        _selectInputAction = inputs["Attack"];
+        _selectInputAction = inputs["Select"];
         _selectInputAction.performed += Input_SelectPerformed;
     }
 

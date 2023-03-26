@@ -39,6 +39,7 @@ public class UI_Manager : MonoBehaviour
     {
         _uiInputActions = inputs;
         pauseHandler.SetInputActions(inputs);
+        inputs["Cancel"].performed += Handle_CancelPressed;
     }
 
     public void SetupPreexistingUI()
@@ -171,5 +172,10 @@ public class UI_Manager : MonoBehaviour
         {
             ClearUIStack();
         }
+    }
+
+    private void Handle_CancelPressed(InputAction.CallbackContext ctx)
+    {
+        LoadUI(UI_SCREENS.BACK);
     }
 }
