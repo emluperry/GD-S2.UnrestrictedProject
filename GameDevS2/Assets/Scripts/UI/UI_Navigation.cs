@@ -20,7 +20,11 @@ public class UI_Navigation : MonoBehaviour, IInput
 
     private InputAction _swapInputAction;
     private InputAction _moveInputAction;
+    private Vector2 _moveInput;
+    private bool _currentlyTakingInput;
     private InputAction _selectInputAction;
+
+    private Coroutine _inputCoroutine;
 
     [Header("Input Values")]
     [SerializeField] private float _inputDelay = 0.05f;
@@ -52,6 +56,8 @@ public class UI_Navigation : MonoBehaviour, IInput
             _currentUIElement.ActivateButtonSelection();
     }
 
+    #region INPUT SETUP
+
     public void SetupInput(Dictionary<string, InputAction> inputs)
     {
         _swapInputAction = inputs["Swap"];
@@ -62,6 +68,7 @@ public class UI_Navigation : MonoBehaviour, IInput
         _moveInputAction = inputs["Move"];
 
         _moveInputAction.performed += Input_MovePerformed;
+        _moveInputAction.canceled += Input_MoveCancelled;
 
 
         _selectInputAction = inputs["Attack"];
@@ -79,6 +86,7 @@ public class UI_Navigation : MonoBehaviour, IInput
         if(_moveInputAction != null)
         {
             _moveInputAction.performed += Input_MovePerformed;
+            _moveInputAction.canceled += Input_MoveCancelled;
         }
 
         if(_selectInputAction != null)
@@ -97,6 +105,7 @@ public class UI_Navigation : MonoBehaviour, IInput
         if (_moveInputAction != null)
         {
             _moveInputAction.performed -= Input_MovePerformed;
+            _moveInputAction.canceled -= Input_MoveCancelled;
         }
 
         if (_selectInputAction != null)
@@ -104,6 +113,8 @@ public class UI_Navigation : MonoBehaviour, IInput
             _selectInputAction.performed -= Input_SelectPerformed;
         }
     }
+
+    #endregion
 
     private IEnumerator c_DelayTimer()
     {
@@ -122,7 +133,7 @@ public class UI_Navigation : MonoBehaviour, IInput
         float input = ctx.ReadValue<float>();
         int swapInput = Mathf.RoundToInt(input);
 
-        if (swapInput != 0 && _delayCoroutine == null && _clickableShoulderObjects.Length > 0)
+        if (swapInput != 0 && _delayCoroutine == null && _inputCoroutine == null && _clickableShoulderObjects.Length > 0)
         {
             //exit old element
             _clickableShoulderObjects[_currentShoulderIndex].DeactivateButtonSelection();
@@ -149,19 +160,35 @@ public class UI_Navigation : MonoBehaviour, IInput
         }
     }
 
+    private void Input_MoveCancelled(InputAction.CallbackContext ctx)
+    {
+        _currentlyTakingInput = false;
+    }
+
     private void Input_MovePerformed(InputAction.CallbackContext ctx)
     {
-        Vector2 input = ctx.ReadValue<Vector2>();
+        _currentlyTakingInput = true;
+        _moveInput = ctx.ReadValue<Vector2>();
 
-        if (input.sqrMagnitude > 0 && _delayCoroutine == null)
+        if (_moveInput.sqrMagnitude > 0 && _delayCoroutine == null && _inputCoroutine == null)
         {
+            _inputCoroutine = StartCoroutine(c_NavigateUI());
+        }
+    }
+
+    private IEnumerator c_NavigateUI()
+    {
+        while(_currentlyTakingInput)
+        {
+            yield return new WaitForFixedUpdate();
+
             //check if navigation or editing element
-            if (input.x != 0 && _currentUIElement.selectedElement)
+            if (_moveInput.x != 0 && _currentUIElement != null && _currentUIElement.selectedElement)
             {
                 //update if slider and ignore further inputs
                 if (_currentUIElement.type == UI_ELEMENT_TYPE.SLIDER)
                 {
-                    _currentUIElement.GetComponent<UI_Slider>().IncrementSliderValue(Mathf.RoundToInt(input.x));
+                    _currentUIElement.GetComponent<UI_Slider>().IncrementSliderValue(Mathf.RoundToInt(_moveInput.x));
                     _currentUIElement.ActivateButtonSelection();
                 }
             }
@@ -186,14 +213,14 @@ public class UI_Navigation : MonoBehaviour, IInput
                 else //otherwise check inputs
                 {
                     //horizontal input first
-                    if (input.x != 0)
+                    if (_moveInput.x != 0)
                     {
-                        foundNextButton = NavigateToNextNode<HorizontalLayoutGroup>(Mathf.RoundToInt(input.x));
+                        foundNextButton = NavigateToNextNode<HorizontalLayoutGroup>(Mathf.RoundToInt(_moveInput.x));
                     }
 
-                    if (input.y != 0 && !foundNextButton) //vertical input second, skip if found a button horizontally
+                    if (_moveInput.y != 0 && !foundNextButton) //vertical input second, skip if found a button horizontally
                     {
-                        foundNextButton = NavigateToNextNode<VerticalLayoutGroup>(Mathf.RoundToInt(-input.y));
+                        foundNextButton = NavigateToNextNode<VerticalLayoutGroup>(Mathf.RoundToInt(-_moveInput.y));
                     }
 
                 }
@@ -209,7 +236,10 @@ public class UI_Navigation : MonoBehaviour, IInput
 
             //start timer
             _delayCoroutine = StartCoroutine(c_DelayTimer());
+            yield return new WaitUntil(() => _delayCoroutine == null);
         }
+
+        _inputCoroutine = null;
     }
 
     private bool NavigateToNextNode<T>(int directionIncrement)

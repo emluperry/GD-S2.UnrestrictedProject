@@ -366,7 +366,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _shoulderToggleGroups: []
   _movementParent: {fileID: 2689308856483803551}
-  _inputDelay: 0.05
+  _inputDelay: 0.1
 --- !u!1 &2689308858051882671
 GameObject:
   m_ObjectHideFlags: 0

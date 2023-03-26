@@ -698,7 +698,7 @@ MonoBehaviour:
   _shoulderToggleGroups:
   - {fileID: 9057895859961819765}
   _movementParent: {fileID: 9150053186287854196}
-  _inputDelay: 0.05
+  _inputDelay: 0.1
 --- !u!1 &9057895859482800722
 GameObject:
   m_ObjectHideFlags: 0
