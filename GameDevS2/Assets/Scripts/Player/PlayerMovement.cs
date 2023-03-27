@@ -4,14 +4,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class PlayerMovement : MonoBehaviour
+public class PlayerMovement : MonoBehaviour, IInput, IPausable
 {
-    //input
-    private PlayerInput _input;
     //movement input
     private InputAction _moveInputAction;
     private Vector3 _moveInput;
     private Vector3 _moveDirection;
+
     private Coroutine _movementCoroutine;
     private bool _isMoving = false;
 
@@ -30,21 +29,37 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField][Min(0f)] private float _maxRotationSpeed = 5;
     [SerializeField][Min(0f)] private float _rotationDampener = 3;
 
+    private bool _isPaused = false;
+
     private void Awake()
     {
-        _input = GetComponent<PlayerInput>();
-        _moveInputAction = _input.currentActionMap.FindAction("Move");
+        _rb = GetComponent<Rigidbody>();
+    }
+
+    public void SetupInput(Dictionary<string, InputAction> inputs)
+    {
+        _moveInputAction = inputs["Move"];
 
         _moveInputAction.performed += Input_MovePerformed;
         _moveInputAction.canceled += Input_MoveCancelled;
+    }
 
-        _rb = GetComponent<Rigidbody>();
+    private void OnDestroy()
+    {
+        if (_moveInputAction != null)
+        {
+            _moveInputAction.performed -= Input_MovePerformed;
+            _moveInputAction.canceled -= Input_MoveCancelled;
+        }
     }
 
     #region INPUTS
 
     private void Input_MovePerformed(InputAction.CallbackContext ctx)
     {
+        if (_isPaused)
+            return;
+
         Vector2 input = ctx.ReadValue<Vector2>();
         _moveInput = new Vector3(input.x, 0, input.y);
 
@@ -63,6 +78,9 @@ public class PlayerMovement : MonoBehaviour
 
     private void Input_MoveCancelled(InputAction.CallbackContext ctx)
     {
+        if (_isPaused)
+            return;
+
         _moveInput = Vector3.zero;
         _rb.angularVelocity = Vector3.zero;
         _isMoving = false;
@@ -81,6 +99,7 @@ public class PlayerMovement : MonoBehaviour
     {
         while(_isMoving)
         {
+            yield return new WaitUntil(() => !_isPaused);
             yield return new WaitForFixedUpdate();
 
             //update input direction
@@ -118,6 +137,7 @@ public class PlayerMovement : MonoBehaviour
     {
         while (_rb.velocity.sqrMagnitude >= 1)
         {
+            yield return new WaitUntil(() => !_isPaused);
             yield return new WaitForFixedUpdate();
 
             Vector3 deltaVelocity = - new Vector3(_rb.velocity.x, 0, _rb.velocity.z);
@@ -127,5 +147,10 @@ public class PlayerMovement : MonoBehaviour
 
             _rb.AddForce(deltaAcceleration, ForceMode.Force);
         }
+    }
+
+    public void PauseGame(bool isPaused)
+    {
+        _isPaused = isPaused;
     }
 }

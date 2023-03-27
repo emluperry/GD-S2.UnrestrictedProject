@@ -3,11 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class PlayerAttack : MonoBehaviour
+public class PlayerAttack : MonoBehaviour, IInput, IPausable
 {
-    //input
-    private PlayerInput _input;
-
     //attack input
     private InputAction _attackInputAction;
     private bool _isAttackPressed;
@@ -26,23 +23,39 @@ public class PlayerAttack : MonoBehaviour
     //saved components
     private PlayerCards _playerCardsComponent;
 
+    private bool _isPaused = false;
+
     private void Awake()
     {
-        _input = GetComponent<PlayerInput>();
-        _attackInputAction = _input.currentActionMap.FindAction("Attack");
-
-        _attackInputAction.performed += Input_AttackPerformed;
-        _attackInputAction.canceled += Input_AttackCancelled;
-
         GetComponent<PlayerTargeting>().onTargetChanged += SetTarget;
 
         _playerCardsComponent = GetComponent<PlayerCards>();
+    }
+
+    public void SetupInput(Dictionary<string, InputAction> inputs)
+    {
+        _attackInputAction = inputs["Attack"];
+
+        _attackInputAction.performed += Input_AttackPerformed;
+        _attackInputAction.canceled += Input_AttackCancelled;
+    }
+
+    private void OnDestroy()
+    {
+        if (_attackInputAction != null)
+        {
+            _attackInputAction.performed -= Input_AttackPerformed;
+            _attackInputAction.canceled -= Input_AttackCancelled;
+        }
     }
 
     #region INPUTS
 
     private void Input_AttackPerformed(InputAction.CallbackContext ctx)
     {
+        if (_isPaused)
+            return;
+
         _isAttackPressed = ctx.ReadValueAsButton();
 
         if(_attackingCoroutine == null && _isAttackPressed)
@@ -75,6 +88,7 @@ public class PlayerAttack : MonoBehaviour
             else
             {
                 Debug.Log("Didn't hit anything - returning early.");
+                _attackingCoroutine = null;
                 yield break;
             }
         }
@@ -84,7 +98,6 @@ public class PlayerAttack : MonoBehaviour
 
         if (currentCard)
         {
-            Debug.Log(currentCard.GetCardPower());
             switch (currentCard.GetCardType())
             {
                 case GDS2_Cards.CARD_TYPE.ATTACK:
@@ -104,6 +117,7 @@ public class PlayerAttack : MonoBehaviour
         {
             _currentAttackDelay += Time.fixedDeltaTime;
             yield return new WaitForFixedUpdate();
+            yield return new WaitUntil(() => !_isPaused);
         }
 
         _currentAttackDelay = 0;
@@ -116,5 +130,10 @@ public class PlayerAttack : MonoBehaviour
             _targetHealth = null;
         else
             _targetHealth = target.GetComponent<EntityHealth>();
+    }
+
+    public void PauseGame(bool isPaused)
+    {
+        _isPaused = isPaused;
     }
 }

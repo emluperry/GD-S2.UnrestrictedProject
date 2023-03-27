@@ -5,6 +5,8 @@ using UnityEngine;
 public class BattleManager : MonoBehaviour
 {
     [Header("External References")]
+    [SerializeField] private HUD_Manager _hudManager;
+
     [SerializeField] private PlayerTargeting _playerObject;
     [SerializeField] private Transform _spawnerObjects;
 
@@ -34,9 +36,17 @@ public class BattleManager : MonoBehaviour
 
         _activeSpawner = spawner;
 
+        PlayerCards playerCardsComponent = _playerObject.GetComponent<PlayerCards>();
+
+        //setup HUD
+        if (_hudManager != null)
+        {
+            _hudManager.StartBattle(playerCardsComponent.GetDeckList());
+        }
+
         //setup player
         _playerObject.SetEnemyList(enemiesHealth);
-        _playerObject.GetComponent<PlayerCards>().StartBattle();
+        playerCardsComponent.StartBattle();
 
         //setup enemies
         _currentLivingEnemies = enemiesHealth.Length;
@@ -46,17 +56,23 @@ public class BattleManager : MonoBehaviour
         }
     }
 
+    private void EndBattle()
+    {
+        _activeSpawner.Deactivate();
+        _currentLivingEnemies = 0;
+        _activeSpawner = null;
+
+        _playerObject.GetComponent<PlayerCards>().EndBattle();
+        _hudManager.EndBattle();
+    }
+
     private void CheckBattleState()
     {
         _currentLivingEnemies--;
 
         if (_currentLivingEnemies <= 0)
         {
-            _activeSpawner.Deactivate();
-            _currentLivingEnemies = 0;
-            _activeSpawner = null;
-
-            _playerObject.GetComponent<PlayerCards>().EndBattle();
+            EndBattle();
         }
     }
 }

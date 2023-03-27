@@ -4,11 +4,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class PlayerJump : MonoBehaviour
+public class PlayerJump : MonoBehaviour, IInput, IPausable
 {
-    //input
-    private PlayerInput _input;
-
     //jump input
     private InputAction _jumpInputAction;
     private bool _isJumpDown;
@@ -25,21 +22,37 @@ public class PlayerJump : MonoBehaviour
     [SerializeField][Min(0f)] private float _extraJumpForce = 50f;
     [SerializeField][Min(0f)] private float _maxButtonHoldDuration = 1f;
 
+    private bool _isPaused = false;
+
     private void Awake()
     {
-        _input = GetComponent<PlayerInput>();
-        _jumpInputAction = _input.currentActionMap.FindAction("Jump");
+        _rb = GetComponent<Rigidbody>();
+    }
+
+    public void SetupInput(Dictionary<string, InputAction> inputs)
+    {
+        _jumpInputAction = inputs["Jump"];
 
         _jumpInputAction.performed += Input_JumpPerformed;
         _jumpInputAction.canceled += Input_JumpCancelled;
+    }
 
-        _rb = GetComponent<Rigidbody>();
+    private void OnDestroy()
+    {
+        if (_jumpInputAction != null)
+        {
+            _jumpInputAction.performed -= Input_JumpPerformed;
+            _jumpInputAction.canceled -= Input_JumpCancelled;
+        }
     }
 
     #region INPUTS
 
     private void Input_JumpPerformed(InputAction.CallbackContext ctx)
     {
+        if (_isPaused)
+            return;
+
         _isJumpDown = ctx.ReadValueAsButton();
 
         if (_isJumpDown && _isGrounded && _jumpingCoroutine == null)
@@ -50,6 +63,9 @@ public class PlayerJump : MonoBehaviour
 
     private void Input_JumpCancelled(InputAction.CallbackContext ctx)
     {
+        if (_isPaused)
+            return;
+
         _isJumpDown = false;
         _jumpHeldDuration = 0;
     }
@@ -85,6 +101,7 @@ public class PlayerJump : MonoBehaviour
 
         while (_isJumpDown && _jumpHeldDuration < _maxButtonHoldDuration)
         {
+            yield return new WaitUntil(() => !_isPaused);
             yield return new WaitForFixedUpdate();
 
             _jumpHeldDuration += Time.fixedDeltaTime;
@@ -94,5 +111,11 @@ public class PlayerJump : MonoBehaviour
         }
 
         _jumpingCoroutine = null;
+    }
+
+    public void PauseGame(bool isPaused)
+    {
+        _isPaused = isPaused;
+        _rb.useGravity = !isPaused;
     }
 }

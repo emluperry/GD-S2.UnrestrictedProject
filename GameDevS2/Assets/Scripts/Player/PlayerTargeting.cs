@@ -4,15 +4,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class PlayerTargeting : MonoBehaviour
+public class PlayerTargeting : MonoBehaviour, IInput, IPausable
 {
     private List<GameObject> _targetArray = new List<GameObject>();
     private int _currentTargetIndex = -1;
 
-    //input
-    private PlayerInput _input;
-
-    //jump input
+    //target input
     private InputAction _targetInputAction;
     private bool _isTargetPressed;
 
@@ -22,21 +19,37 @@ public class PlayerTargeting : MonoBehaviour
 
     public Action<GameObject> onTargetChanged;
 
+    private bool _isPaused = false;
+
     private void Awake()
     {
-        _input = GetComponent<PlayerInput>();
-        _targetInputAction = _input.currentActionMap.FindAction("Target");
+        _currentSwapDelay = _targetSwapMaxDelay;
+    }
+
+    public void SetupInput(Dictionary<string, InputAction> inputs)
+    {
+        _targetInputAction = inputs["Target"];
 
         _targetInputAction.performed += Input_TargetPerformed;
         _targetInputAction.canceled += Input_TargetCancelled;
+    }
 
-        _currentSwapDelay = _targetSwapMaxDelay;
+    private void OnDestroy()
+    {
+        if (_targetInputAction != null)
+        {
+            _targetInputAction.performed += Input_TargetPerformed;
+            _targetInputAction.canceled += Input_TargetCancelled;
+        }
     }
 
     #region INPUTS
 
     private void Input_TargetPerformed(InputAction.CallbackContext ctx)
     {
+        if (_isPaused)
+            return;
+
         _isTargetPressed = ctx.ReadValueAsButton();
 
         if (_isTargetPressed && _currentSwapDelay >= _targetSwapMaxDelay)
@@ -57,6 +70,9 @@ public class PlayerTargeting : MonoBehaviour
 
     private void Input_TargetCancelled(InputAction.CallbackContext ctx)
     {
+        if (_isPaused)
+            return;
+
         _isTargetPressed = false;
     }
 
@@ -76,6 +92,7 @@ public class PlayerTargeting : MonoBehaviour
 
         while(_currentSwapDelay < _targetSwapMaxDelay)
         {
+            yield return new WaitUntil(() => !_isPaused);
             yield return new WaitForFixedUpdate();
 
             _currentSwapDelay += Time.fixedDeltaTime;
@@ -135,5 +152,10 @@ public class PlayerTargeting : MonoBehaviour
 
         _currentTargetIndex = -1;
         onTargetChanged?.Invoke(null);
+    }
+
+    public void PauseGame(bool isPaused)
+    {
+        _isPaused = isPaused;
     }
 }

@@ -4,11 +4,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class CameraMovement : MonoBehaviour
+public class CameraMovement : MonoBehaviour, IInput
 {
-    //input
-    private PlayerInput _input;
-
     //movement input
     private InputAction _moveInputAction;
     private InputAction _jumpInputAction;
@@ -42,13 +39,18 @@ public class CameraMovement : MonoBehaviour
     private Coroutine _rotateCoroutine;
     private bool _isRotating = false;
 
-    // Start is called before the first frame update
     void Awake()
     {
-        _input = _playerTransform.GetComponent<PlayerInput>();
-        _moveInputAction = _input.currentActionMap.FindAction("Move");
-        _jumpInputAction = _input.currentActionMap.FindAction("Jump");
-        _cameraInputAction = _input.currentActionMap.FindAction("Look");
+        _playerTransform.GetComponent<PlayerTargeting>().onTargetChanged += SetTarget;
+        _playerJumpComponent = _playerTransform.GetComponent<PlayerJump>();
+        _playerRb = _playerTransform.GetComponent<Rigidbody>();
+    }
+
+    public void SetupInput(Dictionary<string, InputAction> inputs)
+    {
+        _moveInputAction = inputs["Move"];
+        _jumpInputAction = inputs["Jump"];
+        _cameraInputAction = inputs["Look"];
 
         _moveInputAction.performed += Input_MovePerformed;
         _moveInputAction.canceled += Input_MoveCancelled;
@@ -58,10 +60,21 @@ public class CameraMovement : MonoBehaviour
 
         _cameraInputAction.performed += Input_LookPerformed;
         _cameraInputAction.canceled += Input_LookCancelled;
+    }
 
-        _playerTransform.GetComponent<PlayerTargeting>().onTargetChanged += SetTarget;
-        _playerJumpComponent = _playerTransform.GetComponent<PlayerJump>();
-        _playerRb = _playerTransform.GetComponent<Rigidbody>();
+    private void OnDestroy()
+    {
+        if(_moveInputAction != null)
+        {
+            _moveInputAction.performed -= Input_MovePerformed;
+            _moveInputAction.canceled -= Input_MoveCancelled;
+
+            _jumpInputAction.performed -= Input_JumpPerformed;
+            _jumpInputAction.canceled -= Input_JumpCancelled;
+
+            _cameraInputAction.performed -= Input_LookPerformed;
+            _cameraInputAction.canceled -= Input_LookCancelled;
+        }
     }
 
     #region INPUTS

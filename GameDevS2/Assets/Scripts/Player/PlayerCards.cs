@@ -4,8 +4,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class PlayerCards : MonoBehaviour
+public class PlayerCards : MonoBehaviour, IInput, IPausable
 {
+    private bool _isInCombat = false;
+
     [SerializeField] private Inventory_Card_Value_Pair[] _cards;
     private int[] _deckArray;
     private List<int> _currentHand;
@@ -21,9 +23,6 @@ public class PlayerCards : MonoBehaviour
     private int _currentHandSize = 0;
     private int _currentHandIndex = 0;
 
-    //input
-    private PlayerInput _input;
-    
     //input: swapping
     private InputAction _swapInputAction;
     private int _swapInput;
@@ -43,18 +42,35 @@ public class PlayerCards : MonoBehaviour
 
     private Coroutine _handDrawCoroutine;
 
-    private void Awake()
-    {
-        _input = GetComponent<PlayerInput>();
+    //events for UI updates
+    public Action<List<int>> onHandDraw;
+    public Action onDiscardHand;
+    //takes in index of used card
+    public Action<int> onCardUsed;
+    //takes in index of new card to select
+    public Action<int> onSelectedChanged;
 
-        _swapInputAction = _input.currentActionMap.FindAction("Swap");
-        _drawInputAction = _input.currentActionMap.FindAction("Draw");
+    private bool _isPaused = false;
+
+    public void SetupInput(Dictionary<string, InputAction> inputs)
+    {
+        _swapInputAction = inputs["Swap"];
+        _drawInputAction = inputs["Draw"];
+    }
+
+    private void OnDestroy()
+    {
+        if(_isInCombat)
+            EndBattle();
     }
 
     #region INPUT
 
     private void Input_SwapPerformed(InputAction.CallbackContext ctx)
     {
+        if (_isPaused)
+            return;
+
         float input = ctx.ReadValue<float>();
         _swapInput = Mathf.RoundToInt(input);
 
@@ -71,6 +87,9 @@ public class PlayerCards : MonoBehaviour
 
     private void Input_DrawPerformed(InputAction.CallbackContext ctx)
     {
+        if (_isPaused)
+            return;
+
         bool input = ctx.ReadValueAsButton();
 
         if(input && _handDrawCoroutine == null)
@@ -84,6 +103,8 @@ public class PlayerCards : MonoBehaviour
 
     public void StartBattle()
     {
+        _isInCombat = true;
+
         //input to swap active card
         _swapInputAction.performed += Input_SwapPerformed;
         _swapInputAction.canceled += Input_SwapCancelled;
@@ -100,8 +121,15 @@ public class PlayerCards : MonoBehaviour
         DrawHand();
     }
 
+    public Inventory_Card_Value_Pair[] GetDeckList()
+    {
+        return _cards;
+    }
+
     public void EndBattle()
     {
+        _isInCombat = false;
+
         _swapInputAction.performed -= Input_SwapPerformed;
         _swapInputAction.canceled -= Input_SwapCancelled;
 
@@ -133,13 +161,18 @@ public class PlayerCards : MonoBehaviour
         Scriptable_Card currentCard = _cards[currentCardType].card;
         Debug.Log("Current card: " + _currentHandIndex + " - " + currentCard.GetName());
 
+        onSelectedChanged?.Invoke(_currentHandIndex);
+
         float currentTime = 0;
         while (currentTime < _swapDelay)
         {
+            yield return new WaitUntil(() => !_isPaused);
             yield return new WaitForFixedUpdate();
 
             currentTime += Time.fixedDeltaTime;
         }
+
+        _swapCoroutine = null;
     }
 
     private IEnumerator c_DelayHandDraw()
@@ -154,6 +187,7 @@ public class PlayerCards : MonoBehaviour
         float currentDrawDelay = 0;
         while (currentDrawDelay < maxDelay)
         {
+            yield return new WaitUntil(() => !_isPaused);
             yield return new WaitForFixedUpdate();
 
             currentDrawDelay += Time.fixedDeltaTime;
@@ -184,8 +218,18 @@ public class PlayerCards : MonoBehaviour
 
         Scriptable_Card card = _cards[cardType].card;
 
+        onCardUsed?.Invoke(_currentHandIndex);
+
         //decrease size of hand
         _currentHandSize--;
+
+        //update current hand index to keep within boundaries
+        if (_currentHandIndex >= _currentHandSize)
+            _currentHandIndex = 0;
+        else if (_currentHandIndex < 0)
+            _currentHandIndex = _currentHandSize - 1;
+
+        onSelectedChanged?.Invoke(_currentHandIndex);
 
         //draw new hand if hand is now empty - will refresh deck if deck is now empty
         if (_currentHandSize <= 0 && _handDrawCoroutine == null)
@@ -254,6 +298,7 @@ public class PlayerCards : MonoBehaviour
             if (_currentDeckIndex >= _currentMaxCards) { break; }
         }
 
+        onHandDraw?.Invoke(_currentHand);
         Debug.Log("New hand size: " + _currentHandSize);
     }
 
@@ -262,5 +307,12 @@ public class PlayerCards : MonoBehaviour
         _currentHandSize = 0;
         _currentHandIndex = 0;
         _currentHand.Clear();
+
+        onDiscardHand?.Invoke();
+    }
+
+    public void PauseGame(bool isPaused)
+    {
+        _isPaused = isPaused;
     }
 }

@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 4712099641825242517}
   - component: {fileID: 4712099641825242219}
   - component: {fileID: 4712099641825242518}
-  - component: {fileID: 4712099641825242218}
+  - component: {fileID: 4712099643007683437}
   - component: {fileID: 4712099641825242216}
   - component: {fileID: 1183508227}
   - component: {fileID: 4712099643007683436}
@@ -69,7 +69,7 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 0.5, y: 0.9, z: 0.8}
   m_Center: {x: 0, y: -0.05, z: 0}
---- !u!114 &4712099641825242218
+--- !u!114 &4712099643007683437
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -78,28 +78,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 4712099641825242513}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 62899f850307741f2a39c98a8b639597, type: 3}
+  m_Script: {fileID: 11500000, guid: 0cf03e7dbdb64df44b1cb71577da9578, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Actions: {fileID: -944628639613478452, guid: 83e5677dba2974f4397636233c836100,
-    type: 3}
-  m_NotificationBehavior: 3
-  m_UIInputModule: {fileID: 0}
-  m_DeviceLostEvent:
-    m_PersistentCalls:
-      m_Calls: []
-  m_DeviceRegainedEvent:
-    m_PersistentCalls:
-      m_Calls: []
-  m_ControlsChangedEvent:
-    m_PersistentCalls:
-      m_Calls: []
-  m_ActionEvents: []
-  m_NeverAutoSwitchControlSchemes: 0
-  m_DefaultControlScheme: Keyboard&Mouse
-  m_DefaultActionMap: Player
-  m_SplitScreenIndex: -1
-  m_Camera: {fileID: 0}
 --- !u!114 &4712099641825242216
 MonoBehaviour:
   m_ObjectHideFlags: 0
