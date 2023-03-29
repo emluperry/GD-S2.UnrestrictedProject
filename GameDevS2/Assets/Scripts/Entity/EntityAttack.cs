@@ -14,7 +14,7 @@ public class EntityAttack : MonoBehaviour, IPausable
 
     [SerializeField] protected Transform _attackPoint;
 
-    [SerializeField] protected LayerMask _layersToIgnore;
+    [SerializeField] protected LayerMask _layersToInclude;
 
     //targeted component
     protected EntityHealth _targetHealth;
@@ -37,7 +37,7 @@ public class EntityAttack : MonoBehaviour, IPausable
             yield break;
         }
 
-        Attack();
+        Attack(target);
 
         while (_currentAttackDelay < _maxAttackDelay)
         {
@@ -50,12 +50,14 @@ public class EntityAttack : MonoBehaviour, IPausable
         _attackingCoroutine = null;
     }
 
-    protected virtual bool GetTargetInRange(out EntityHealth target)
+    public virtual bool GetTargetInRange(out EntityHealth target)
     {
         Ray ray = new Ray(_attackPoint.position, transform.forward);
         Debug.DrawRay(_attackPoint.position, transform.forward * _attackRange);
 
-        if (!Physics.SphereCast(ray, 2, out RaycastHit hitInfo, _attackRange, _layersToIgnore))
+        RaycastHit[] hits = Physics.SphereCastAll(ray, 3, _attackRange, _layersToInclude);
+
+        if (hits.Length <= 0)
         {
             Debug.Log("Didn't hit anything - returning early.");
             _attackingCoroutine = null;
@@ -64,27 +66,28 @@ public class EntityAttack : MonoBehaviour, IPausable
             return false;
         }
 
-        if (hitInfo.transform.gameObject.TryGetComponent(out EntityHealth health))
+        foreach (RaycastHit hit in hits)
         {
-            Debug.Log(hitInfo.transform.name);
-            target = health;
-            return true;
+            if (hit.transform.gameObject.TryGetComponent(out EntityHealth health))
+            {
+                Debug.Log(hit.transform.name);
+                target = health;
+                return true;
+            }
         }
-        else
-        {
-            target = null;
-            return false;
-        }
+
+        target = null;
+        return false;
     }
 
-    protected virtual void Attack()
+    protected virtual void Attack(EntityHealth target)
     {
 
     }
 
     public LayerMask GetIgnoredLayers()
     {
-        return _layersToIgnore;
+        return _layersToInclude;
     }
 
     protected void SetTarget(GameObject target)

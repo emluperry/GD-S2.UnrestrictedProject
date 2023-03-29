@@ -34,8 +34,8 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 5946081798605120505}
   - {fileID: 3354837902220289344}
+  - {fileID: 5946081798605120505}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -114,9 +114,9 @@ MonoBehaviour:
   _maxAttackDelay: 0.5
   _attackRange: 2
   _attackPoint: {fileID: 3354837902220289344}
-  _layersToIgnore:
+  _layersToInclude:
     serializedVersion: 2
-    m_Bits: 119
+    m_Bits: 0
 --- !u!114 &6389987927970900070
 MonoBehaviour:
   m_ObjectHideFlags: 0

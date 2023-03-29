@@ -31,10 +31,13 @@ public class State_Manager : MonoBehaviour, IPausable
 
     public void StartBehaviour(EntityHealth player)
     {
-        //playerHealthTarget = player;
-        //_isActive = true;
+        if (_currentState == null)
+            return;
 
-        //_behaviourCoroutine = StartCoroutine(c_BehaviourUpdate());
+        playerHealthTarget = player;
+        _isActive = true;
+
+        _behaviourCoroutine = StartCoroutine(c_BehaviourUpdate());
     }
 
     public void StopBehaviour()

@@ -58,7 +58,7 @@ public class PlayerAttack : EntityAttack, IInput
 
     #endregion
 
-    protected override bool GetTargetInRange(out EntityHealth target)
+    public override bool GetTargetInRange(out EntityHealth target)
     {
         target = _targetHealth;
 
@@ -71,7 +71,7 @@ public class PlayerAttack : EntityAttack, IInput
         return true;
     }
 
-    protected override void Attack()
+    protected override void Attack(EntityHealth target)
     {
         Scriptable_Card currentCard = _playerCardsComponent.UseSelectedCard();
 
@@ -80,7 +80,7 @@ public class PlayerAttack : EntityAttack, IInput
             switch (currentCard.GetCardType())
             {
                 case GDS2_Cards.CARD_TYPE.ATTACK:
-                    _targetHealth.TakeDamage(currentCard.GetCardPower());
+                    target.TakeDamage(currentCard.GetCardPower());
                     break;
                 case GDS2_Cards.CARD_TYPE.HEALTH:
                     //try to heal player

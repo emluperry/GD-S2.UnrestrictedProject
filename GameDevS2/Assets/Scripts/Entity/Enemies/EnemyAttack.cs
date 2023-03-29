@@ -17,9 +17,9 @@ public class EnemyAttack : EntityAttack
         }
     }
 
-    protected override void Attack()
+    protected override void Attack(EntityHealth target)
     {
-        if (_targetHealth)
-            _targetHealth.TakeDamage(_attackDamage);
+        if (target)
+            target.TakeDamage(_attackDamage);
     }
 }
