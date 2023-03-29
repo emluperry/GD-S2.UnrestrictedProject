@@ -9,7 +9,8 @@ public class EntityHealth : MonoBehaviour
     private int _health = 0;
     private bool _isDead = false;
 
-    public Action onDead;
+    public bool isDeactivated = false;
+    public Action<EntityHealth> onDead;
 
     private void Awake()
     {
@@ -27,7 +28,7 @@ public class EntityHealth : MonoBehaviour
         {
             //die
             _isDead = true;
-            onDead?.Invoke();
+            onDead?.Invoke(this);
         }
     }
 

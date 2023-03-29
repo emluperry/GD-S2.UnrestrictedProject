@@ -111,28 +111,23 @@ public class PlayerTargeting : MonoBehaviour, IInput, IPausable
         }
     }
 
-    private void RemoveEnemy()
+    private void RemoveEnemy(EntityHealth enemyHealth)
     {
-        for(int i = 0; i < _targetArray.Count; i++)
-        {
-            if (_targetArray[i].TryGetComponent(out EntityHealth health) && health.GetIsDead())
-            {
-                health.onDead -= RemoveEnemy;
-                _targetArray.Remove(_targetArray[i]);
+        enemyHealth.onDead -= RemoveEnemy;
 
-                if(_currentTargetIndex >= _targetArray.Count)
-                {
-                    if(_targetArray.Count > 0)
-                    {
-                        _currentTargetIndex = _targetArray.Count - 1;
-                        onTargetChanged?.Invoke(_targetArray[_currentTargetIndex]);
-                    }
-                    else
-                    {
-                        _currentTargetIndex = -1;
-                        onTargetChanged?.Invoke(null);
-                    }
-                }
+        _targetArray.Remove(enemyHealth.gameObject);
+
+        if (_currentTargetIndex >= _targetArray.Count)
+        {
+            if (_targetArray.Count > 0)
+            {
+                _currentTargetIndex = _targetArray.Count - 1;
+                onTargetChanged?.Invoke(_targetArray[_currentTargetIndex]);
+            }
+            else
+            {
+                _currentTargetIndex = -1;
+                onTargetChanged?.Invoke(null);
             }
         }
     }
