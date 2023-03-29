@@ -9,8 +9,12 @@ public class EntityAttack : MonoBehaviour, IPausable
     [Header("Attacking")]
     [SerializeField][Min(0f)] protected float _maxAttackDelay = 0.5f;
     protected float _currentAttackDelay = 0;
-    [SerializeField][Min(0f)] protected float _attackRaycastRange = 2f;
-    [SerializeField] protected LayerMask _attackableLayers;
+
+    [SerializeField][Min(0f)] protected float _attackRange = 2f;
+
+    [SerializeField] protected Transform _attackPoint;
+
+    [SerializeField] protected LayerMask _layersToIgnore;
 
     //targeted component
     protected EntityHealth _targetHealth;
@@ -26,22 +30,11 @@ public class EntityAttack : MonoBehaviour, IPausable
     {
         yield return new WaitForFixedUpdate();
 
-        EntityHealth target = _targetHealth;
-
-        if (target == null)
+        if(!GetTargetInRange(out EntityHealth target)) //if the entity cannot get a target in range, quit routine
         {
-            //forward raycast
-            if (Physics.Raycast(transform.position, transform.forward, out RaycastHit hitInfo, _attackRaycastRange, _attackableLayers, QueryTriggerInteraction.Ignore))
-            {
-                if (hitInfo.transform.gameObject.TryGetComponent(out EntityHealth health))
-                    target = health;
-            }
-            else
-            {
-                Debug.Log("Didn't hit anything - returning early.");
-                _attackingCoroutine = null;
-                yield break;
-            }
+            _currentAttackDelay = 0;
+            _attackingCoroutine = null;
+            yield break;
         }
 
         Attack();
@@ -57,27 +50,41 @@ public class EntityAttack : MonoBehaviour, IPausable
         _attackingCoroutine = null;
     }
 
+    protected virtual bool GetTargetInRange(out EntityHealth target)
+    {
+        Ray ray = new Ray(_attackPoint.position, transform.forward);
+        Debug.DrawRay(_attackPoint.position, transform.forward * _attackRange);
+
+        if (!Physics.SphereCast(ray, 2, out RaycastHit hitInfo, _attackRange, _layersToIgnore))
+        {
+            Debug.Log("Didn't hit anything - returning early.");
+            _attackingCoroutine = null;
+
+            target = null;
+            return false;
+        }
+
+        if (hitInfo.transform.gameObject.TryGetComponent(out EntityHealth health))
+        {
+            Debug.Log(hitInfo.transform.name);
+            target = health;
+            return true;
+        }
+        else
+        {
+            target = null;
+            return false;
+        }
+    }
+
     protected virtual void Attack()
     {
-        //ex: card logic here
-        //Scriptable_Card currentCard = _playerCardsComponent.UseSelectedCard();
 
-        //if (currentCard)
-        //{
-        //    switch (currentCard.GetCardType())
-        //    {
-        //        case GDS2_Cards.CARD_TYPE.ATTACK:
-        //            _targetHealth.TakeDamage(currentCard.GetCardPower());
-        //            break;
-        //        case GDS2_Cards.CARD_TYPE.HEALTH:
-        //            //try to heal player
-        //            break;
-        //        case GDS2_Cards.CARD_TYPE.DEFENSE:
-        //            //add to player defense
-        //            break;
-        //    }
+    }
 
-        //}
+    public LayerMask GetIgnoredLayers()
+    {
+        return _layersToIgnore;
     }
 
     protected void SetTarget(GameObject target)

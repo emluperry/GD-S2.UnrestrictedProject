@@ -58,6 +58,19 @@ public class PlayerAttack : EntityAttack, IInput
 
     #endregion
 
+    protected override bool GetTargetInRange(out EntityHealth target)
+    {
+        target = _targetHealth;
+
+        if (target == null)
+        {
+            return base.GetTargetInRange(out target);
+        }
+
+        //push player in range here
+        return true;
+    }
+
     protected override void Attack()
     {
         Scriptable_Card currentCard = _playerCardsComponent.UseSelectedCard();
