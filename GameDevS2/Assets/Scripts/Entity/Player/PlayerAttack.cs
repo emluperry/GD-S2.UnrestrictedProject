@@ -11,12 +11,14 @@ public class PlayerAttack : EntityAttack, IInput
 
     //saved components
     protected PlayerCards _playerCardsComponent;
+    protected EntityHealth _playerHealth;
 
     protected override void Awake()
     {
         GetComponent<PlayerTargeting>().onTargetChanged += SetTarget;
 
         _playerCardsComponent = GetComponent<PlayerCards>();
+        _playerHealth = GetComponent<EntityHealth>();
     }
 
     public void SetupInput(Dictionary<string, InputAction> inputs)
@@ -74,19 +76,20 @@ public class PlayerAttack : EntityAttack, IInput
     protected override void Attack(EntityHealth target)
     {
         Scriptable_Card currentCard = _playerCardsComponent.UseSelectedCard();
+        int cardPower = currentCard.GetCardPower();
 
         if (currentCard)
         {
             switch (currentCard.GetCardType())
             {
                 case GDS2_Cards.CARD_TYPE.ATTACK:
-                    target.TakeDamage(currentCard.GetCardPower());
+                    target.TakeDamage(cardPower);
                     break;
                 case GDS2_Cards.CARD_TYPE.HEALTH:
-                    //try to heal player
+                    _playerHealth.HealHealth(cardPower);
                     break;
                 case GDS2_Cards.CARD_TYPE.DEFENSE:
-                    //add to player defense
+                    _playerHealth.IncreaseShield(cardPower);
                     break;
             }
 

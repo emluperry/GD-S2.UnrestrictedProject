@@ -19,8 +19,7 @@ public class HUD_Manager : MonoBehaviour
     [SerializeField] private PlayerCards _playerCardsComponent;
 
     [Header("Battle UI")]
-    [SerializeField] private Image _health;
-    [SerializeField] private Image _defense;
+    [SerializeField] private HealthBar _health;
 
     [SerializeField] private GameObject _cardUIPrefab;
     [SerializeField] private Image _deckObject;
@@ -33,9 +32,11 @@ public class HUD_Manager : MonoBehaviour
 
 
     //BATTLE FUNCTIONS
-    public void StartBattle(Inventory_Card_Value_Pair[] deckList, int deckSize)
+    public void StartBattle(Inventory_Card_Value_Pair[] deckList, int deckSize, EntityHealth playerHealth)
     {
         _state = HUD_STATE.BATTLE;
+
+        _health.SetupBar(playerHealth.GetMaxHealth());
 
         _health.transform.parent.gameObject.SetActive(true);
         _deckText = _deckObject.GetComponentInChildren<TextMeshProUGUI>();
@@ -132,5 +133,18 @@ public class HUD_Manager : MonoBehaviour
         }
 
         UpdateDeckValue(0);
+    }
+
+    public void OnPlayerDamaged(int damage)
+    {
+        _health.TakeDamage(damage);
+    }
+
+    public void UpdateHUDValue(bool whichValue, int amount)
+    {
+        if (whichValue)
+            _health.HealHealth(amount);
+        else
+            _health.IncreaseShield(amount);
     }
 }

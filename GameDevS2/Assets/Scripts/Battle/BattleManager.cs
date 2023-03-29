@@ -9,6 +9,7 @@ public class BattleManager : MonoBehaviour
     [SerializeField] private HUD_Manager _hudManager;
 
     [SerializeField] private Transform _playerObject;
+    private EntityHealth _playerHealth;
     [SerializeField] private Transform _spawnerObjects;
 
     private EnemySpawner _activeSpawner;
@@ -25,6 +26,12 @@ public class BattleManager : MonoBehaviour
                 spawner.onEnemiesSpawned += StartBattle;
             }
         }
+
+        _playerHealth = _playerObject.GetComponent<EntityHealth>();
+
+        _playerHealth.onDamageTaken += UpdateHUDDamge;
+        _playerHealth.onValueIncreased += UpdateHUDValue;
+        _playerHealth.onDead += GameOver;
     }
 
     private void StartBattle(EnemySpawner spawner)
@@ -44,7 +51,7 @@ public class BattleManager : MonoBehaviour
         //setup HUD
         if (_hudManager != null)
         {
-            _hudManager.StartBattle(playerCardsComponent.GetDeckList(), playerCardsComponent.GetDeckSize());
+            _hudManager.StartBattle(playerCardsComponent.GetDeckList(), playerCardsComponent.GetDeckSize(), _playerHealth);
         }
 
         //setup player
@@ -68,7 +75,7 @@ public class BattleManager : MonoBehaviour
 
         foreach (GameObject enemy in enemyList)
         {
-            DeactivateEnemy(enemy);
+            DeactivateEnemy(enemy.GetComponent<EntityHealth>());
         }
 
         _activeSpawner.Deactivate();
@@ -82,7 +89,7 @@ public class BattleManager : MonoBehaviour
     private void CheckBattleState(EntityHealth deadEnemy)
     {
         _currentLivingEnemies--;
-        DeactivateEnemy(deadEnemy.gameObject);
+        DeactivateEnemy(deadEnemy);
 
         if (_currentLivingEnemies <= 0)
         {
@@ -90,15 +97,28 @@ public class BattleManager : MonoBehaviour
         }
     }
 
-    private void DeactivateEnemy(GameObject enemy)
+    private void DeactivateEnemy(EntityHealth enemy)
     {
-        EntityHealth health = enemy.GetComponent<EntityHealth>();
-
-        if (health.isDeactivated)
+        if (enemy.isDeactivated)
             return;
 
-        health.onDead -= CheckBattleState;
+        enemy.onDead -= CheckBattleState;
         enemy.GetComponent<State_Manager>().StopBehaviour();
-        health.isDeactivated = true;
+        enemy.isDeactivated = true;
+    }
+
+    private void UpdateHUDDamge(int dmg)
+    {
+        _hudManager.OnPlayerDamaged(dmg);
+    }
+
+    private void UpdateHUDValue(bool whichValue, int amount)
+    {
+        _hudManager.UpdateHUDValue(whichValue, amount);
+    }
+
+    private void GameOver(EntityHealth playerHealthComp)
+    {
+        EndBattle();
     }
 }
