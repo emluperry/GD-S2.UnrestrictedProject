@@ -11,7 +11,7 @@ public class State_Manager : MonoBehaviour, IPausable
     [HideInInspector] public EnemyMovement enemyMovement;
     [HideInInspector] public EnemyAttack enemyAttack;
     //pathfinding details?
-    [HideInInspector] public EntityHealth playerHealthTarget;
+    [HideInInspector] public Transform playerHealthTarget;
 
     public float stateTimeElapsed;
 
@@ -29,7 +29,7 @@ public class State_Manager : MonoBehaviour, IPausable
 
     //setup pathfinding ai?
 
-    public void StartBehaviour(EntityHealth player)
+    public void StartBehaviour(Transform player)
     {
         if (_currentState == null)
             return;

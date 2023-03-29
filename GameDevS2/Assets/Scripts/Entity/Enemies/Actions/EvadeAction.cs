@@ -13,10 +13,10 @@ public class EvadeAction : Scriptable_Action
         Vector3 direction = Vector3.zero;
         Vector3 differenceVector = Vector3.zero;
 
-        if (Vector3.Distance(manager.transform.position, manager.playerHealthTarget.transform.position) < _maxEvasionDistance)
+        if (Vector3.Distance(manager.transform.position, manager.playerHealthTarget.position) < _maxEvasionDistance)
         {
             //get direction away from player
-            differenceVector = (manager.playerHealthTarget.transform.position - manager.transform.position);
+            differenceVector = (manager.playerHealthTarget.position - manager.transform.position);
             direction = new Vector3(differenceVector.x, 0, differenceVector.z).normalized * -1;
         }
         else

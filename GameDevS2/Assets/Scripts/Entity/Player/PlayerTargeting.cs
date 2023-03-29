@@ -99,15 +99,16 @@ public class PlayerTargeting : MonoBehaviour, IInput, IPausable
         }
     }
 
-    public void SetEnemyList(EntityHealth[] enemyHealth)
+    public void SetEnemyList(GameObject[] enemy)
     {
         ClearTargetList();
+
         _targetArray = new List<GameObject>();
 
-        for(int i = 0; i < enemyHealth.Length; i++)
+        for(int i = 0; i < enemy.Length; i++)
         {
-            _targetArray.Add(enemyHealth[i].gameObject);
-            enemyHealth[i].onDead += RemoveEnemy;
+            _targetArray.Add(enemy[i]);
+            enemy[i].GetComponent<EntityHealth>().onDead += RemoveEnemy;
         }
     }
 

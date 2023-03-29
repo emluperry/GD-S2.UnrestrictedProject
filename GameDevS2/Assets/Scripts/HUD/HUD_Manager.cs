@@ -29,6 +29,7 @@ public class HUD_Manager : MonoBehaviour
 
     private Inventory_Card_Value_Pair[] _deckList;
     private int _currentCard = 0;
+    private int _deckMaxSize = 0;
 
 
     //BATTLE FUNCTIONS
@@ -38,20 +39,17 @@ public class HUD_Manager : MonoBehaviour
         _state = HUD_STATE.BATTLE;
 
         //unhide battle elements - could group these in future revision for cleaner code?
-        _health.gameObject.SetActive(true);
-        _defense.gameObject.SetActive(true);
-        _deckObject.gameObject.SetActive(true);
+        _health.transform.parent.gameObject.SetActive(true);
         _deckText = _deckObject.GetComponentInChildren<TextMeshProUGUI>();
-        _handLayoutGroup.gameObject.SetActive(true);
 
         _deckList = deckList;
         //get the size of the deck
-        int currentMaxCards = 0;
+        _deckMaxSize = 0;
         foreach (Inventory_Card_Value_Pair pair in _deckList)
         {
-            currentMaxCards += pair.amount;
+            _deckMaxSize += pair.amount;
         }
-        _deckText.text = currentMaxCards.ToString();
+        _deckText.text = _deckMaxSize.ToString();
 
         //listen for events in player cards
         if (_playerCardsComponent != null)
@@ -106,9 +104,7 @@ public class HUD_Manager : MonoBehaviour
     private void OnHandDraw(List<int> newHand)
     {
         //update deck value
-        int.TryParse(_deckText.text, out int oldDeckValue);
-        int newDeckValue = Mathf.Max(oldDeckValue - newHand.Count, 0);
-        _deckText.text = newDeckValue.ToString();
+        UpdateDeckValue(newHand.Count);
 
         //update hand
         foreach(int cardType in newHand)
@@ -124,6 +120,18 @@ public class HUD_Manager : MonoBehaviour
         OnChangeSelection(0);
     }
 
+    private void UpdateDeckValue(int newHand)
+    {
+        int.TryParse(_deckText.text, out int oldDeckValue);
+        int newDeckValue;
+
+        if (oldDeckValue <= 0)
+            newDeckValue = _deckMaxSize - newHand;
+        else
+            newDeckValue = Mathf.Max(oldDeckValue - newHand, 0);
+        _deckText.text = newDeckValue.ToString();
+    }
+
     private void OnDiscardHand()
     {
         //discard previous hand
@@ -131,5 +139,7 @@ public class HUD_Manager : MonoBehaviour
         {
             Destroy(card.gameObject);
         }
+
+        UpdateDeckValue(0);
     }
 }

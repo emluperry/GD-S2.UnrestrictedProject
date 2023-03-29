@@ -9,12 +9,27 @@ public class EnemySpawner : MonoBehaviour
     [SerializeField] private GameObject _walls;
 
     [SerializeField] private GameObject[] _enemiesToSpawn;
+    private GameObject[] _enemiesSpawned;
 
-    public Action<EnemySpawner, EntityHealth[]> onEnemiesSpawned;
+    public Action<EnemySpawner> onEnemiesSpawned;
 
     private void Awake()
     {
         _trigger = GetComponent<Collider>();
+
+        _enemiesSpawned = new GameObject[_enemiesToSpawn.Length];
+        for (int i = 0; i < _enemiesToSpawn.Length; i++)
+        {
+            GameObject enemy = Instantiate(_enemiesToSpawn[i], transform);
+            enemy.SetActive(false);
+            _enemiesSpawned[i] = enemy;
+
+        }
+    }
+
+    public GameObject[] GetEnemyArray()
+    {
+        return _enemiesSpawned;
     }
 
     private void OnTriggerEnter(Collider other)
@@ -22,14 +37,12 @@ public class EnemySpawner : MonoBehaviour
         if (!other.CompareTag("Player"))
             return;
 
-        EntityHealth[] enemiesHealth = new EntityHealth[_enemiesToSpawn.Length];
-        for (int i = 0; i < _enemiesToSpawn.Length; i++)
+        foreach (GameObject enemy in _enemiesSpawned)
         {
-            EntityHealth health = Instantiate(_enemiesToSpawn[i], transform).GetComponent<EntityHealth>();
-            enemiesHealth[i] = health;
+            enemy.SetActive(true);
         }
 
-        onEnemiesSpawned?.Invoke(this, enemiesHealth);
+        onEnemiesSpawned?.Invoke(this);
 
         //start battle
         GetComponent<MeshRenderer>().enabled = false;
