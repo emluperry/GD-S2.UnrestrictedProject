@@ -44,11 +44,11 @@ public class BattleManager : MonoBehaviour
         //setup HUD
         if (_hudManager != null)
         {
-            _hudManager.StartBattle(playerCardsComponent.GetDeckList());
+            _hudManager.StartBattle(playerCardsComponent.GetDeckList(), playerCardsComponent.GetDeckSize());
         }
 
         //setup player
-        _playerObject.GetComponent<PlayerTargeting>().SetEnemyList(_activeSpawner.GetEnemyArray());
+        _playerObject.GetComponent<PlayerTargeting>().SetEnemyList(enemyList);
         playerCardsComponent.StartBattle();
 
         //setup enemies

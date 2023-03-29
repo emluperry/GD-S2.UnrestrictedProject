@@ -118,19 +118,16 @@ public class PlayerTargeting : MonoBehaviour, IInput, IPausable
 
         _targetArray.Remove(enemyHealth.gameObject);
 
-        if (_currentTargetIndex >= _targetArray.Count)
+        Mathf.Clamp(_currentTargetIndex, 0, _targetArray.Count - 1);
+
+        if(_targetArray.Count <= 0)
         {
-            if (_targetArray.Count > 0)
-            {
-                _currentTargetIndex = _targetArray.Count - 1;
-                onTargetChanged?.Invoke(_targetArray[_currentTargetIndex]);
-            }
-            else
-            {
-                _currentTargetIndex = -1;
-                onTargetChanged?.Invoke(null);
-            }
+            _currentTargetIndex = -1;
+            onTargetChanged?.Invoke(null);
+            return;
         }
+
+        onTargetChanged?.Invoke(_targetArray[_currentTargetIndex]);
     }
 
     private void ClearTargetList()

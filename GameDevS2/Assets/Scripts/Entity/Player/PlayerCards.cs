@@ -121,6 +121,11 @@ public class PlayerCards : MonoBehaviour, IInput, IPausable
         DrawHand();
     }
 
+    public int GetDeckSize()
+    {
+        return _currentMaxCards;
+    }
+
     public Inventory_Card_Value_Pair[] GetDeckList()
     {
         return _cards;

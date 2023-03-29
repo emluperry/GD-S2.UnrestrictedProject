@@ -33,22 +33,16 @@ public class HUD_Manager : MonoBehaviour
 
 
     //BATTLE FUNCTIONS
-    public void StartBattle(Inventory_Card_Value_Pair[] deckList)
+    public void StartBattle(Inventory_Card_Value_Pair[] deckList, int deckSize)
     {
-        Debug.Log("Setup hud manager for battle.");
         _state = HUD_STATE.BATTLE;
 
-        //unhide battle elements - could group these in future revision for cleaner code?
         _health.transform.parent.gameObject.SetActive(true);
         _deckText = _deckObject.GetComponentInChildren<TextMeshProUGUI>();
 
         _deckList = deckList;
         //get the size of the deck
-        _deckMaxSize = 0;
-        foreach (Inventory_Card_Value_Pair pair in _deckList)
-        {
-            _deckMaxSize += pair.amount;
-        }
+        _deckMaxSize = deckSize;
         _deckText.text = _deckMaxSize.ToString();
 
         //listen for events in player cards
@@ -65,10 +59,7 @@ public class HUD_Manager : MonoBehaviour
     {
         _state = HUD_STATE.NONE;
 
-        _health.gameObject.SetActive(false);
-        _defense.gameObject.SetActive(false);
-        _deckObject.gameObject.SetActive(false);
-        _handLayoutGroup.gameObject.SetActive(false);
+        _health.transform.parent.gameObject.SetActive(false);
 
         _deckList = null;
 
