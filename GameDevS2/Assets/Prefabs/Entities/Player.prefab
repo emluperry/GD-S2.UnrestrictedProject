@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 4712099641825242518}
   - component: {fileID: 4712099643007683437}
   - component: {fileID: 4712099641825242216}
+  - component: {fileID: 2277167192323192351}
   - component: {fileID: 1183508227}
   - component: {fileID: 4712099643007683436}
   - component: {fileID: 3456276136509971084}
@@ -36,9 +37,10 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 6145217916815669187}
   - {fileID: 5111027943856267288}
   m_Father: {fileID: 0}
-  m_RootOrder: -1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!54 &4712099641825242219
 Rigidbody:
@@ -93,12 +95,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ba7e7bfabf4f3634dac27ce830376b4a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _cameraTransform: {fileID: 0}
   _maxSpeed: 10
   _maxAccelerationForce: 20
   _brakingForce: 100
   _maxRotationSpeed: 3000
   _rotationDampener: 5
+  _cameraTransform: {fileID: 0}
+--- !u!114 &2277167192323192351
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4712099641825242513}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f36ea2c5aaff11b4fbbcf0709bf88829, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _maxHealth: 10
+  isDeactivated: 0
 --- !u!114 &1183508227
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -127,10 +143,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _maxAttackDelay: 0.5
-  _attackRaycastRange: 2
-  _attackableLayers:
+  _attackRange: 4
+  _attackPoint: {fileID: 6145217916815669187}
+  _layersToIgnore:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 64
 --- !u!114 &3456276136509971084
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -166,6 +183,37 @@ MonoBehaviour:
   _swapDelay: 0.5
   _maxDrawDelay: 1
   _maxDeckRefreshDelay: 5
+--- !u!1 &6108274031930762578
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6145217916815669187}
+  m_Layer: 0
+  m_Name: AttackPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6145217916815669187
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6108274031930762578}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.2, z: 0.75}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4712099641825242517}
+  m_RootOrder: -1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &4712099641940281331
 PrefabInstance:
   m_ObjectHideFlags: 0
