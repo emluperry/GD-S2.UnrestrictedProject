@@ -12,6 +12,7 @@ public class BattleManager : MonoBehaviour
 
     private EnemySpawner _activeSpawner;
     private int _currentLivingEnemies = 0;
+    private EntityHealth[] _enemyObjects;
 
     private void Awake()
     {
@@ -50,14 +51,26 @@ public class BattleManager : MonoBehaviour
 
         //setup enemies
         _currentLivingEnemies = enemiesHealth.Length;
+        _enemyObjects = enemiesHealth;
         foreach(EntityHealth health in enemiesHealth)
         {
             health.onDead += CheckBattleState;
+            health.GetComponent<State_Manager>().StartBehaviour(_playerObject.GetComponent<EntityHealth>());
         }
     }
 
     private void EndBattle()
     {
+        foreach (EntityHealth health in _enemyObjects)
+        {
+            if (health.isDeactivated)
+                continue;
+
+            health.onDead += CheckBattleState;
+            health.GetComponent<State_Manager>().StopBehaviour();
+            health.isDeactivated = true;
+        }
+
         _activeSpawner.Deactivate();
         _currentLivingEnemies = 0;
         _activeSpawner = null;
@@ -66,9 +79,12 @@ public class BattleManager : MonoBehaviour
         _hudManager.EndBattle();
     }
 
-    private void CheckBattleState()
+    private void CheckBattleState(EntityHealth deadEnemy)
     {
         _currentLivingEnemies--;
+        deadEnemy.onDead -= CheckBattleState;
+        deadEnemy.GetComponent<State_Manager>().StopBehaviour();
+        deadEnemy.isDeactivated = true;
 
         if (_currentLivingEnemies <= 0)
         {
