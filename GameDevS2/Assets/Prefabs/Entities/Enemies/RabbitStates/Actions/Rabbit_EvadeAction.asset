@@ -9,7 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d4ceeb521fafe81479a1548e38777a28, type: 3}
-  m_Name: InRangeDecision
+  m_Script: {fileID: 11500000, guid: 8d9bd14cb54e90b4aa2a5aa07a56f8e1, type: 3}
+  m_Name: Rabbit_EvadeAction
   m_EditorClassIdentifier: 
-  _attackRange: 1
+  _maxEvasionDistance: 4

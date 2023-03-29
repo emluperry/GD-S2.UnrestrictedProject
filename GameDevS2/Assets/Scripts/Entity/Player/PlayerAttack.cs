@@ -58,7 +58,7 @@ public class PlayerAttack : EntityAttack, IInput
 
     #endregion
 
-    public override bool GetTargetInRange(out EntityHealth target)
+    protected override bool GetTargetInRange(out EntityHealth target)
     {
         target = _targetHealth;
 

@@ -2100,7 +2100,7 @@ PrefabInstance:
         type: 3}
       propertyPath: _enemiesToSpawn.Array.data[0]
       value: 
-      objectReference: {fileID: 6782260923424439368, guid: dbbdc428fe812a348b8ac2bd124983fd,
+      objectReference: {fileID: 212078792653870715, guid: 4dad3774e41f82443839c9f16b8e7a1a,
         type: 3}
     m_RemovedComponents: []
     m_AddedGameObjects: []
@@ -2339,6 +2339,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4712099643007683436, guid: c33648354625d6844a8e2fe828a770a6,
+        type: 3}
+      propertyPath: _layersToInclude.m_Bits
+      value: 64
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_AddedGameObjects: []

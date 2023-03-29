@@ -50,7 +50,7 @@ public class EntityAttack : MonoBehaviour, IPausable
         _attackingCoroutine = null;
     }
 
-    public virtual bool GetTargetInRange(out EntityHealth target)
+    protected virtual bool GetTargetInRange(out EntityHealth target)
     {
         Ray ray = new Ray(_attackPoint.position, transform.forward);
         Debug.DrawRay(_attackPoint.position, transform.forward * _attackRange);
