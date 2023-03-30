@@ -19,8 +19,7 @@ public class HUD_Manager : MonoBehaviour
     [SerializeField] private PlayerCards _playerCardsComponent;
 
     [Header("Battle UI")]
-    [SerializeField] private Image _health;
-    [SerializeField] private Image _defense;
+    [SerializeField] private HealthBar _health;
 
     [SerializeField] private GameObject _cardUIPrefab;
     [SerializeField] private Image _deckObject;
@@ -29,29 +28,23 @@ public class HUD_Manager : MonoBehaviour
 
     private Inventory_Card_Value_Pair[] _deckList;
     private int _currentCard = 0;
+    private int _deckMaxSize = 0;
 
 
     //BATTLE FUNCTIONS
-    public void StartBattle(Inventory_Card_Value_Pair[] deckList)
+    public void StartBattle(Inventory_Card_Value_Pair[] deckList, int deckSize, EntityHealth playerHealth)
     {
-        Debug.Log("Setup hud manager for battle.");
         _state = HUD_STATE.BATTLE;
 
-        //unhide battle elements - could group these in future revision for cleaner code?
-        _health.gameObject.SetActive(true);
-        _defense.gameObject.SetActive(true);
-        _deckObject.gameObject.SetActive(true);
+        _health.SetupBar(playerHealth.GetMaxHealth());
+
+        _health.transform.parent.gameObject.SetActive(true);
         _deckText = _deckObject.GetComponentInChildren<TextMeshProUGUI>();
-        _handLayoutGroup.gameObject.SetActive(true);
 
         _deckList = deckList;
         //get the size of the deck
-        int currentMaxCards = 0;
-        foreach (Inventory_Card_Value_Pair pair in _deckList)
-        {
-            currentMaxCards += pair.amount;
-        }
-        _deckText.text = currentMaxCards.ToString();
+        _deckMaxSize = deckSize;
+        _deckText.text = _deckMaxSize.ToString();
 
         //listen for events in player cards
         if (_playerCardsComponent != null)
@@ -67,10 +60,7 @@ public class HUD_Manager : MonoBehaviour
     {
         _state = HUD_STATE.NONE;
 
-        _health.gameObject.SetActive(false);
-        _defense.gameObject.SetActive(false);
-        _deckObject.gameObject.SetActive(false);
-        _handLayoutGroup.gameObject.SetActive(false);
+        _health.transform.parent.gameObject.SetActive(false);
 
         _deckList = null;
 
@@ -106,9 +96,7 @@ public class HUD_Manager : MonoBehaviour
     private void OnHandDraw(List<int> newHand)
     {
         //update deck value
-        int.TryParse(_deckText.text, out int oldDeckValue);
-        int newDeckValue = Mathf.Max(oldDeckValue - newHand.Count, 0);
-        _deckText.text = newDeckValue.ToString();
+        UpdateDeckValue(newHand.Count);
 
         //update hand
         foreach(int cardType in newHand)
@@ -124,6 +112,18 @@ public class HUD_Manager : MonoBehaviour
         OnChangeSelection(0);
     }
 
+    private void UpdateDeckValue(int newHand)
+    {
+        int.TryParse(_deckText.text, out int oldDeckValue);
+        int newDeckValue;
+
+        if (oldDeckValue <= 0)
+            newDeckValue = _deckMaxSize - newHand;
+        else
+            newDeckValue = Mathf.Max(oldDeckValue - newHand, 0);
+        _deckText.text = newDeckValue.ToString();
+    }
+
     private void OnDiscardHand()
     {
         //discard previous hand
@@ -131,5 +131,20 @@ public class HUD_Manager : MonoBehaviour
         {
             Destroy(card.gameObject);
         }
+
+        UpdateDeckValue(0);
+    }
+
+    public void OnPlayerDamaged(int damage)
+    {
+        _health.TakeDamage(damage);
+    }
+
+    public void UpdateHUDValue(bool whichValue, int amount)
+    {
+        if (whichValue)
+            _health.HealHealth(amount);
+        else
+            _health.IncreaseShield(amount);
     }
 }

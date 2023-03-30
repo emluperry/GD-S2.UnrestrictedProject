@@ -74,7 +74,7 @@ public class UI_Screen : MonoBehaviour
     {
         if (_navigationComponent != null)
         {
-            _navigationComponent.SetupInput();
+            _navigationComponent.EnableInput();
         }
     }
 
