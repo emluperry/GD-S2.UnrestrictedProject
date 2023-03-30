@@ -2582,28 +2582,6 @@ PrefabInstance:
     serializedVersion: 2
     m_TransformParent: {fileID: 954989189}
     m_Modifications:
-    - target: {fileID: 1183508231, guid: c33648354625d6844a8e2fe828a770a6, type: 3}
-      propertyPath: _cards.Array.size
-      value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 1183508231, guid: c33648354625d6844a8e2fe828a770a6, type: 3}
-      propertyPath: _cards.Array.data[2].card
-      value: 
-      objectReference: {fileID: 11400000, guid: 1a1325ceb03181c40b032cf215c20a74,
-        type: 2}
-    - target: {fileID: 1183508231, guid: c33648354625d6844a8e2fe828a770a6, type: 3}
-      propertyPath: _cards.Array.data[3].card
-      value: 
-      objectReference: {fileID: 11400000, guid: 640b954ad2351924e939c9b6586c0e3b,
-        type: 2}
-    - target: {fileID: 1183508231, guid: c33648354625d6844a8e2fe828a770a6, type: 3}
-      propertyPath: _cards.Array.data[2].amount
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 1183508231, guid: c33648354625d6844a8e2fe828a770a6, type: 3}
-      propertyPath: _cards.Array.data[3].amount
-      value: 5
-      objectReference: {fileID: 0}
     - target: {fileID: 4712099641825242216, guid: c33648354625d6844a8e2fe828a770a6,
         type: 3}
       propertyPath: _cameraTransform
@@ -2668,11 +2646,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4712099643007683436, guid: c33648354625d6844a8e2fe828a770a6,
-        type: 3}
-      propertyPath: _layersToInclude.m_Bits
-      value: 64
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_AddedGameObjects: []

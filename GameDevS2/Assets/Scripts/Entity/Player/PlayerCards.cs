@@ -101,7 +101,7 @@ public class PlayerCards : MonoBehaviour, IInput, IPausable
 
     #endregion
 
-    public void StartBattle()
+    public void InitialiseBattle()
     {
         _isInCombat = true;
 
@@ -117,7 +117,10 @@ public class PlayerCards : MonoBehaviour, IInput, IPausable
         InitialiseDeck();
 
         Shuffle(_deckArray);
+    }
 
+    public void StartBattle()
+    {
         DrawHand();
     }
 

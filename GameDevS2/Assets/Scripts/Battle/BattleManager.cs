@@ -48,15 +48,14 @@ public class BattleManager : MonoBehaviour
 
         PlayerCards playerCardsComponent = _playerObject.GetComponent<PlayerCards>();
 
-        //setup HUD
-        if (_hudManager != null)
-        {
-            _hudManager.StartBattle(playerCardsComponent.GetDeckList(), playerCardsComponent.GetDeckSize(), _playerHealth);
-        }
-
-        //setup player
+        //setup player & HUD
         _playerObject.GetComponent<PlayerTargeting>().SetEnemyList(enemyList);
-        playerCardsComponent.StartBattle();
+        playerCardsComponent.InitialiseBattle();
+
+        //setup HUD
+        _hudManager.StartBattle(playerCardsComponent.GetDeckList(), playerCardsComponent.GetDeckSize(), _playerHealth);
+
+        playerCardsComponent.StartBattle(); //draws hand for ui to update
 
         //setup enemies
         _currentLivingEnemies = enemyList.Length;
