@@ -18,6 +18,7 @@ public class UI_Manager : MonoBehaviour
 
     public UI_PauseHandler pauseHandler { private set; get; }
     private Dictionary<string, InputAction> _uiInputActions;
+    private InputAction cancelInput;
 
     public Action<SCENES, int> onChangeScene;
     public Action onLoadUI;
@@ -39,7 +40,8 @@ public class UI_Manager : MonoBehaviour
     {
         _uiInputActions = inputs;
         pauseHandler.SetInputActions(inputs);
-        inputs["Cancel"].performed += Handle_CancelPressed;
+        cancelInput = inputs["Cancel"];
+        cancelInput.performed += Handle_CancelPressed;
     }
 
     public void SetupPreexistingUI()
@@ -58,10 +60,12 @@ public class UI_Manager : MonoBehaviour
         if(allowPausing)
         {
             pauseHandler.onLoadPause += HandlePauseEvent;
+            pauseHandler.EnableInputActions();
         }
         else
         {
             pauseHandler.onLoadPause -= HandlePauseEvent;
+            pauseHandler.DisableInputActions();
         }
     }
 
@@ -174,8 +178,18 @@ public class UI_Manager : MonoBehaviour
         }
     }
 
+    public void HandleGameOver()
+    {
+        //disable pause input
+        pauseHandler.DisableInputActions();
+
+        //load game over screen
+        LoadUI(UI_SCREENS.GAMEOVER);
+    }
+
     private void Handle_CancelPressed(InputAction.CallbackContext ctx)
     {
-        LoadUI(UI_SCREENS.BACK);
+        if(_uiStack.Count > 0)
+            LoadUI(UI_SCREENS.BACK);
     }
 }

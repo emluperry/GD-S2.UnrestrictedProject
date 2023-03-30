@@ -21,15 +21,30 @@ public class PlayerAttack : EntityAttack, IInput
         _playerHealth = GetComponent<EntityHealth>();
     }
 
+    private void OnDestroy()
+    {
+        DisableInput();
+    }
+
+    #region INPUT SETUP
+
     public void SetupInput(Dictionary<string, InputAction> inputs)
     {
         _attackInputAction = inputs["Attack"];
 
-        _attackInputAction.performed += Input_AttackPerformed;
-        _attackInputAction.canceled += Input_AttackCancelled;
+        EnableInput();
     }
 
-    private void OnDestroy()
+    public void EnableInput()
+    {
+        if (_attackInputAction != null)
+        {
+            _attackInputAction.performed += Input_AttackPerformed;
+            _attackInputAction.canceled += Input_AttackCancelled;
+        }
+    }
+
+    public void DisableInput()
     {
         if (_attackInputAction != null)
         {
@@ -37,6 +52,8 @@ public class PlayerAttack : EntityAttack, IInput
             _attackInputAction.canceled -= Input_AttackCancelled;
         }
     }
+
+    #endregion
 
     #region INPUTS
 

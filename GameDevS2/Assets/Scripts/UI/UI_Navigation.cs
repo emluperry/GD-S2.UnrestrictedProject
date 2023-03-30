@@ -75,21 +75,20 @@ public class UI_Navigation : MonoBehaviour, IInput
         _selectInputAction.performed += Input_SelectPerformed;
     }
 
-    public void SetupInput()
+    public void EnableInput()
     {
-        //only use if input actions have been previously saved
-        if(_swapInputAction != null)
+        if (_swapInputAction != null)
         {
             _swapInputAction.performed += Input_SwapPerformed;
         }
 
-        if(_moveInputAction != null)
+        if (_moveInputAction != null)
         {
             _moveInputAction.performed += Input_MovePerformed;
             _moveInputAction.canceled += Input_MoveCancelled;
         }
 
-        if(_selectInputAction != null)
+        if (_selectInputAction != null)
         {
             _selectInputAction.performed += Input_SelectPerformed;
         }

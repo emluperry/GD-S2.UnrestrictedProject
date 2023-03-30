@@ -12,21 +12,36 @@ public class PlayerMovement : EntityMovement, IInput
     [Header("External References")]
     [SerializeField] private Transform _cameraTransform;
 
+    #region INPUT SETUP
     public void SetupInput(Dictionary<string, InputAction> inputs)
     {
         _moveInputAction = inputs["Move"];
 
-        _moveInputAction.performed += Input_MovePerformed;
-        _moveInputAction.canceled += Input_MoveCancelled;
+        EnableInput();
     }
 
-    protected void OnDestroy()
+    public void EnableInput()
+    {
+        if (_moveInputAction != null)
+        {
+            _moveInputAction.performed += Input_MovePerformed;
+            _moveInputAction.canceled += Input_MoveCancelled;
+        }
+    }
+
+    public void DisableInput()
     {
         if (_moveInputAction != null)
         {
             _moveInputAction.performed -= Input_MovePerformed;
             _moveInputAction.canceled -= Input_MoveCancelled;
         }
+    }
+    #endregion
+
+    protected void OnDestroy()
+    {
+        DisableInput();
     }
 
     #region INPUTS

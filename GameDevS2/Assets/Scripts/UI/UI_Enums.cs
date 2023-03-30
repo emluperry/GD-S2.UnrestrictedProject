@@ -7,7 +7,8 @@ namespace UI_Enums
         LOADING,
         START,
         FILE_SELECT,
-        PAUSE
+        PAUSE,
+        GAMEOVER
     }
 
     public enum UI_ELEMENT_TYPE

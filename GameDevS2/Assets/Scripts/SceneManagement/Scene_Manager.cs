@@ -115,11 +115,6 @@ public class Scene_Manager : MonoBehaviour
         _uiManager.SetupPauseUI(_sceneDatabase.IsScenePausable(sceneEnum, levelNum));
     }
 
-    private void LoadNextLevel()
-    {
-        LoadScene(SCENES.LEVEL, _currentLevel + 1);
-    }
-
     private void SceneLoaded(AsyncOperation op)
     {
         SceneManager.SetActiveScene(SceneManager.GetSceneAt(SceneManager.sceneCount - 1));
@@ -139,6 +134,7 @@ public class Scene_Manager : MonoBehaviour
 
     private void SetupLevelListeners()
     {
+        FindObjectOfType<BattleManager>().onGameOver += _uiManager.HandleGameOver;
         // how do i reduce the amount of 'find obj of type' uses? spawn player through game manager and get that instead?
         FindObjectOfType<PlayerInitialiser>().InitialisePauseEvents(ref _uiManager.pauseHandler.onLoadPause);
         _inputManager.SetupLevelInput();
@@ -146,6 +142,7 @@ public class Scene_Manager : MonoBehaviour
 
     private void RemoveLevelListeners()
     {
+        FindObjectOfType<BattleManager>().onGameOver -= _uiManager.HandleGameOver;
         FindObjectOfType<PlayerInitialiser>().StopListeningForPause(ref _uiManager.pauseHandler.onLoadPause);
     }
 

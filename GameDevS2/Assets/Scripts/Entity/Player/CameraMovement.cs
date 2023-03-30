@@ -46,25 +46,40 @@ public class CameraMovement : MonoBehaviour, IInput
         _playerRb = _playerTransform.GetComponent<Rigidbody>();
     }
 
+    private void OnDestroy()
+    {
+        DisableInput();
+    }
+
+    #region INPUT SETUP
+
     public void SetupInput(Dictionary<string, InputAction> inputs)
     {
         _moveInputAction = inputs["Move"];
         _jumpInputAction = inputs["Jump"];
         _cameraInputAction = inputs["Look"];
 
-        _moveInputAction.performed += Input_MovePerformed;
-        _moveInputAction.canceled += Input_MoveCancelled;
-
-        _jumpInputAction.performed += Input_JumpPerformed;
-        _jumpInputAction.canceled += Input_JumpCancelled;
-
-        _cameraInputAction.performed += Input_LookPerformed;
-        _cameraInputAction.canceled += Input_LookCancelled;
+        EnableInput();
     }
 
-    private void OnDestroy()
+    public void EnableInput()
     {
-        if(_moveInputAction != null)
+        if (_moveInputAction != null)
+        {
+            _moveInputAction.performed += Input_MovePerformed;
+            _moveInputAction.canceled += Input_MoveCancelled;
+
+            _jumpInputAction.performed += Input_JumpPerformed;
+            _jumpInputAction.canceled += Input_JumpCancelled;
+
+            _cameraInputAction.performed += Input_LookPerformed;
+            _cameraInputAction.canceled += Input_LookCancelled;
+        }
+    }
+
+    public void DisableInput()
+    {
+        if (_moveInputAction != null)
         {
             _moveInputAction.performed -= Input_MovePerformed;
             _moveInputAction.canceled -= Input_MoveCancelled;
@@ -77,7 +92,9 @@ public class CameraMovement : MonoBehaviour, IInput
         }
     }
 
-    #region INPUTS
+    #endregion
+
+    #region INPUT HANDLERS
 
     private void Input_MovePerformed(InputAction.CallbackContext ctx)
     {

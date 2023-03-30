@@ -26,21 +26,38 @@ public class PlayerTargeting : MonoBehaviour, IInput, IPausable
         _currentSwapDelay = _targetSwapMaxDelay;
     }
 
+    #region INPUT SETUP
+
     public void SetupInput(Dictionary<string, InputAction> inputs)
     {
         _targetInputAction = inputs["Target"];
 
-        _targetInputAction.performed += Input_TargetPerformed;
-        _targetInputAction.canceled += Input_TargetCancelled;
+        EnableInput();
     }
 
-    private void OnDestroy()
+    public void EnableInput()
     {
         if (_targetInputAction != null)
         {
             _targetInputAction.performed += Input_TargetPerformed;
             _targetInputAction.canceled += Input_TargetCancelled;
         }
+    }
+
+    public void DisableInput()
+    {
+        if (_targetInputAction != null)
+        {
+            _targetInputAction.performed += Input_TargetPerformed;
+            _targetInputAction.canceled += Input_TargetCancelled;
+        }
+    }
+
+    #endregion
+
+    private void OnDestroy()
+    {
+        DisableInput();
     }
 
     #region INPUTS

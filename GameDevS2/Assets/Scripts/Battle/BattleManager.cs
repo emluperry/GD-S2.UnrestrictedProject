@@ -1,6 +1,6 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class BattleManager : MonoBehaviour
@@ -14,6 +14,8 @@ public class BattleManager : MonoBehaviour
 
     private EnemySpawner _activeSpawner;
     private int _currentLivingEnemies = 0;
+
+    public Action onGameOver;
 
     private void Awake()
     {
@@ -124,6 +126,7 @@ public class BattleManager : MonoBehaviour
 
     private void GameOver(EntityHealth playerHealthComp)
     {
+        onGameOver?.Invoke();
         EndBattle();
     }
 }

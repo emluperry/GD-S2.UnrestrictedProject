@@ -52,11 +52,33 @@ public class PlayerCards : MonoBehaviour, IInput, IPausable
 
     private bool _isPaused = false;
 
+    #region INPUT SETUP
+
     public void SetupInput(Dictionary<string, InputAction> inputs)
     {
         _swapInputAction = inputs["Swap"];
         _drawInputAction = inputs["Draw"];
     }
+
+    public void EnableInput()
+    {
+        if (_swapInputAction != null)
+        {
+            _swapInputAction.performed += Input_SwapPerformed;
+            _swapInputAction.canceled += Input_SwapCancelled;
+        }
+    }
+
+    public void DisableInput()
+    {
+        if (_swapInputAction != null)
+        {
+            _swapInputAction.performed -= Input_SwapPerformed;
+            _swapInputAction.canceled -= Input_SwapCancelled;
+        }
+    }
+
+    #endregion
 
     private void OnDestroy()
     {
@@ -106,8 +128,7 @@ public class PlayerCards : MonoBehaviour, IInput, IPausable
         _isInCombat = true;
 
         //input to swap active card
-        _swapInputAction.performed += Input_SwapPerformed;
-        _swapInputAction.canceled += Input_SwapCancelled;
+        EnableInput();
 
         //input to discard and draw hand
         _drawInputAction.performed += Input_DrawPerformed;
@@ -138,8 +159,7 @@ public class PlayerCards : MonoBehaviour, IInput, IPausable
     {
         _isInCombat = false;
 
-        _swapInputAction.performed -= Input_SwapPerformed;
-        _swapInputAction.canceled -= Input_SwapCancelled;
+        DisableInput();
 
         _currentHand.Clear();
 

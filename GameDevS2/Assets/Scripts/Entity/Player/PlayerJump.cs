@@ -11,21 +11,37 @@ public class PlayerJump : EntityJump, IInput
     private bool _isJumpDown;
     private float _jumpHeldDuration = 0;
 
+    #region INPUT SETUP
     public void SetupInput(Dictionary<string, InputAction> inputs)
     {
         _jumpInputAction = inputs["Jump"];
 
-        _jumpInputAction.performed += Input_JumpPerformed;
-        _jumpInputAction.canceled += Input_JumpCancelled;
+        EnableInput();
     }
 
-    protected void OnDestroy()
+    public void EnableInput()
+    {
+        if (_jumpInputAction != null)
+        {
+            _jumpInputAction.performed += Input_JumpPerformed;
+            _jumpInputAction.canceled += Input_JumpCancelled;
+        }
+    }
+
+    public void DisableInput()
     {
         if (_jumpInputAction != null)
         {
             _jumpInputAction.performed -= Input_JumpPerformed;
             _jumpInputAction.canceled -= Input_JumpCancelled;
         }
+    }
+
+    #endregion
+
+    protected void OnDestroy()
+    {
+        DisableInput();
     }
 
     #region INPUTS

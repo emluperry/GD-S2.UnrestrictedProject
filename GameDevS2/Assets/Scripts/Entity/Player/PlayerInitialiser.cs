@@ -16,6 +16,13 @@ public class PlayerInitialiser : MonoBehaviour
         health = GetComponent<EntityHealth>();
         cards = GetComponent<PlayerCards>();
         targeting = GetComponent<PlayerTargeting>();
+
+        health.onDead += PlayerKilled;
+    }
+
+    private void OnDestroy()
+    {
+        health.onDead -= PlayerKilled;
     }
 
     public void InitialisePlayerInput(Dictionary<string, InputAction> inputs)
@@ -29,6 +36,31 @@ public class PlayerInitialiser : MonoBehaviour
             }
         }
     }
+
+    public void StartListeningForPlayerInput()
+    {
+        IInput[] inputComponents = GetComponents<IInput>();
+        if (inputComponents.Length > 0)
+        {
+            foreach (IInput component in inputComponents)
+            {
+                component.EnableInput();
+            }
+        }
+    }
+
+    public void StopListeningForPlayerInput()
+    {
+        IInput[] inputComponents = GetComponents<IInput>();
+        if (inputComponents.Length > 0)
+        {
+            foreach (IInput component in inputComponents)
+            {
+                component.DisableInput();
+            }
+        }
+    }
+
 
     public void InitialisePauseEvents(ref Action<bool> onLoadPause)
     {
@@ -52,5 +84,10 @@ public class PlayerInitialiser : MonoBehaviour
                 onLoadPause -= component.PauseGame;
             }
         }
+    }
+
+    private void PlayerKilled(EntityHealth playerHealth)
+    {
+        StopListeningForPlayerInput();
     }
 }
