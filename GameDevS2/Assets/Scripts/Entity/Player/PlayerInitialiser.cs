@@ -7,6 +7,7 @@ using UnityEngine.Windows;
 
 public class PlayerInitialiser : MonoBehaviour
 {
+    public PlayerMovement movement { private set; get; }
     public EntityHealth health { private set; get; }
     public PlayerCards cards { private set; get; }
     public PlayerTargeting targeting { private set; get; }
@@ -16,6 +17,7 @@ public class PlayerInitialiser : MonoBehaviour
         health = GetComponent<EntityHealth>();
         cards = GetComponent<PlayerCards>();
         targeting = GetComponent<PlayerTargeting>();
+        movement = GetComponent<PlayerMovement>();
 
         health.onDead += PlayerKilled;
     }

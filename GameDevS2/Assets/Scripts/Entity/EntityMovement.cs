@@ -37,10 +37,12 @@ public class EntityMovement : MonoBehaviour, IPausable
             yield return new WaitForFixedUpdate();
 
             MoveEntity();
+
+            RotateEntity();
         }
     }
 
-    protected void MoveEntity()
+    protected virtual void MoveEntity()
     {
         //update velocity
         Vector3 maxVelocity = _moveDirection.normalized * _maxSpeed;
@@ -50,9 +52,10 @@ public class EntityMovement : MonoBehaviour, IPausable
         deltaAcceleration = Vector3.ClampMagnitude(deltaAcceleration, _maxAccelerationForce);
 
         _rb.AddForce(deltaAcceleration, ForceMode.Force);
+    }
 
-        //turn to input direction
-
+    protected virtual void RotateEntity()
+    {
         Quaternion targetRotation = Quaternion.LookRotation(_moveDirection, Vector3.up);
         Quaternion toGoal = targetRotation * Quaternion.Inverse(transform.rotation);
 

@@ -9,7 +9,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c66211b4f55d4c1428d6331d0eadd5cd, type: 3}
-  m_Name: Rabbit_BiteDurationDecision
+  m_Script: {fileID: 11500000, guid: 287c27cc108160642815b167b15b624f, type: 3}
+  m_Name: Rabbit_IdleAction
   m_EditorClassIdentifier: 
-  _stateDuration: 1

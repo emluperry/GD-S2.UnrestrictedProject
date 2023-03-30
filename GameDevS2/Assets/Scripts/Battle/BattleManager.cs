@@ -73,7 +73,7 @@ public class BattleManager : MonoBehaviour
         foreach (EnemyInitialiser enemy in enemyList)
         {
             enemy.health.onDead += CheckBattleState;
-            enemy.SetupEnemy(_playerObject);
+            enemy.SetupEnemy(_playerObject, _player.movement.GetCameraTransform());
         }
     }
 

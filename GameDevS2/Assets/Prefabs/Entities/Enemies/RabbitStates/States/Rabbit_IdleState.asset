@@ -10,11 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: aa02171d66107204fad3e05a0a03b4ae, type: 3}
-  m_Name: Rabbit_BiteAttackState
+  m_Name: Rabbit_IdleState
   m_EditorClassIdentifier: 
   actions:
-  - {fileID: 11400000, guid: c06b1f32549a36342a403297f1f5f810, type: 2}
+  - {fileID: 11400000, guid: b9fb9d3facbb68c4dad38d8dc9166392, type: 2}
   transitions:
-  - decision: {fileID: 11400000, guid: bf9946f67a6d8e24e91011147f2f39d4, type: 2}
-    trueState: {fileID: 11400000, guid: e8e9e0a052e8e5540b6e902ea861bda4, type: 2}
-    falseState: {fileID: 11400000, guid: d286a09271e19664ebf6e37faaf4eb76, type: 2}
+  - decision: {fileID: 11400000, guid: 7b2e57f7a8a6efe459bd1fe71cccc74a, type: 2}
+    trueState: {fileID: 11400000, guid: 6f6fb907dfb337b4991896f18e6c1e9e, type: 2}
+    falseState: {fileID: 0}

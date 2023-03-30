@@ -12,4 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c66211b4f55d4c1428d6331d0eadd5cd, type: 3}
   m_Name: Rabbit_EvadeDuration
   m_EditorClassIdentifier: 
-  _stateDuration: 1
+  _stateDuration: 3

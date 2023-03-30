@@ -98,6 +98,12 @@ public class PlayerMovement : EntityMovement, IInput
             _moveDirection = new Vector3(_moveDirection.x, 0, _moveDirection.z);
 
             MoveEntity();
+            RotateEntity();
         }
+    }
+
+    public Transform GetCameraTransform()
+    {
+        return _cameraTransform;
     }
 }

@@ -4,6 +4,15 @@ using UnityEngine;
 
 public class EnemyMovement : EntityMovement
 {
+    private Transform _healthCanvas;
+    private Transform _camera;
+
+    public void SetupCanvasReference(Transform canvas, Transform camera)
+    {
+        _healthCanvas = canvas;
+        _camera = camera;
+    }
+
     public void StartMovement(Vector3 direction)
     {
         if (_isPaused)
@@ -40,5 +49,12 @@ public class EnemyMovement : EntityMovement
             _movementCoroutine = null;
         }
         _movementCoroutine = StartCoroutine(c_StoppingCoroutine());
+    }
+
+    protected override void RotateEntity()
+    {
+        base.RotateEntity();
+
+        _healthCanvas.LookAt(_camera);
     }
 }
