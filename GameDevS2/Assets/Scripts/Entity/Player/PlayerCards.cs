@@ -215,6 +215,16 @@ public class PlayerCards : MonoBehaviour, IInput, IPausable
         _handDrawCoroutine = null;
     }
 
+    public Scriptable_Card GetSelectedCard()
+    {
+        if (_currentHandSize <= 0 || _handDrawCoroutine != null) //defensive, may occur during hand refreshes
+            return null;
+
+        int cardType = _currentHand[_currentHandIndex];
+
+        return _cards[cardType].card;
+    }
+
     public Scriptable_Card UseSelectedCard()
     {
         if (_currentHandSize <= 0 || _handDrawCoroutine != null) //defensive, may occur during hand refreshes
