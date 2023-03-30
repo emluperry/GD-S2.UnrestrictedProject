@@ -1614,6 +1614,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _barSlider: {fileID: 838469407}
   _shieldImage: {fileID: 1553099139}
+  _shieldText: {fileID: 456626047}
   _criticalShieldsNum: 2
   _criticalShieldColor: {r: 1, g: 0.24056602, b: 0.24056602, a: 1}
 --- !u!4 &1311417709 stripped

@@ -30,14 +30,10 @@ public class EntityAttack : MonoBehaviour, IPausable
     {
         yield return new WaitForFixedUpdate();
 
-        if(!GetTargetInRange(out EntityHealth target)) //if the entity cannot get a target in range, quit routine
+        if(GetTargetInRange(out EntityHealth target)) //if the entity cannot get a target in range, quit routine
         {
-            _currentAttackDelay = 0;
-            _attackingCoroutine = null;
-            yield break;
+            Attack(target);
         }
-
-        Attack(target);
 
         while (_currentAttackDelay < _maxAttackDelay)
         {
@@ -83,11 +79,6 @@ public class EntityAttack : MonoBehaviour, IPausable
     protected virtual void Attack(EntityHealth target)
     {
 
-    }
-
-    public LayerMask GetIgnoredLayers()
-    {
-        return _layersToInclude;
     }
 
     protected void SetTarget(GameObject target)

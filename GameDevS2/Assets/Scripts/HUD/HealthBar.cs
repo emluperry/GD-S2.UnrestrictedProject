@@ -8,7 +8,7 @@ public class HealthBar : MonoBehaviour
 {
     [SerializeField] private SlicedFilledImage _barSlider;
     [SerializeField] private Image _shieldImage;
-    private TextMeshProUGUI _shieldText;
+    [SerializeField] private TextMeshProUGUI _shieldText;
     private int _maxHealth = 0;
     private int _currentHealth = 0;
 
@@ -19,7 +19,9 @@ public class HealthBar : MonoBehaviour
 
     private void Awake()
     {
-        _shieldText = _shieldImage.GetComponent<TextMeshProUGUI>();
+        if(!_shieldText)
+            _shieldText = _shieldImage.GetComponentInChildren<TextMeshProUGUI>();
+
         _standardShieldColor = _shieldImage.color;
     }
 
@@ -27,6 +29,10 @@ public class HealthBar : MonoBehaviour
     {
         _maxHealth = max;
         _currentHealth = max;
+        _currentShields = 0;
+
+        UpdateHealthUI();
+        UpdateShieldUI();
     }
 
     private int DamageShield(int dmg)
@@ -40,11 +46,8 @@ public class HealthBar : MonoBehaviour
         {
             int remainder = Mathf.Abs(_currentShields);
             _currentShields = 0;
-            UpdateShieldUI();
             return remainder;
         }
-
-        UpdateShieldUI();
 
         return 0;
     }
@@ -61,6 +64,7 @@ public class HealthBar : MonoBehaviour
         _currentHealth = Mathf.Clamp(_currentHealth, 0, _maxHealth);
 
         UpdateHealthUI();
+        UpdateShieldUI();
     }
 
     public void HealHealth(int amount)
@@ -77,6 +81,7 @@ public class HealthBar : MonoBehaviour
     public void IncreaseShield(int amount)
     {
         _currentShields += amount;
+        UpdateShieldUI();
     }
 
     private void UpdateHealthUI()
