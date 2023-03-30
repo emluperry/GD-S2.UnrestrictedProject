@@ -7,6 +7,17 @@ using UnityEngine.Windows;
 
 public class PlayerInitialiser : MonoBehaviour
 {
+    public EntityHealth health { private set; get; }
+    public PlayerCards cards { private set; get; }
+    public PlayerTargeting targeting { private set; get; }
+
+    private void Awake()
+    {
+        health = GetComponent<EntityHealth>();
+        cards = GetComponent<PlayerCards>();
+        targeting = GetComponent<PlayerTargeting>();
+    }
+
     public void InitialisePlayerInput(Dictionary<string, InputAction> inputs)
     {
         IInput[] inputComponents = GetComponents<IInput>();

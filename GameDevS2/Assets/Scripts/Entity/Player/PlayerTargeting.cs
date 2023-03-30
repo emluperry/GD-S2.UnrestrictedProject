@@ -6,7 +6,7 @@ using UnityEngine.InputSystem;
 
 public class PlayerTargeting : MonoBehaviour, IInput, IPausable
 {
-    private List<GameObject> _targetArray = new List<GameObject>();
+    private List<EnemyInitialiser> _targetArray = new List<EnemyInitialiser>();
     private int _currentTargetIndex = -1;
 
     //target input
@@ -17,7 +17,7 @@ public class PlayerTargeting : MonoBehaviour, IInput, IPausable
     [SerializeField] private float _targetSwapMaxDelay = 1f;
     private float _currentSwapDelay = 1f;
 
-    public Action<GameObject> onTargetChanged;
+    public Action<Transform> onTargetChanged;
 
     private bool _isPaused = false;
 
@@ -85,7 +85,7 @@ public class PlayerTargeting : MonoBehaviour, IInput, IPausable
             onTargetChanged?.Invoke(null);
         else
         {
-            onTargetChanged?.Invoke(_targetArray[_currentTargetIndex]);
+            onTargetChanged?.Invoke(_targetArray[_currentTargetIndex].transform);
         }
 
         _currentSwapDelay = 0;
@@ -99,16 +99,16 @@ public class PlayerTargeting : MonoBehaviour, IInput, IPausable
         }
     }
 
-    public void SetEnemyList(GameObject[] enemy)
+    public void SetEnemyList(EnemyInitialiser[] enemy)
     {
         ClearTargetList();
 
-        _targetArray = new List<GameObject>();
+        _targetArray = new List<EnemyInitialiser>();
 
         for(int i = 0; i < enemy.Length; i++)
         {
             _targetArray.Add(enemy[i]);
-            enemy[i].GetComponent<EntityHealth>().onDead += RemoveEnemy;
+            enemy[i].health.onDead += RemoveEnemy;
         }
     }
 
@@ -116,7 +116,7 @@ public class PlayerTargeting : MonoBehaviour, IInput, IPausable
     {
         enemyHealth.onDead -= RemoveEnemy;
 
-        _targetArray.Remove(enemyHealth.gameObject);
+        _targetArray.Remove(enemyHealth.GetComponent<EnemyInitialiser>());
 
         Mathf.Clamp(_currentTargetIndex, 0, _targetArray.Count - 1);
 
@@ -127,7 +127,7 @@ public class PlayerTargeting : MonoBehaviour, IInput, IPausable
             return;
         }
 
-        onTargetChanged?.Invoke(_targetArray[_currentTargetIndex]);
+        onTargetChanged?.Invoke(_targetArray[_currentTargetIndex].transform);
     }
 
     private void ClearTargetList()

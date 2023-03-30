@@ -81,7 +81,7 @@ public class EntityAttack : MonoBehaviour, IPausable
 
     }
 
-    protected void SetTarget(GameObject target)
+    protected void SetTarget(Transform target)
     {
         if (target == null)
             _targetHealth = null;

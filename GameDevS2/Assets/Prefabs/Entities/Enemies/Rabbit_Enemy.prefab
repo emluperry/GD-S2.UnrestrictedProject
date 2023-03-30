@@ -13,6 +13,11 @@ PrefabInstance:
       propertyPath: m_Center.y
       value: 0.5
       objectReference: {fileID: 0}
+    - target: {fileID: 1950224658450574836, guid: dbbdc428fe812a348b8ac2bd124983fd,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -0.8
+      objectReference: {fileID: 0}
     - target: {fileID: 3115612306941580799, guid: dbbdc428fe812a348b8ac2bd124983fd,
         type: 3}
       propertyPath: _currentState
@@ -86,8 +91,13 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6389987927970900070, guid: dbbdc428fe812a348b8ac2bd124983fd,
         type: 3}
+      propertyPath: _maxSpeed
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6389987927970900070, guid: dbbdc428fe812a348b8ac2bd124983fd,
+        type: 3}
       propertyPath: _brakingForce
-      value: 50
+      value: 25
       objectReference: {fileID: 0}
     - target: {fileID: 6389987927970900070, guid: dbbdc428fe812a348b8ac2bd124983fd,
         type: 3}

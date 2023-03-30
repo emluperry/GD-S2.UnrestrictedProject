@@ -9,7 +9,7 @@ public class EnemySpawner : MonoBehaviour
     [SerializeField] private GameObject _walls;
 
     [SerializeField] private GameObject[] _enemiesToSpawn;
-    private GameObject[] _enemiesSpawned;
+    private EnemyInitialiser[] _enemiesSpawned;
 
     public Action<EnemySpawner> onEnemiesSpawned;
 
@@ -17,17 +17,17 @@ public class EnemySpawner : MonoBehaviour
     {
         _trigger = GetComponent<Collider>();
 
-        _enemiesSpawned = new GameObject[_enemiesToSpawn.Length];
+        _enemiesSpawned = new EnemyInitialiser[_enemiesToSpawn.Length];
         for (int i = 0; i < _enemiesToSpawn.Length; i++)
         {
-            GameObject enemy = Instantiate(_enemiesToSpawn[i], transform);
-            enemy.SetActive(false);
+            EnemyInitialiser enemy = Instantiate(_enemiesToSpawn[i], transform).GetComponent<EnemyInitialiser>();
+            enemy.gameObject.SetActive(false);
             _enemiesSpawned[i] = enemy;
 
         }
     }
 
-    public GameObject[] GetEnemyArray()
+    public EnemyInitialiser[] GetEnemyArray()
     {
         return _enemiesSpawned;
     }
@@ -37,9 +37,9 @@ public class EnemySpawner : MonoBehaviour
         if (!other.CompareTag("Player"))
             return;
 
-        foreach (GameObject enemy in _enemiesSpawned)
+        foreach (EnemyInitialiser enemy in _enemiesSpawned)
         {
-            enemy.SetActive(true);
+            enemy.gameObject.SetActive(true);
         }
 
         onEnemiesSpawned?.Invoke(this);

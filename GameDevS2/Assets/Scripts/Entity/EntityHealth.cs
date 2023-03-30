@@ -14,7 +14,6 @@ public class EntityHealth : MonoBehaviour
     public Action<bool, int> onValueIncreased; //true for health, false for shields
     public Action<int> onDamageTaken;
 
-    public bool isDeactivated = false;
     public Action<EntityHealth> onDead;
 
     private void Awake()

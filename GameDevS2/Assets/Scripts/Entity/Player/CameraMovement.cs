@@ -293,7 +293,7 @@ public class CameraMovement : MonoBehaviour, IInput
         transform.RotateAround(_playerTransform.position, Vector3.up, maxAngle);
     }
 
-    private void SetTarget(GameObject target)
+    private void SetTarget(Transform target)
     {
         if (target == null)
         {
@@ -308,7 +308,7 @@ public class CameraMovement : MonoBehaviour, IInput
         }
         else
         {
-            _targetTransform = target.transform;
+            _targetTransform = target;
 
             if (_targetCoroutine != null)
             {

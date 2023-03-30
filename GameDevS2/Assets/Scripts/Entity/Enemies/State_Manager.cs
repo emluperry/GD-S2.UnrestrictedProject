@@ -31,8 +31,6 @@ public class State_Manager : MonoBehaviour, IPausable
 
     public void StartBehaviour(Transform player)
     {
-        return;
-
         if (_currentState == null)
             return;
 
