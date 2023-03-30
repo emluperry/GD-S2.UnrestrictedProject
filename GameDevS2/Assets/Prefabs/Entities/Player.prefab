@@ -114,7 +114,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _maxHealth: 10
-  isDeactivated: 0
 --- !u!114 &1183508227
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -142,7 +141,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3e4225e8a7ce50a4389bd56e22e47002, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _maxAttackDelay: 0.5
+  _maxAttackDelay: 1
   _attackRange: 4
   _attackPoint: {fileID: 6145217916815669187}
   _layersToInclude:
