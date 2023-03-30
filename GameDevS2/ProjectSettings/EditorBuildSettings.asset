@@ -9,7 +9,7 @@ EditorBuildSettings:
     path: Assets/Scenes/Persistent_Managers.unity
     guid: ae29ea1f5d28d304fb7ad489f2e7cdf3
   - enabled: 1
-    path: Assets/Scenes/UI Test Scene.unity
+    path: Assets/Scenes/StartScene.unity
     guid: 48985f330009c9f4d91fabd8b08ca4a4
   - enabled: 1
     path: Assets/Scenes/SampleScene.unity

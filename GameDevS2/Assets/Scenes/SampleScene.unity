@@ -1782,11 +1782,6 @@ PrefabInstance:
     serializedVersion: 2
     m_TransformParent: {fileID: 1478056077}
     m_Modifications:
-    - target: {fileID: 1594950849484802746, guid: 04d00df3ef3b35a48a754dd4f4cc214f,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 1594950849660745970, guid: 04d00df3ef3b35a48a754dd4f4cc214f,
         type: 3}
       propertyPath: _playerCardsComponent
