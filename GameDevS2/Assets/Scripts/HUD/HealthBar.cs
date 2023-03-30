@@ -31,6 +31,8 @@ public class HealthBar : MonoBehaviour
         _currentHealth = max;
         _currentShields = 0;
 
+        _standardShieldColor = _shieldImage.color;
+
         UpdateHealthUI();
         UpdateShieldUI();
     }
@@ -92,6 +94,11 @@ public class HealthBar : MonoBehaviour
     private void UpdateShieldUI()
     {
         _shieldText.text = _currentShields.ToString();
+
+        if (_currentShields <= 0)
+            _shieldImage.gameObject.SetActive(false);
+        else
+            _shieldImage.gameObject.SetActive(true);
 
         if (_currentShields <= _criticalShieldsNum)
             _shieldImage.color = _criticalShieldColor;
