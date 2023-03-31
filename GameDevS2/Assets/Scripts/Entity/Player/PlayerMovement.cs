@@ -95,7 +95,7 @@ public class PlayerMovement : EntityMovement, IInput
 
             //update input direction
             _moveDirection = _cameraTransform.TransformDirection(_moveInput);
-            _moveDirection = new Vector3(_moveDirection.x, 0, _moveDirection.z);
+            _moveDirection = new Vector3(_moveDirection.x, 0, _moveDirection.z).normalized;
 
             MoveEntity();
             RotateEntity();
