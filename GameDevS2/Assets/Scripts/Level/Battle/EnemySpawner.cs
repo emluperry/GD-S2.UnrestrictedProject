@@ -6,6 +6,7 @@ using UnityEngine;
 public class EnemySpawner : MonoBehaviour
 {
     private Collider _trigger;
+    [SerializeField] private ParticleSystem _particles;
     [SerializeField] private GameObject _walls;
 
     [SerializeField] private GameObject[] _enemiesToSpawn;
@@ -16,6 +17,8 @@ public class EnemySpawner : MonoBehaviour
     private void Awake()
     {
         _trigger = GetComponent<Collider>();
+        if(!_particles)
+            _particles = GetComponentInChildren<ParticleSystem>();
 
         _enemiesSpawned = new EnemyInitialiser[_enemiesToSpawn.Length];
         for (int i = 0; i < _enemiesToSpawn.Length; i++)
@@ -45,7 +48,9 @@ public class EnemySpawner : MonoBehaviour
         onEnemiesSpawned?.Invoke(this);
 
         //start battle
-        GetComponent<MeshRenderer>().enabled = false;
+        _particles.Clear();
+        _particles.Stop();
+
         _trigger.enabled = false;
 
         _walls.SetActive(true);
