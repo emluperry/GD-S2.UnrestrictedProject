@@ -12,12 +12,15 @@ public class PlayerInitialiser : MonoBehaviour
     public PlayerCards cards { private set; get; }
     public PlayerTargeting targeting { private set; get; }
 
+    public EntityAnimation entityAnimation { private set; get; }
+
     private void Awake()
     {
         health = GetComponent<EntityHealth>();
         cards = GetComponent<PlayerCards>();
         targeting = GetComponent<PlayerTargeting>();
         movement = GetComponent<PlayerMovement>();
+        entityAnimation = GetComponent<EntityAnimation>();
 
         health.onDead += PlayerKilled;
     }

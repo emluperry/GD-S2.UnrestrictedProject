@@ -40,7 +40,7 @@ Transform:
   - {fileID: 6145217916815669187}
   - {fileID: 1771497162580053653}
   m_Father: {fileID: 0}
-  m_RootOrder: 0
+  m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!54 &4712099641825242219
 Rigidbody:
@@ -65,7 +65,7 @@ BoxCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4712099641825242513}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: 818b915748346654a803efca8db9e0e9, type: 2}
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
@@ -98,7 +98,7 @@ MonoBehaviour:
   _maxSpeed: 10
   _maxAccelerationForce: 20
   _brakingForce: 100
-  _maxRotationSpeed: 3000
+  _maxRotationSpeed: 1000
   _rotationDampener: 5
   _cameraTransform: {fileID: 0}
 --- !u!114 &2277167192323192351

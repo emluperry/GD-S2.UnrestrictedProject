@@ -31,5 +31,5 @@ MonoBehaviour:
     isPausable: 1
   - sEnum: 4
     levelNum: 2
-    sceneName: SampleScene
+    sceneName: World
     isPausable: 1
