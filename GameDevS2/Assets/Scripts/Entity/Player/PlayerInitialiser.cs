@@ -22,7 +22,11 @@ public class PlayerInitialiser : MonoBehaviour
         movement = GetComponent<PlayerMovement>();
         entityAnimation = GetComponent<EntityAnimation>();
 
+        entityAnimation.SetupValues(movement.GetMaxSpeed());
+
+        //events
         health.onDead += PlayerKilled;
+        health.onDead += entityAnimation.OnDead;
     }
 
     private void OnDestroy()
@@ -30,6 +34,7 @@ public class PlayerInitialiser : MonoBehaviour
         health.onDead -= PlayerKilled;
     }
 
+    #region INPUT
     public void InitialisePlayerInput(Dictionary<string, InputAction> inputs)
     {
         IInput[] inputComponents = GetComponents<IInput>();
@@ -65,8 +70,9 @@ public class PlayerInitialiser : MonoBehaviour
             }
         }
     }
+    #endregion
 
-
+    #region PAUSE
     public void InitialisePauseEvents(ref Action<bool> onLoadPause)
     {
         IPausable[] pausableComponents = GetComponents<IPausable>();
@@ -90,6 +96,7 @@ public class PlayerInitialiser : MonoBehaviour
             }
         }
     }
+    #endregion
 
     private void PlayerKilled(EntityHealth playerHealth)
     {
