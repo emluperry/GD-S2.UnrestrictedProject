@@ -2,18 +2,21 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using static UnityEngine.GraphicsBuffer;
 
 public class EntityAnimation : MonoBehaviour, IInput, IPausable
 {
     //input actions
     private InputAction _moveInput;
     private InputAction _jumpInput;
+    private InputAction _attackInput;
 
     private Coroutine _moveCoroutine;
 
     //components
     private Animator _animator;
     private Rigidbody _rb;
+    private PlayerAttack _playerAttack;
 
     //constraints
     private float _maxSpeed = 0f;
@@ -24,7 +27,10 @@ public class EntityAnimation : MonoBehaviour, IInput, IPausable
     private void Awake()
     {
         _animator = GetComponentInChildren<Animator>();
-        _rb = GetComponentInChildren<Rigidbody>();
+        _rb = GetComponent<Rigidbody>();
+
+        _playerAttack = GetComponent<PlayerAttack>();
+        _playerAttack.onCardUsed += Handle_AttackAnimation;
     }
 
     private void OnDestroy()
@@ -83,6 +89,23 @@ public class EntityAnimation : MonoBehaviour, IInput, IPausable
             _animator.SetBool("Fall_b", false);
             _isGrounded = false;
         }
+    }
+
+    private void Handle_AttackAnimation(GDS2_Cards.CARD_TYPE cardType)
+    {
+        switch (cardType)
+        {
+            case GDS2_Cards.CARD_TYPE.ATTACK:
+                _animator.SetTrigger("Attack_t");
+                break;
+            case GDS2_Cards.CARD_TYPE.HEALTH:
+                _animator.SetTrigger("Magic_t");
+                break;
+            case GDS2_Cards.CARD_TYPE.DEFENSE:
+                _animator.SetTrigger("Shield_t");
+                break;
+        }
+        
     }
 
     #endregion
