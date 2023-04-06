@@ -6,7 +6,7 @@ using UnityEngine.InputSystem;
 
 public class PlayerCards : MonoBehaviour, IInput, IPausable
 {
-    private bool _isInCombat = false;
+    public bool isInCombat { get; private set; } = false;
 
     [SerializeField] private Inventory_Card_Value_Pair[] _cards;
     private int[] _deckArray;
@@ -30,7 +30,6 @@ public class PlayerCards : MonoBehaviour, IInput, IPausable
 
     //input: discard & draw
     private InputAction _drawInputAction;
-    private bool _drawInput;
 
     [Header("Cooldown Values")]
     //delay between swap inputs
@@ -82,7 +81,7 @@ public class PlayerCards : MonoBehaviour, IInput, IPausable
 
     private void OnDestroy()
     {
-        if(_isInCombat)
+        if(isInCombat)
             EndBattle();
     }
 
@@ -125,7 +124,7 @@ public class PlayerCards : MonoBehaviour, IInput, IPausable
 
     public void InitialiseBattle()
     {
-        _isInCombat = true;
+        isInCombat = true;
 
         //input to swap active card
         EnableInput();
@@ -157,7 +156,7 @@ public class PlayerCards : MonoBehaviour, IInput, IPausable
 
     public void EndBattle()
     {
-        _isInCombat = false;
+        isInCombat = false;
 
         DisableInput();
 

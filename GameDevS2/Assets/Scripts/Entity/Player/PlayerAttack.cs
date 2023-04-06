@@ -62,7 +62,7 @@ public class PlayerAttack : EntityAttack, IInput
 
     private void Input_AttackPerformed(InputAction.CallbackContext ctx)
     {
-        if (_isPaused)
+        if (_isPaused || !_playerCardsComponent.isInCombat)
             return;
 
         _isAttackPressed = ctx.ReadValueAsButton();
