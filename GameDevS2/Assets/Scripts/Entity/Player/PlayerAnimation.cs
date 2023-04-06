@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using static UnityEngine.GraphicsBuffer;
 
 public class PlayerAnimation : EntityAnimation, IInput
 {
@@ -60,13 +59,7 @@ public class PlayerAnimation : EntityAnimation, IInput
 
     private void Handle_MovePerformed(InputAction.CallbackContext ctx)
     {
-        Debug.Log("Move performed");
-        if (_moveCoroutine == null && _maxSpeed > 0)
-        {
-            Debug.Log("Trying to start coroutine");
-
-            _moveCoroutine = StartCoroutine(c_MovementCoroutine());
-        }
+        StartMovement();
     }
 
     private void Handle_JumpPerformed(InputAction.CallbackContext ctx)

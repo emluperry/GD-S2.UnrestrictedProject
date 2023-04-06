@@ -118,6 +118,7 @@ GameObject:
   - component: {fileID: 3115612306941580799}
   - component: {fileID: 8620902374982283758}
   - component: {fileID: 6389987927970900070}
+  - component: {fileID: 3197889162061426615}
   m_Layer: 6
   m_Name: Enemy
   m_TagString: Enemy
@@ -249,6 +250,51 @@ MonoBehaviour:
   _brakingForce: 5
   _maxRotationSpeed: 5
   _rotationDampener: 3
+--- !u!114 &3197889162061426615
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6782260923424439368}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b386696954894345bde46392eab9440, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _locomotionCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 5
+      outSlope: 5
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.05
+      value: 0.25
+      inSlope: 5
+      outSlope: 0.7894737
+      tangentMode: 69
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0.7894737
+      outSlope: 0.7894737
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1 &7056385964001110696
 GameObject:
   m_ObjectHideFlags: 0

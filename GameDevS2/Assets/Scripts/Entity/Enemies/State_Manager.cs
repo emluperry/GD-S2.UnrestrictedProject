@@ -8,10 +8,11 @@ public class State_Manager : MonoBehaviour, IPausable
     [SerializeField] private Scriptable_State _currentState;
 
     //other components - public in order for states to access it
-    [HideInInspector] public EnemyMovement enemyMovement;
-    [HideInInspector] public EnemyAttack enemyAttack;
+    public EnemyMovement enemyMovement { get; private set; }
+    public EnemyAttack enemyAttack { get; private set; }
+    public EnemyAnimation enemyAnimation { get; private set; }
     //pathfinding details?
-    [HideInInspector] public Transform playerHealthTarget;
+    public Transform playerTransform { get; private set; }
 
     public float stateTimeElapsed;
 
@@ -20,21 +21,18 @@ public class State_Manager : MonoBehaviour, IPausable
 
     private Coroutine _behaviourCoroutine;
 
-    private void Awake()
-    {
-        //get components
-        enemyMovement = GetComponent<EnemyMovement>();
-        enemyAttack = GetComponent<EnemyAttack>();
-    }
-
     //setup pathfinding ai?
 
-    public void StartBehaviour(Transform player)
+    public void StartBehaviour(Transform player, EnemyMovement movement, EnemyAttack attack, EnemyAnimation anim)
     {
+        enemyMovement = movement;
+        enemyAttack = attack;
+        enemyAnimation = anim;
+
         if (_currentState == null)
             return;
 
-        playerHealthTarget = player;
+        playerTransform = player;
         _isActive = true;
 
         _behaviourCoroutine = StartCoroutine(c_BehaviourUpdate());

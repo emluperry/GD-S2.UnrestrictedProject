@@ -8,7 +8,7 @@ public class InRangeDecision : Scriptable_Decision
     [SerializeField] private float _attackRange = 1;
     public override bool Decide(State_Manager manager)
     {
-        if (Vector3.Distance(manager.transform.position, manager.playerHealthTarget.transform.position) <= _attackRange)
+        if (Vector3.Distance(manager.transform.position, manager.playerTransform.transform.position) <= _attackRange)
             return true;
 
         return false;

@@ -7,6 +7,8 @@ public class EnemyInitialiser : MonoBehaviour
     //Component references
     private HealthBar _enemyHealthBar;
     private EnemyMovement _enemyMovement;
+    private EnemyAnimation _enemyAnimation;
+    private EnemyAttack _enemyAttack;
     public EntityHealth health { private set; get; }
 
     private State_Manager _stateMachine;
@@ -15,21 +17,26 @@ public class EnemyInitialiser : MonoBehaviour
 
     private void Awake()
     {
+        _stateMachine = GetComponent<State_Manager>();
+
         _enemyHealthBar = GetComponentInChildren<HealthBar>();
         health = GetComponent<EntityHealth>();
         _enemyMovement = GetComponent<EnemyMovement>();
-        _stateMachine = GetComponent<State_Manager>();
+        _enemyAnimation = GetComponent<EnemyAnimation>();
+        _enemyAttack = GetComponent<EnemyAttack>();
     }
 
     public void SetupEnemy(Transform player, Transform camera)
     {
+        _enemyAnimation.SetupValues(_enemyMovement.GetMaxSpeed());
+
         health.onDamageTaken += _enemyHealthBar.TakeDamage;
         health.onValueIncreased += UpdateValue;
 
         _enemyHealthBar.SetupBar(health.GetMaxHealth());
         _enemyMovement.SetupCanvasReference(_enemyHealthBar.transform.parent, camera);
 
-        _stateMachine.StartBehaviour(player);
+        _stateMachine.StartBehaviour(player, _enemyMovement, _enemyAttack, _enemyAnimation);
 
         isDeactivated = false;
     }

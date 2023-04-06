@@ -49,6 +49,14 @@ public class EntityAnimation : MonoBehaviour, IPausable
         }
     }
 
+    protected virtual void StartMovement()
+    {
+        if (_moveCoroutine == null && _maxSpeed > 0)
+        {
+            _moveCoroutine = StartCoroutine(c_MovementCoroutine());
+        }
+    }
+
     protected virtual IEnumerator c_MovementCoroutine()
     {
         yield return new WaitForSeconds(0.05f);
@@ -62,7 +70,6 @@ public class EntityAnimation : MonoBehaviour, IPausable
 
             float moveSpeed = velocity.magnitude;
             moveSpeed = Mathf.Clamp01(moveSpeed / _maxSpeed);
-            Debug.Log(moveSpeed);
 
             _animator.SetFloat("Speed_f", _locomotionCurve.Evaluate(moveSpeed));
 
