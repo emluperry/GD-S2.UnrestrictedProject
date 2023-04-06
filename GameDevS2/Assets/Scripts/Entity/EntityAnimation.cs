@@ -1,116 +1,40 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.InputSystem;
-using static UnityEngine.GraphicsBuffer;
 
-public class EntityAnimation : MonoBehaviour, IInput, IPausable
+public class EntityAnimation : MonoBehaviour, IPausable
 {
-    //input actions
-    private InputAction _moveInput;
-    private InputAction _jumpInput;
-    private InputAction _attackInput;
-
-    private Coroutine _moveCoroutine;
+    protected Coroutine _moveCoroutine;
 
     //components
-    private Animator _animator;
-    private Rigidbody _rb;
-    private PlayerAttack _playerAttack;
+    protected Animator _animator;
+    protected Rigidbody _rb;
 
     //constraints
-    private float _maxSpeed = 0f;
-    private bool _isGrounded = true;
+    [Header("Motion")]
+    [SerializeField] private AnimationCurve _locomotionCurve;
+    protected float _maxSpeed = 0f;
+    protected bool _isGrounded = true;
 
-    private bool _isPaused = false;
+    protected bool _isPaused = false;
 
-    private void Awake()
+    protected virtual void Awake()
     {
         _animator = GetComponentInChildren<Animator>();
         _rb = GetComponent<Rigidbody>();
-
-        _playerAttack = GetComponent<PlayerAttack>();
-        _playerAttack.onCardUsed += Handle_AttackAnimation;
     }
 
-    private void OnDestroy()
+    protected virtual void OnDestroy()
     {
-        DisableInput();
+
     }
 
-    public void SetupValues(float maxSpeed)
+    public virtual void SetupValues(float maxSpeed)
     {
         _maxSpeed = maxSpeed;
     }
 
-    #region INPUT SETUP
-    public void SetupInput(Dictionary<string, InputAction> inputs)
-    {
-        _moveInput = inputs["Move"];
-        _jumpInput = inputs["Jump"];
-
-        EnableInput();
-    }
-
-    public void EnableInput()
-    {
-        if (_moveInput != null)
-        {
-            _moveInput.performed += Handle_MovePerformed;
-            _jumpInput.performed += Handle_JumpPerformed;
-        }
-    }
-
-    public void DisableInput()
-    {
-        if(_moveInput != null)
-        {
-            _moveInput.performed -= Handle_MovePerformed;
-            _jumpInput.performed -= Handle_JumpPerformed;
-        }
-    }
-    #endregion
-
-    #region INPUT
-
-    private void Handle_MovePerformed(InputAction.CallbackContext ctx)
-    {
-        if(_moveCoroutine == null)
-        {
-            _moveCoroutine = StartCoroutine(c_MovementCoroutine());
-        }
-    }
-
-    private void Handle_JumpPerformed(InputAction.CallbackContext ctx)
-    {
-        if(_isGrounded)
-        {
-            _animator.SetTrigger("Jump_t");
-            _animator.SetBool("Fall_b", false);
-            _isGrounded = false;
-        }
-    }
-
-    private void Handle_AttackAnimation(GDS2_Cards.CARD_TYPE cardType)
-    {
-        switch (cardType)
-        {
-            case GDS2_Cards.CARD_TYPE.ATTACK:
-                _animator.SetTrigger("Attack_t");
-                break;
-            case GDS2_Cards.CARD_TYPE.HEALTH:
-                _animator.SetTrigger("Magic_t");
-                break;
-            case GDS2_Cards.CARD_TYPE.DEFENSE:
-                _animator.SetTrigger("Shield_t");
-                break;
-        }
-        
-    }
-
-    #endregion
-
-    protected void FixedUpdate()
+    protected virtual void FixedUpdate()
     {
         if (Physics.Raycast(transform.position, Vector3.down, out RaycastHit hit, 1f))
         {
@@ -125,23 +49,24 @@ public class EntityAnimation : MonoBehaviour, IInput, IPausable
         }
     }
 
-    private IEnumerator c_MovementCoroutine()
+    protected virtual IEnumerator c_MovementCoroutine()
     {
-        if(_maxSpeed <= 0) //do not run if max speed has not been setup as cannot divide by 0
-        {
-            _moveCoroutine = null;
-            yield break;
-        }
+        yield return new WaitForSeconds(0.05f);
 
-        while (new Vector2(_rb.velocity.x, _rb.velocity.z).sqrMagnitude > 0)
+        Vector2 velocity = new Vector2(_rb.velocity.x, _rb.velocity.z);
+
+        while (velocity.sqrMagnitude > 0)
         {
             yield return new WaitUntil(() => !_isPaused);
             yield return new WaitForFixedUpdate();
 
-            float moveSpeed = _rb.velocity.magnitude;
+            float moveSpeed = velocity.magnitude;
             moveSpeed = Mathf.Clamp01(moveSpeed / _maxSpeed);
+            Debug.Log(moveSpeed);
 
-            _animator.SetFloat("Speed_f", moveSpeed);
+            _animator.SetFloat("Speed_f", _locomotionCurve.Evaluate(moveSpeed));
+
+            velocity = new Vector2(_rb.velocity.x, _rb.velocity.z);
         }
 
         _animator.SetFloat("Speed_f", 0);

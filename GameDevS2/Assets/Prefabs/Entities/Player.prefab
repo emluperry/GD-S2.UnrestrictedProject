@@ -1258,7 +1258,7 @@ GameObject:
   - component: {fileID: 4712099643007683436}
   - component: {fileID: 3456276136509971084}
   - component: {fileID: 1183508231}
-  - component: {fileID: 4986689092103892270}
+  - component: {fileID: 6953660940720612228}
   m_Layer: 3
   m_Name: Player
   m_TagString: Player
@@ -1281,7 +1281,7 @@ Transform:
   - {fileID: 6145217916815669187}
   - {fileID: 1771497162580053653}
   m_Father: {fileID: 0}
-  m_RootOrder: 0
+  m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!54 &4712099641825242219
 Rigidbody:
@@ -1427,7 +1427,7 @@ MonoBehaviour:
   _swapDelay: 0.1
   _maxDrawDelay: 1
   _maxDeckRefreshDelay: 5
---- !u!114 &4986689092103892270
+--- !u!114 &6953660940720612228
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1436,9 +1436,42 @@ MonoBehaviour:
   m_GameObject: {fileID: 4712099641825242513}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8a4b19425c4111043bb7446353192da9, type: 3}
+  m_Script: {fileID: 11500000, guid: 632ca5efe2c45f5468b17e7aa9797216, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _locomotionCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 5
+      outSlope: 5
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.05
+      value: 0.25
+      inSlope: 5
+      outSlope: 0.7894737
+      tangentMode: 69
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0.7894737
+      outSlope: 0.7894737
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1 &5074712731418468296
 GameObject:
   m_ObjectHideFlags: 0
