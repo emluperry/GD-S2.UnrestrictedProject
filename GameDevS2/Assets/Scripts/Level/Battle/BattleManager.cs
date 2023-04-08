@@ -7,6 +7,7 @@ public class BattleManager : MonoBehaviour
 {
     [Header("External References")]
     [SerializeField] private HUD_Manager _hudManager;
+    private SoundTrigger _soundTrigger;
 
     [SerializeField] private Transform _playerObject;
     private PlayerInitialiser _player;
@@ -20,6 +21,7 @@ public class BattleManager : MonoBehaviour
     private void Awake()
     {
         _player = _playerObject.GetComponent<PlayerInitialiser>();
+        _soundTrigger = GetComponent<SoundTrigger>();
 
         foreach(Transform child in _spawnerObjects)
         {
@@ -54,6 +56,8 @@ public class BattleManager : MonoBehaviour
             return;
         }
 
+        _soundTrigger.TriggerSound(true);
+
         _activeSpawner = spawner;
 
         EnemyInitialiser[] enemyList = _activeSpawner.GetEnemyArray();
@@ -79,6 +83,8 @@ public class BattleManager : MonoBehaviour
 
     private void EndBattle()
     {
+        _soundTrigger.TriggerSound(false);
+
         EnemyInitialiser[] enemyList = _activeSpawner.GetEnemyArray();
 
         foreach (EnemyInitialiser enemy in enemyList)

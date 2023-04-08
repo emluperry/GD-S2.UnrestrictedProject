@@ -155,6 +155,9 @@ public class Scene_Manager : MonoBehaviour
             _levelManager.battleManager.onGameOver -= _uiManager.HandleGameOver;
             _levelManager.player.StopListeningForPause(ref _uiManager.pauseHandler.onLoadPause);
         }
+
+        if (_inputManager)
+            _inputManager.DisableLevelInput();
     }
 
     private void QuitApp()
