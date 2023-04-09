@@ -21,12 +21,14 @@ public class UI_Screen : MonoBehaviour
     {
         foreach(UI_ButtonInfo pair in _uiButtons)
         {
+            pair.button.SetupElement();
             pair.StartListeningForEvents();
             pair.onButtonClicked += HandleUIButton;
         }
 
         foreach (Scene_ButtonInfo pair in _sceneButtons)
         {
+            pair.button.SetupElement();
             pair.StartListeningForEvents();
             pair.onButtonClicked += HandleSceneButton;
         }

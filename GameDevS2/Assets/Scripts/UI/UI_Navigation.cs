@@ -35,7 +35,7 @@ public class UI_Navigation : MonoBehaviour, IInput
         //shoulder buttons
         List<UI_OnClickButton> shoulderButtonList = new List<UI_OnClickButton>();
 
-        foreach(HorizontalOrVerticalLayoutGroup group in _shoulderToggleGroups)
+        foreach (HorizontalOrVerticalLayoutGroup group in _shoulderToggleGroups)
         {
             shoulderButtonList.AddRange(group.GetComponentsInChildren<UI_OnClickButton>(true));
         }
@@ -45,6 +45,8 @@ public class UI_Navigation : MonoBehaviour, IInput
 
         //move buttons
         _currentUIElement = _movementParent.GetComponentInChildren<UI_Element>();
+
+
     }
 
     private void Start()
