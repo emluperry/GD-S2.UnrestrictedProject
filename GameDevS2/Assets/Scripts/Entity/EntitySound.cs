@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EntitySound : MonoBehaviour
+public class EntitySound : MonoBehaviour, IGroundable
 {
     //components
     protected AudioSource _source;
     protected EntityHealth _health;
+
+    protected bool _isGrounded = true;
 
     //common sounds
     [Header("Common sounds")]
@@ -33,6 +35,16 @@ public class EntitySound : MonoBehaviour
     protected virtual void OnDestroy()
     {
         _health.onDead -= PlayDie;
+    }
+
+    public void UpdateGrounded(bool isGrounded)
+    {
+        _isGrounded = isGrounded;
+
+        if (isGrounded)
+        {
+            PlayLand();
+        }
     }
 
     protected IEnumerator c_PlayRepeatedSound(AudioClip[] sounds, float delay)

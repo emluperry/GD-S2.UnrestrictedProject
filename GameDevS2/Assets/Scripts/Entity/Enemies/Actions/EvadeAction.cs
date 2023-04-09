@@ -18,17 +18,19 @@ public class EvadeAction : Scriptable_Action
             //get direction away from player
             differenceVector = (manager.playerTransform.position - manager.transform.position);
             direction = new Vector3(differenceVector.x, 0, differenceVector.z).normalized * -1;
+
+            manager.enemyMovement.StartMovement(direction);
+            manager.enemyAnimation.StartMovementAnimation();
+            manager.enemySound.PlayMovementSounds();
         }
         else
         {
             manager.enemyMovement.StopMovement();
+            manager.enemySound.PlayIdleSounds();
             //strafe? check which directions are possible
             //_moveDirection = _cameraTransform.TransformDirection(_moveInput);
-            //_moveDirection = new Vector3(_moveDirection.x, 0, _moveDirection.z);
+            //_moveDirection = new Vector3(_moveDirection.x, 0, _moveDirection.z); <- code for player strafe
         }
-
-        manager.enemyMovement.StartMovement(direction);
-        manager.enemyAnimation.StartMovementAnimation();
     }
 
     public override void Exit(State_Manager manager)

@@ -8,6 +8,7 @@ public class EnemyInitialiser : MonoBehaviour
     private HealthBar _enemyHealthBar;
     private EnemyMovement _enemyMovement;
     private EnemyAnimation _enemyAnimation;
+    private EnemySound _enemySound;
     private EnemyAttack _enemyAttack;
     public EntityHealth health { private set; get; }
 
@@ -23,6 +24,7 @@ public class EnemyInitialiser : MonoBehaviour
         health = GetComponent<EntityHealth>();
         _enemyMovement = GetComponent<EnemyMovement>();
         _enemyAnimation = GetComponent<EnemyAnimation>();
+        _enemySound = GetComponent<EnemySound>();
         _enemyAttack = GetComponent<EnemyAttack>();
     }
 
@@ -36,7 +38,7 @@ public class EnemyInitialiser : MonoBehaviour
         _enemyHealthBar.SetupBar(health.GetMaxHealth());
         _enemyMovement.SetupCanvasReference(_enemyHealthBar.transform.parent, camera);
 
-        _stateMachine.StartBehaviour(player, _enemyMovement, _enemyAttack, _enemyAnimation);
+        _stateMachine.StartBehaviour(player, _enemyMovement, _enemyAttack, _enemyAnimation, _enemySound);
 
         isDeactivated = false;
     }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class PlayerSound : EntitySound, IInput, IGroundable
+public class PlayerSound : EntitySound, IInput
 {
     protected PlayerAttack _playerAttack;
 
@@ -11,8 +11,6 @@ public class PlayerSound : EntitySound, IInput, IGroundable
     protected InputAction _moveInput;
     protected InputAction _jumpInput;
     protected InputAction _drawInput;
-
-    protected bool _isGrounded = true;
 
     //extra sound
     [Header("Additional Sounds")]
@@ -113,16 +111,6 @@ public class PlayerSound : EntitySound, IInput, IGroundable
 
     }
     #endregion
-
-    public void UpdateGrounded(bool isGrounded)
-    {
-        _isGrounded = isGrounded;
-
-        if(isGrounded)
-        {
-            PlayLand();
-        }
-    }
 
     protected void PlayMagic()
     {

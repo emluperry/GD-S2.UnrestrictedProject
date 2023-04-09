@@ -13,10 +13,12 @@ public class ChaseAction : Scriptable_Action
 
         manager.enemyMovement.StartMovement(direction);
         manager.enemyAnimation.StartMovementAnimation();
+        manager.enemySound.PlayMovementSounds();
     }
 
     public override void Exit(State_Manager manager)
     {
         manager.enemyMovement.StopMovement();
+        manager.enemySound.PlayIdleSounds();
     }
 }

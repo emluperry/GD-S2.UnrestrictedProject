@@ -11,6 +11,7 @@ public class State_Manager : MonoBehaviour, IPausable
     public EnemyMovement enemyMovement { get; private set; }
     public EnemyAttack enemyAttack { get; private set; }
     public EnemyAnimation enemyAnimation { get; private set; }
+    public EnemySound enemySound { get; private set; }
     //pathfinding details?
     public Transform playerTransform { get; private set; }
 
@@ -23,11 +24,12 @@ public class State_Manager : MonoBehaviour, IPausable
 
     //setup pathfinding ai?
 
-    public void StartBehaviour(Transform player, EnemyMovement movement, EnemyAttack attack, EnemyAnimation anim)
+    public void StartBehaviour(Transform player, EnemyMovement movement, EnemyAttack attack, EnemyAnimation anim, EnemySound sound)
     {
         enemyMovement = movement;
         enemyAttack = attack;
         enemyAnimation = anim;
+        enemySound = sound;
 
         if (_currentState == null)
             return;
