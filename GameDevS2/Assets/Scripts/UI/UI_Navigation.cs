@@ -30,8 +30,14 @@ public class UI_Navigation : MonoBehaviour, IInput
     [SerializeField] private float _inputDelay = 0.05f;
     private Coroutine _delayCoroutine;
 
+    [Header("Audio")]
+    private AudioSource _source;
+    [SerializeField] private AudioClip _swapClip;
+
     private void Awake()
     {
+        _source = GetComponent<AudioSource>();
+
         //shoulder buttons
         List<UI_OnClickButton> shoulderButtonList = new List<UI_OnClickButton>();
 
@@ -45,8 +51,6 @@ public class UI_Navigation : MonoBehaviour, IInput
 
         //move buttons
         _currentUIElement = _movementParent.GetComponentInChildren<UI_Element>();
-
-
     }
 
     private void Start()
@@ -230,6 +234,7 @@ public class UI_Navigation : MonoBehaviour, IInput
                 if (foundNextButton)
                 {
                     _currentUIElement.ActivateButtonSelection();
+                    PlaySwapSound();
                 }
                 else
                     _currentUIElement = null;
@@ -291,6 +296,17 @@ public class UI_Navigation : MonoBehaviour, IInput
         if(ctx.ReadValueAsButton() && _currentUIElement != null && _currentUIElement.gameObject.activeInHierarchy)
         {
             _currentUIElement.SelectElement();
+        }
+    }
+
+    private void PlaySwapSound()
+    {
+        if(_source)
+        {
+            if (_source.clip != _swapClip)
+                _source.clip = _swapClip;
+
+            _source.PlayOneShot(_swapClip);
         }
     }
 }

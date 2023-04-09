@@ -39,6 +39,7 @@ public class UI_SubScreens : UI_Screen
 
     protected void ChangeScreen(UI_SubScreenInfo newScreen)
     {
+        PlaySelectedSound();
         _currentScreen.DeactivateScreen();
 
         newScreen.ActivateScreen();
