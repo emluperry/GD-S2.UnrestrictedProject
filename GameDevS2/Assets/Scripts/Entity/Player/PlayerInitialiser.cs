@@ -14,6 +14,10 @@ public class PlayerInitialiser : MonoBehaviour
 
     public EntityAnimation entityAnimation { private set; get; }
 
+    public Rigidbody entityRb { private set; get; }
+
+    private bool _isGrounded = true;
+
     private void Awake()
     {
         health = GetComponent<EntityHealth>();
@@ -21,6 +25,7 @@ public class PlayerInitialiser : MonoBehaviour
         targeting = GetComponent<PlayerTargeting>();
         movement = GetComponent<PlayerMovement>();
         entityAnimation = GetComponent<EntityAnimation>();
+        entityRb = GetComponent<Rigidbody>();
 
         entityAnimation.SetupValues(movement.GetMaxSpeed());
 
@@ -32,6 +37,35 @@ public class PlayerInitialiser : MonoBehaviour
     private void OnDestroy()
     {
         health.onDead -= PlayerKilled;
+        health.onDead -= entityAnimation.OnDead;
+    }
+
+    protected void FixedUpdate()
+    {
+        bool touchingGround = Physics.Raycast(transform.position, Vector3.down, out RaycastHit hit, 1f);
+
+        if(touchingGround != _isGrounded)
+        {
+            _isGrounded = touchingGround;
+            UpdateGrounded(touchingGround);
+        }
+    }
+
+    public bool GetIsGrounded()
+    {
+        return _isGrounded;
+    }
+
+    public void UpdateGrounded(bool isGrounded)
+    {
+        IGroundable[] groundedComponents = GetComponents<IGroundable>();
+        if (groundedComponents.Length > 0)
+        {
+            foreach (IGroundable component in groundedComponents)
+            {
+                component.UpdateGrounded(isGrounded);
+            }
+        }
     }
 
     #region INPUT

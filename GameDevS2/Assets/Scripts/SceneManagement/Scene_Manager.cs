@@ -62,6 +62,7 @@ public class Scene_Manager : MonoBehaviour
 
             if(_debugSetupLevelListeners) //DEBUG ONLY FUNCTION: necessary to test levels without going through extra scenes
             {
+                _currentLevel = 1;
                 SetupLevelListeners();
             }
         }

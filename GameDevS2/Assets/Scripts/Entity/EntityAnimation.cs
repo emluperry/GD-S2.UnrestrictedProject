@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EntityAnimation : MonoBehaviour, IPausable
+public class EntityAnimation : MonoBehaviour, IPausable, IGroundable
 {
     protected Coroutine _moveCoroutine;
 
@@ -88,5 +88,12 @@ public class EntityAnimation : MonoBehaviour, IPausable
     public void OnDead(EntityHealth health)
     {
         _animator.SetBool("Dead_b", true);
+    }
+
+    public void UpdateGrounded(bool isGrounded)
+    {
+        _isGrounded = isGrounded;
+
+        _animator.SetBool("Fall_b", !_isGrounded);
     }
 }

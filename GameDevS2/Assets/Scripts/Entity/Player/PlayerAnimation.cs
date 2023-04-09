@@ -27,6 +27,10 @@ public class PlayerAnimation : EntityAnimation, IInput
         _playerAttack.onCardUsed += Handle_AttackAnimation;
     }
 
+    protected override void FixedUpdate()
+    {
+    }
+
     #region INPUT SETUP
     public void SetupInput(Dictionary<string, InputAction> inputs)
     {
