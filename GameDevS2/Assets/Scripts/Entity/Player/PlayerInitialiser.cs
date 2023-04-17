@@ -12,21 +12,63 @@ public class PlayerInitialiser : MonoBehaviour
     public PlayerCards cards { private set; get; }
     public PlayerTargeting targeting { private set; get; }
 
+    public EntityAnimation entityAnimation { private set; get; }
+
+    public Rigidbody entityRb { private set; get; }
+
+    private bool _isGrounded = true;
+
     private void Awake()
     {
         health = GetComponent<EntityHealth>();
         cards = GetComponent<PlayerCards>();
         targeting = GetComponent<PlayerTargeting>();
         movement = GetComponent<PlayerMovement>();
+        entityAnimation = GetComponent<EntityAnimation>();
+        entityRb = GetComponent<Rigidbody>();
 
+        entityAnimation.SetupValues(movement.GetMaxSpeed());
+
+        //events
         health.onDead += PlayerKilled;
+        health.onDead += entityAnimation.OnDead;
     }
 
     private void OnDestroy()
     {
         health.onDead -= PlayerKilled;
+        health.onDead -= entityAnimation.OnDead;
     }
 
+    protected void FixedUpdate()
+    {
+        bool touchingGround = Physics.Raycast(transform.position, Vector3.down, out RaycastHit hit, 1f);
+
+        if(touchingGround != _isGrounded)
+        {
+            _isGrounded = touchingGround;
+            UpdateGrounded(touchingGround);
+        }
+    }
+
+    public bool GetIsGrounded()
+    {
+        return _isGrounded;
+    }
+
+    public void UpdateGrounded(bool isGrounded)
+    {
+        IGroundable[] groundedComponents = GetComponents<IGroundable>();
+        if (groundedComponents.Length > 0)
+        {
+            foreach (IGroundable component in groundedComponents)
+            {
+                component.UpdateGrounded(isGrounded);
+            }
+        }
+    }
+
+    #region INPUT
     public void InitialisePlayerInput(Dictionary<string, InputAction> inputs)
     {
         IInput[] inputComponents = GetComponents<IInput>();
@@ -62,8 +104,9 @@ public class PlayerInitialiser : MonoBehaviour
             }
         }
     }
+    #endregion
 
-
+    #region PAUSE
     public void InitialisePauseEvents(ref Action<bool> onLoadPause)
     {
         IPausable[] pausableComponents = GetComponents<IPausable>();
@@ -87,6 +130,7 @@ public class PlayerInitialiser : MonoBehaviour
             }
         }
     }
+    #endregion
 
     private void PlayerKilled(EntityHealth playerHealth)
     {

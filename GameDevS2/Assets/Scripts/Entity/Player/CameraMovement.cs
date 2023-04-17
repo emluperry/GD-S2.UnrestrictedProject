@@ -21,7 +21,7 @@ public class CameraMovement : MonoBehaviour, IInput
     [Header("External References")]
     [SerializeField] private Transform _playerTransform;
     private Rigidbody _playerRb;
-    private PlayerJump _playerJumpComponent;
+    private PlayerInitialiser _player;
 
     [Header("Movement")]
     [SerializeField][Min(0f)] private float _maxDistFromPlayer = 5;
@@ -39,11 +39,22 @@ public class CameraMovement : MonoBehaviour, IInput
     private Coroutine _rotateCoroutine;
     private bool _isRotating = false;
 
-    void Awake()
+    private void Awake()
     {
-        _playerTransform.GetComponent<PlayerTargeting>().onTargetChanged += SetTarget;
-        _playerJumpComponent = _playerTransform.GetComponent<PlayerJump>();
-        _playerRb = _playerTransform.GetComponent<Rigidbody>();
+        _player = _playerTransform.GetComponent<PlayerInitialiser>();
+    }
+
+    private void Start()
+    {
+        _player.targeting.onTargetChanged += SetTarget;
+        _playerRb = _player.entityRb;
+
+        //reset camera pos & rot
+        transform.position = _playerTransform.position - transform.forward * _maxDistFromPlayer;
+
+        Vector2 CameraDirectionValues = new Vector2(transform.forward.x, transform.forward.z).normalized;
+        Vector2 PlayerDirectionValues = new Vector2(_playerTransform.forward.x, _playerTransform.forward.z).normalized;
+        RotateHorizontally(Vector2.SignedAngle(CameraDirectionValues, PlayerDirectionValues) * -1);
     }
 
     private void OnDestroy()
@@ -166,7 +177,7 @@ public class CameraMovement : MonoBehaviour, IInput
     private IEnumerator c_FollowCoroutine()
     {
         Vector3 oldPos;
-        while (_isMoving || !_playerJumpComponent.GetIsGrounded() || _playerRb.velocity.sqrMagnitude > Mathf.Epsilon)
+        while (_isMoving || !_player.GetIsGrounded() || _playerRb.velocity.sqrMagnitude > Mathf.Epsilon)
         {
             yield return new WaitForFixedUpdate();
 

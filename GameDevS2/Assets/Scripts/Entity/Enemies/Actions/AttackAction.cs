@@ -12,7 +12,7 @@ public class AttackAction : Scriptable_Action
     {
         //if player is in range, try to attack!!!
         manager.enemyAttack.StartAttack(_attackDamage, _attackRange);
-        Debug.Log("BITES YOU");
+        manager.enemySound.PlayAttackSound();
     }
 
     public override void Exit(State_Manager manager)

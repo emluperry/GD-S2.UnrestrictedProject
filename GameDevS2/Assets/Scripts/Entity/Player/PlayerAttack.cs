@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -12,6 +13,8 @@ public class PlayerAttack : EntityAttack, IInput
     //saved components
     protected PlayerCards _playerCardsComponent;
     protected EntityHealth _playerHealth;
+
+    public Action<GDS2_Cards.CARD_TYPE> onCardUsed;
 
     protected override void Awake()
     {
@@ -59,7 +62,7 @@ public class PlayerAttack : EntityAttack, IInput
 
     private void Input_AttackPerformed(InputAction.CallbackContext ctx)
     {
-        if (_isPaused)
+        if (_isPaused || !_playerCardsComponent.isInCombat)
             return;
 
         _isAttackPressed = ctx.ReadValueAsButton();
@@ -102,11 +105,13 @@ public class PlayerAttack : EntityAttack, IInput
     protected override void Attack(EntityHealth target)
     {
         Scriptable_Card currentCard = _playerCardsComponent.UseSelectedCard();
-        int cardPower = currentCard.GetCardPower();
 
         if (currentCard)
         {
-            switch (currentCard.GetCardType())
+            int cardPower = currentCard.GetCardPower();
+            GDS2_Cards.CARD_TYPE cardType = currentCard.GetCardType();
+
+            switch (cardType)
             {
                 case GDS2_Cards.CARD_TYPE.ATTACK:
                     if(target != null)
@@ -120,6 +125,7 @@ public class PlayerAttack : EntityAttack, IInput
                     break;
             }
 
+            onCardUsed?.Invoke(cardType);
         }
     }
 }

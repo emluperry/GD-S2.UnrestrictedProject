@@ -20,7 +20,10 @@ public class Settings_Manager : MonoBehaviour
         _mixer.GetFloat(SETTINGS_KEY.MASTER_VOLUME.ToString(), out _MaxMasterDB);
         _mixer.GetFloat(SETTINGS_KEY.BGM_VOLUME.ToString(), out _MaxMusicDB);
         _mixer.GetFloat(SETTINGS_KEY.SFX_VOLUME.ToString(), out _MaxSFXDB);
+    }
 
+    private void Start()
+    {
         SetAllValuesToPreferences();
     }
 

@@ -12,6 +12,7 @@ public class UI_SubScreens : UI_Screen
 
         foreach (UI_SubScreenInfo pair in _subScreens)
         {
+            pair.button.SetupElement();
             pair.StartListeningForEvents();
             pair.onButtonClicked += ChangeScreen;
             pair.DeactivateScreen();
@@ -38,6 +39,7 @@ public class UI_SubScreens : UI_Screen
 
     protected void ChangeScreen(UI_SubScreenInfo newScreen)
     {
+        PlaySelectedSound();
         _currentScreen.DeactivateScreen();
 
         newScreen.ActivateScreen();

@@ -1,11 +1,10 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 using Scene_Enums;
-using System;
-using UnityEngine.InputSystem;
 
 public class Scene_Manager : MonoBehaviour
 {
@@ -14,8 +13,12 @@ public class Scene_Manager : MonoBehaviour
     [SerializeField] private UI_Manager _uiManager;
     [SerializeField] private Settings_Manager _settingsManager;
     [SerializeField] private Input_Manager _inputManager;
+    private LevelManager _levelManager = null;
 
+    private int _previousLevel = -1;
     private int _currentLevel = -1;
+
+    [Header("DEBUG")]
     [SerializeField] private bool _debugSetupLevelListeners = false;
 
     private void Awake()
@@ -59,6 +62,7 @@ public class Scene_Manager : MonoBehaviour
 
             if(_debugSetupLevelListeners) //DEBUG ONLY FUNCTION: necessary to test levels without going through extra scenes
             {
+                _currentLevel = 1;
                 SetupLevelListeners();
             }
         }
@@ -92,6 +96,7 @@ public class Scene_Manager : MonoBehaviour
             if(_currentLevel > -1)
                 RemoveLevelListeners();
 
+            _previousLevel = _currentLevel;
             _currentLevel = levelNum;
 
             if(sceneEnum == SCENES.LEVEL)
@@ -134,16 +139,26 @@ public class Scene_Manager : MonoBehaviour
 
     private void SetupLevelListeners()
     {
-        FindObjectOfType<BattleManager>().onGameOver += _uiManager.HandleGameOver;
-        // how do i reduce the amount of 'find obj of type' uses? spawn player through game manager and get that instead?
-        FindObjectOfType<PlayerInitialiser>().InitialisePauseEvents(ref _uiManager.pauseHandler.onLoadPause);
+        _levelManager = FindObjectOfType<LevelManager>();
+        _levelManager.onLoadLevel += LoadScene;
+        _levelManager.battleManager.onGameOver += _uiManager.HandleGameOver;
+        _levelManager.player.InitialisePauseEvents(ref _uiManager.pauseHandler.onLoadPause);
+        _levelManager.SetPlayerSpawn(_previousLevel);
+
         _inputManager.SetupLevelInput();
     }
 
     private void RemoveLevelListeners()
     {
-        FindObjectOfType<BattleManager>().onGameOver -= _uiManager.HandleGameOver;
-        FindObjectOfType<PlayerInitialiser>().StopListeningForPause(ref _uiManager.pauseHandler.onLoadPause);
+        if(_levelManager)
+        {
+            _levelManager.onLoadLevel -= LoadScene;
+            _levelManager.battleManager.onGameOver -= _uiManager.HandleGameOver;
+            _levelManager.player.StopListeningForPause(ref _uiManager.pauseHandler.onLoadPause);
+        }
+
+        if (_inputManager)
+            _inputManager.DisableLevelInput();
     }
 
     private void QuitApp()

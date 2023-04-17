@@ -416,6 +416,10 @@ PrefabInstance:
       propertyPath: m_UIInputModule
       value: 
       objectReference: {fileID: 2137853810}
+    - target: {fileID: 1454671045, guid: 24db8d770b612ab489fb2ef211adf901, type: 3}
+      propertyPath: m_DefaultControlScheme
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 6648690157359664152, guid: 24db8d770b612ab489fb2ef211adf901,
         type: 3}
       propertyPath: m_RootOrder

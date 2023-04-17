@@ -19,7 +19,7 @@ MonoBehaviour:
     isPausable: 0
   - sEnum: 2
     levelNum: -1
-    sceneName: UI Test Scene
+    sceneName: StartScene
     isPausable: 0
   - sEnum: 3
     levelNum: 1
@@ -27,5 +27,9 @@ MonoBehaviour:
     isPausable: 1
   - sEnum: 4
     levelNum: 1
-    sceneName: SampleScene
+    sceneName: Tutorial
+    isPausable: 1
+  - sEnum: 4
+    levelNum: 2
+    sceneName: World
     isPausable: 1

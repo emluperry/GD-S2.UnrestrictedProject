@@ -34,10 +34,15 @@ public class UI_Element : MonoBehaviour
 
     protected virtual void Awake()
     {
-        if(_imageRenderer)
+        SetupElement();
+    }
+
+    public virtual void SetupElement()
+    {
+        if (_imageRenderer)
             _imageColour = _imageRenderer.color;
 
-        if(_textRenderer)
+        if (_textRenderer)
             _textColour = _textRenderer.color;
 
         if (_selectedElementRenderer)

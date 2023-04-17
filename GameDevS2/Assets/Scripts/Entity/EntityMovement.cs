@@ -29,6 +29,11 @@ public class EntityMovement : MonoBehaviour, IPausable
         _rb = GetComponent<Rigidbody>();
     }
 
+    public float GetMaxSpeed()
+    {
+        return _maxSpeed;
+    }
+
     protected virtual IEnumerator c_MovementCoroutine()
     {
         while (_isMoving)

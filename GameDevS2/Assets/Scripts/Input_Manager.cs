@@ -10,6 +10,9 @@ public class Input_Manager : MonoBehaviour
     //input
     private PlayerInput _input;
 
+    private PlayerInitialiser _player;
+    private CameraMovement _camera;
+
     private void Awake()
     {
         _input = GetComponent<PlayerInput>();
@@ -19,8 +22,21 @@ public class Input_Manager : MonoBehaviour
     {
         //setup input
         Dictionary<string, InputAction> playerInputs = GetPlayerInputActions();
-        FindObjectOfType<PlayerInitialiser>().InitialisePlayerInput(playerInputs);
-        FindObjectOfType<CameraMovement>().SetupInput(playerInputs);
+
+        _player = FindObjectOfType<PlayerInitialiser>();
+        _player.InitialisePlayerInput(playerInputs);
+
+        _camera = FindObjectOfType<CameraMovement>();
+        _camera.SetupInput(playerInputs);
+    }
+
+    public void DisableLevelInput()
+    {
+        if (_player)
+            _player.StopListeningForPlayerInput();
+
+        if (_camera)
+            _camera.DisableInput();
     }
 
     public Dictionary<string, InputAction> GetUIInputActions()

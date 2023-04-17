@@ -8,6 +8,11 @@ using UnityEngine.InputSystem;
 
 public class UI_Screen : MonoBehaviour
 {
+    [Header("Audio")]
+    [SerializeField] protected AudioClip _selectClip;
+    protected AudioSource _source;
+
+    [Header("Buttons")]
     [SerializeField] public UI_SCREENS screenType = UI_SCREENS.NONE;
     [SerializeField] protected UI_ButtonInfo[] _uiButtons;
     [SerializeField] protected Scene_ButtonInfo[] _sceneButtons;
@@ -19,14 +24,18 @@ public class UI_Screen : MonoBehaviour
 
     protected virtual void Awake()
     {
+        _source = GetComponent<AudioSource>();
+
         foreach(UI_ButtonInfo pair in _uiButtons)
         {
+            pair.button.SetupElement();
             pair.StartListeningForEvents();
             pair.onButtonClicked += HandleUIButton;
         }
 
         foreach (Scene_ButtonInfo pair in _sceneButtons)
         {
+            pair.button.SetupElement();
             pair.StartListeningForEvents();
             pair.onButtonClicked += HandleSceneButton;
         }
@@ -88,11 +97,24 @@ public class UI_Screen : MonoBehaviour
 
     protected virtual void HandleUIButton(UI_SCREENS screen)
     {
+        PlaySelectedSound();
         onChangeUIScreen?.Invoke(screen);
     }
 
     protected virtual void HandleSceneButton(SCENES scene, int levelNum)
     {
+        PlaySelectedSound();
         onChangeScene?.Invoke(scene, levelNum);
+    }
+
+    protected void PlaySelectedSound()
+    {
+        if(_source)
+        {
+            if (_source.clip != _selectClip)
+                _source.clip = _selectClip;
+
+            _source.Play();
+        }
     }
 }

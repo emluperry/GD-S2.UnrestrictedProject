@@ -9,8 +9,14 @@ EditorBuildSettings:
     path: Assets/Scenes/Persistent_Managers.unity
     guid: ae29ea1f5d28d304fb7ad489f2e7cdf3
   - enabled: 1
-    path: Assets/Scenes/UI Test Scene.unity
+    path: Assets/Scenes/StartScene.unity
     guid: 48985f330009c9f4d91fabd8b08ca4a4
+  - enabled: 1
+    path: Assets/Scenes/Tutorial.unity
+    guid: 4a209c4aa14fe3e42844bc11d3272260
+  - enabled: 1
+    path: Assets/Scenes/World.unity
+    guid: f39bbd7a3fed8bf47b269d30a74aeea0
   - enabled: 1
     path: Assets/Scenes/SampleScene.unity
     guid: 99c9720ab356a0642a771bea13969a05

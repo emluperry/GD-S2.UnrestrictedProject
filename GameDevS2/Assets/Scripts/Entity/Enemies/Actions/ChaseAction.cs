@@ -8,14 +8,17 @@ public class ChaseAction : Scriptable_Action
     public override void Act(State_Manager manager)
     {
         //get direction
-        Vector3 differenceVector = (manager.playerHealthTarget.position - manager.transform.position);
+        Vector3 differenceVector = (manager.playerTransform.position - manager.transform.position);
         Vector3 direction = new Vector3(differenceVector.x, 0, differenceVector.z).normalized;
 
         manager.enemyMovement.StartMovement(direction);
+        manager.enemyAnimation.StartMovementAnimation();
+        manager.enemySound.PlayMovementSounds();
     }
 
     public override void Exit(State_Manager manager)
     {
         manager.enemyMovement.StopMovement();
+        manager.enemySound.PlayIdleSounds();
     }
 }

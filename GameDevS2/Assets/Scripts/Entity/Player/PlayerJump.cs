@@ -70,6 +70,11 @@ public class PlayerJump : EntityJump, IInput
 
     #endregion
 
+    protected override void FixedUpdate()
+    {
+
+    }
+
     protected override IEnumerator c_JumpingCoroutine()
     {
         yield return new WaitForFixedUpdate();

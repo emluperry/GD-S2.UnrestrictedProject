@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EntityJump : MonoBehaviour, IPausable
+public class EntityJump : MonoBehaviour, IPausable, IGroundable
 {
     protected Coroutine _jumpingCoroutine;
     protected bool _isGrounded = true;
@@ -22,21 +22,27 @@ public class EntityJump : MonoBehaviour, IPausable
         _rb = GetComponent<Rigidbody>();
     }
 
-    protected void FixedUpdate()
+    public void UpdateGrounded(bool isGrounded)
+    {
+        _isGrounded = isGrounded;
+    }
+
+    protected virtual void FixedUpdate()
     {
         if (Physics.Raycast(transform.position, Vector3.down, out RaycastHit hit, 1f))
         {
-            _isGrounded = true;
+            if (!_isGrounded)
+            {
+                _isGrounded = true;
+            }
         }
         else
         {
-            _isGrounded = false;
+            if (_isGrounded)
+            {
+                _isGrounded = false;
+            }
         }
-    }
-
-    public bool GetIsGrounded()
-    {
-        return _isGrounded;
     }
 
     protected void StartJump()
@@ -45,6 +51,7 @@ public class EntityJump : MonoBehaviour, IPausable
 
         _rb.AddForce(Vector3.up * _minJumpForce);
     }
+
 
     protected virtual IEnumerator c_JumpingCoroutine()
     {

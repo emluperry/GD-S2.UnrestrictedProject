@@ -8,6 +8,7 @@ public class IdleAction : Scriptable_Action
     public override void Act(State_Manager manager)
     {
         //just stand there.
+        manager.enemySound.PlayIdleSounds();
     }
 
     public override void Exit(State_Manager manager)
