@@ -302,7 +302,7 @@ GameObject:
   - component: {fileID: 7396236780942747036}
   - component: {fileID: 6174044691571554026}
   m_Layer: 5
-  m_Name: Card
+  m_Name: BattleCard
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
