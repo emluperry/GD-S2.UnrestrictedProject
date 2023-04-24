@@ -43,4 +43,13 @@ public class UI_OnClickButton : UI_Element, IPointerClickHandler, IPointerEnterH
             textComp.text = newText;
         }
     }
+
+    public string GetText()
+    {
+        TextMeshProUGUI textComp = _textRenderer.GetComponent<TextMeshProUGUI>();
+        if (textComp)
+            return textComp.text;
+        else
+            return null;
+    }
 }

@@ -64,6 +64,7 @@ public class Scene_Manager : MonoBehaviour
             {
                 _currentLevel = 1;
                 SetupLevelListeners();
+                _uiManager.SetupPauseUI(true);
             }
         }
     }

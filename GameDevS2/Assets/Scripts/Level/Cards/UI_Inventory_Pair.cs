@@ -15,6 +15,8 @@ public class UI_Inventory_Pair
         UI_Card uiCard = cardObject.GetComponent<UI_Card>();
         uiCard.SetCardValue(card.GetCardPower());
         uiCard.SetImage(card.GetSprite());
+
+        button = cardObject.GetComponent<UI_OnClickButton>();
     }
 
     public void StartListeningForEvents()
@@ -35,5 +37,16 @@ public class UI_Inventory_Pair
     public void UpdateAmount(int newAmount)
     {
         button.UpdateText(newAmount.ToString());
+    }
+
+    public int GetAmount()
+    {
+        int amount = 0;
+        bool isValid = int.TryParse(button.GetText(), out amount);
+
+        if (isValid)
+            return amount;
+        else
+            return 0;
     }
 }

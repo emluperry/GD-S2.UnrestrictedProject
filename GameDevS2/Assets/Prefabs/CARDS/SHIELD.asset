@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: SHIELD
   m_EditorClassIdentifier: 
   _cardName: Shield
-  _cardImage: {fileID: 21300000, guid: f62a74feee443b44d903fe993f20928e, type: 3}
+  _cardImage: {fileID: 21300000, guid: 0d04c2f40eb99574c9aef7649189ca5d, type: 3}
   _cardPower: 5
   _cardType: 1
