@@ -10,6 +10,9 @@ public class UI_Card : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _tmpComponent;
     [SerializeField] private RectTransform _cardSection;
 
+    [Header("Optional")]
+    [SerializeField] private Image _cardTypeImage;
+
     public void SetImage(Sprite img)
     {
         _cardImageComponent.sprite = img;
@@ -18,6 +21,12 @@ public class UI_Card : MonoBehaviour
     public void SetCardValue(int value)
     {
         _tmpComponent.text = value.ToString();
+    }
+
+    public void SetCardTypeImage(Sprite img)
+    {
+        if (_cardTypeImage)
+            _cardTypeImage.sprite = img;
     }
 
     public void SetSelected()

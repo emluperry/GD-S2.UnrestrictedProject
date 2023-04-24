@@ -16,3 +16,4 @@ MonoBehaviour:
   _cardImage: {fileID: 21300000, guid: f699e99a98a78074b9bb3f7d637e1129, type: 3}
   _cardPower: 2
   _cardType: 2
+  _cardTypeImage: {fileID: 21300000, guid: f699e99a98a78074b9bb3f7d637e1129, type: 3}

@@ -15,6 +15,7 @@ public class UI_Inventory_Pair
         UI_Card uiCard = cardObject.GetComponent<UI_Card>();
         uiCard.SetCardValue(card.GetCardPower());
         uiCard.SetImage(card.GetSprite());
+        uiCard.SetCardTypeImage(card.GetCardTypeImage());
 
         button = cardObject.GetComponent<UI_OnClickButton>();
     }
