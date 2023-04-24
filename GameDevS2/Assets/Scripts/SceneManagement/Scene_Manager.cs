@@ -13,6 +13,7 @@ public class Scene_Manager : MonoBehaviour
     [SerializeField] private UI_Manager _uiManager;
     [SerializeField] private Settings_Manager _settingsManager;
     [SerializeField] private Input_Manager _inputManager;
+    [SerializeField] private CardManager _cardManager;
     private LevelManager _levelManager = null;
 
     private int _previousLevel = -1;
@@ -142,7 +143,10 @@ public class Scene_Manager : MonoBehaviour
     {
         _levelManager = FindObjectOfType<LevelManager>();
         _levelManager.onLoadLevel += LoadScene;
+
         _levelManager.battleManager.onGameOver += _uiManager.HandleGameOver;
+        _levelManager.battleManager.onDeckRequested += _cardManager.SetDecklist;
+
         _levelManager.player.InitialisePauseEvents(ref _uiManager.pauseHandler.onLoadPause);
         _levelManager.SetPlayerSpawn(_previousLevel);
 
@@ -154,7 +158,10 @@ public class Scene_Manager : MonoBehaviour
         if(_levelManager)
         {
             _levelManager.onLoadLevel -= LoadScene;
+
             _levelManager.battleManager.onGameOver -= _uiManager.HandleGameOver;
+            _levelManager.battleManager.onDeckRequested -= _cardManager.SetDecklist;
+
             _levelManager.player.StopListeningForPause(ref _uiManager.pauseHandler.onLoadPause);
         }
 

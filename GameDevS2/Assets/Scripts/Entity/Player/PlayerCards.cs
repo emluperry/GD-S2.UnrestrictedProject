@@ -12,10 +12,8 @@ public class PlayerCards : MonoBehaviour, IInput, IPausable
     private int[] _deckArray;
     private List<int> _currentHand;
 
-    [Header("Deck Limits")]
-    //used to limit deck size to 20 (currently not used).
-    [SerializeField] private int _totalMaxCards = 20;
-    //actual total deck size
+    [Header("Gameplay Limits")]
+    //total deck size
     private int _currentMaxCards = 0;
     private int _currentDeckIndex = 0;
     //hand draw size
@@ -276,11 +274,20 @@ public class PlayerCards : MonoBehaviour, IInput, IPausable
         return card;
     }
 
+    public void SetDeckList(Inventory_Card_Value_Pair[] newDeckList)
+    {
+        if(newDeckList != null)
+        {
+            _cards = newDeckList;
+        }
+    }
+
     private void InitialiseDeck()
     {
         _currentDeckIndex = 0;
         //get the size of the deck
         _currentMaxCards = 0;
+
         foreach (Inventory_Card_Value_Pair pair in _cards)
         {
             _currentMaxCards += pair.amount;

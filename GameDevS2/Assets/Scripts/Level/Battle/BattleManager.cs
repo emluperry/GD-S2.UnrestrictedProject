@@ -16,6 +16,7 @@ public class BattleManager : MonoBehaviour
     private EnemySpawner _activeSpawner;
     private int _currentLivingEnemies = 0;
 
+    public Action<PlayerCards> onDeckRequested;
     public Action onGameOver;
 
     private void Awake()
@@ -48,7 +49,7 @@ public class BattleManager : MonoBehaviour
         _player.health.onDead -= GameOver;
     }
 
-    private void StartBattle(EnemySpawner spawner)
+    public void StartBattle(EnemySpawner spawner)
     {
         if (_playerObject == null)
         {
@@ -64,6 +65,7 @@ public class BattleManager : MonoBehaviour
 
         //setup player & HUD
         _player.targeting.SetEnemyList(enemyList);
+        onDeckRequested?.Invoke(_player.cards);
         _player.cards.InitialiseBattle();
 
         //setup HUD

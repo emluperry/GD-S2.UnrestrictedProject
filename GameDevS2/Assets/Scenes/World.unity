@@ -1115,6 +1115,22 @@ PrefabInstance:
     serializedVersion: 2
     m_TransformParent: {fileID: 2115772082}
     m_Modifications:
+    - target: {fileID: 1183508231, guid: c33648354625d6844a8e2fe828a770a6, type: 3}
+      propertyPath: _cards.Array.data[0].amount
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1183508231, guid: c33648354625d6844a8e2fe828a770a6, type: 3}
+      propertyPath: _cards.Array.data[1].amount
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1183508231, guid: c33648354625d6844a8e2fe828a770a6, type: 3}
+      propertyPath: _cards.Array.data[2].amount
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1183508231, guid: c33648354625d6844a8e2fe828a770a6, type: 3}
+      propertyPath: _cards.Array.data[3].amount
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4712099641825242216, guid: c33648354625d6844a8e2fe828a770a6,
         type: 3}
       propertyPath: _cameraTransform
@@ -6218,6 +6234,11 @@ PrefabInstance:
       propertyPath: _hudManager
       value: 
       objectReference: {fileID: 1098603701}
+    - target: {fileID: 2621703510149137235, guid: ca6b9137f0975d042820d726f631cb45,
+        type: 3}
+      propertyPath: _cardManager
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 2621703510149137235, guid: ca6b9137f0975d042820d726f631cb45,
         type: 3}
       propertyPath: _playerObject

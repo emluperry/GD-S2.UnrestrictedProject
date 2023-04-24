@@ -1,0 +1,64 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &5059497863367618302
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5059497863367618303}
+  - component: {fileID: 5059497863367618272}
+  m_Layer: 0
+  m_Name: CardManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5059497863367618303
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5059497863367618302}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: -1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &5059497863367618272
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5059497863367618302}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7b8bca0c4d709ea4eaa77d88c33ea462, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _cardInventory:
+  - card: {fileID: 11400000, guid: 05f227111890a174d9041fb31f917524, type: 2}
+    amount: 0
+  - card: {fileID: 11400000, guid: def581ca309afed49b611fdb3cd9879e, type: 2}
+    amount: 0
+  - card: {fileID: 11400000, guid: 1a1325ceb03181c40b032cf215c20a74, type: 2}
+    amount: 0
+  - card: {fileID: 11400000, guid: 640b954ad2351924e939c9b6586c0e3b, type: 2}
+    amount: 0
+  _currentDeck:
+  - card: {fileID: 11400000, guid: 05f227111890a174d9041fb31f917524, type: 2}
+    amount: 3
+  - card: {fileID: 11400000, guid: def581ca309afed49b611fdb3cd9879e, type: 2}
+    amount: 6
+  - card: {fileID: 11400000, guid: 1a1325ceb03181c40b032cf215c20a74, type: 2}
+    amount: 3
+  - card: {fileID: 11400000, guid: 640b954ad2351924e939c9b6586c0e3b, type: 2}
+    amount: 3
