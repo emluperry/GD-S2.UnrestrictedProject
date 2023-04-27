@@ -358,6 +358,11 @@ PrefabInstance:
     serializedVersion: 2
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 5059497863367618272, guid: 237557ae810b3b44cb47bafab79f019f,
+        type: 3}
+      propertyPath: _cardInventory.Array.data[0].amount
+      value: 6
+      objectReference: {fileID: 0}
     - target: {fileID: 5059497863367618302, guid: 237557ae810b3b44cb47bafab79f019f,
         type: 3}
       propertyPath: m_Name

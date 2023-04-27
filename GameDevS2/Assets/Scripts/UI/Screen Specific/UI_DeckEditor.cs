@@ -2,21 +2,35 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class UI_DeckEditor : MonoBehaviour
 {
+    [Header("Prefabs")]
     [SerializeField] private GameObject _UICardPrefab;
     [SerializeField] private GameObject _RowPrefab;
 
+    [Header("UI References")]
     [SerializeField] private Transform _DeckList;
     [SerializeField] private Transform _InventoryList;
+    [SerializeField] private TextMeshProUGUI _deckLimitsText;
 
     private List<UI_Inventory_Pair> _deckButtons;
     private List<UI_Inventory_Pair> _inventoryButtons;
 
+    [Header("UI Limits")]
     [SerializeField] private int _maxPerRow = 3;
 
+    //deck limits
+    private int _maxDeckSize = 20;
+    private int _currentDeckSize = 0;
+
     public Action<string, bool> onUpdateDeck; //true = add to deck, false = remove from deck
+
+    public void Initialise(int maxDeckSize)
+    {
+        _maxDeckSize = maxDeckSize;
+    }
 
     public void SetupButtons(Inventory_Card_Value_Pair[] _currentInventory, Inventory_Card_Value_Pair[] _currentDeck)
     {
@@ -58,6 +72,7 @@ public class UI_DeckEditor : MonoBehaviour
             }
             //create ui card
             CreateNewCard(_deckButtons, currentLayoutGroup.transform, pair.card, pair.amount);
+            _currentDeckSize += pair.amount;
 
             currentInRow++;
             if (currentInRow >= _maxPerRow)
@@ -65,6 +80,8 @@ public class UI_DeckEditor : MonoBehaviour
                 currentInRow = 0;
             }
         }
+
+        UpdateDeckText();
 
         SetupButtonEvents();
     }
@@ -93,15 +110,31 @@ public class UI_DeckEditor : MonoBehaviour
 
     private void RearrangeCards(Transform objectList)
     {
+        if(objectList.childCount <= 1)
+        {
+            return;
+        }
+
         //search for empty space
         for(int i = 0; i < objectList.childCount - 1; i++)
         {
             Transform currentRow = objectList.transform.GetChild(i);
-            while(currentRow.childCount < _maxPerRow)
+            while(currentRow.childCount <= _maxPerRow)
             {
-                objectList.transform.GetChild(i + 1).GetChild(0).parent = currentRow;
+                Transform nextRow = objectList.transform.GetChild(i + 1);
+                nextRow.GetChild(0).SetParent(currentRow, false);
+
+                if(nextRow.childCount <= 0)
+                {
+                    Destroy(nextRow.gameObject);
+                }
             }
         }
+    }
+
+    private void UpdateDeckText()
+    {
+        _deckLimitsText.text = _currentDeckSize.ToString() + " / " + _maxDeckSize.ToString();
     }
 
     private void SetupButtonEvents()
@@ -160,6 +193,8 @@ public class UI_DeckEditor : MonoBehaviour
                 break;
             }
         }
+        _currentDeckSize--;
+        UpdateDeckText();
 
         foreach (UI_Inventory_Pair pair in _inventoryButtons)
         {
@@ -175,6 +210,11 @@ public class UI_DeckEditor : MonoBehaviour
 
     private void OnInventoryButtonClicked(string cardName)
     {
+        if(_currentDeckSize >= _maxDeckSize)
+        {
+            return;
+        }
+
         //decrease inv val, increase deck val
         Scriptable_Card card = null;
         foreach (UI_Inventory_Pair pair in _inventoryButtons)
@@ -227,6 +267,8 @@ public class UI_DeckEditor : MonoBehaviour
                 CreateNewCard(_deckButtons, currentLayoutGroup.transform, card, 1);
             }
         }
+        _currentDeckSize++;
+        UpdateDeckText();
 
         onUpdateDeck?.Invoke(cardName, true);
     }

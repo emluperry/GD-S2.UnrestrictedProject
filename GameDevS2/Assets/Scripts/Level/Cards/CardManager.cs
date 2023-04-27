@@ -37,6 +37,7 @@ public class CardManager : MonoBehaviour
 
         if (shouldSetup)
         {
+            deckEditor.Initialise(_maxDeckSize);
             deckEditor.SetupButtons(_cardInventory, _currentDeck);
             deckEditor.onUpdateDeck += UpdateDeck;
         }
@@ -101,15 +102,22 @@ public class CardManager : MonoBehaviour
 
     public void SetDecklist(PlayerCards cardsComponent)
     {
-        Inventory_Card_Value_Pair[] currentDecklist = new Inventory_Card_Value_Pair[_deckDictionary.Count];
+        List<Inventory_Card_Value_Pair> currentDeck = new List<Inventory_Card_Value_Pair>();
 
-        int currentIndex = 0;
         foreach (KeyValuePair<string, Inventory_Card_Value_Pair> pair in _deckDictionary)
         {
-            currentDecklist[currentIndex] = pair.Value;
-            currentIndex++;
+            if(pair.Value.amount > 0)
+                currentDeck.Add(pair.Value);
         }
 
-        cardsComponent.SetDeckList(currentDecklist);
+        if(currentDeck.Count <= 0) //if nothing has been set in the deck, failsafe:
+        {
+            Inventory_Card_Value_Pair failsafe = new Inventory_Card_Value_Pair();
+            failsafe.card = _cardDictionary["Claws"].card;
+            failsafe.amount = 1;
+            currentDeck.Add(failsafe);
+        }
+
+        cardsComponent.SetDeckList(currentDeck.ToArray());
     }
 }
