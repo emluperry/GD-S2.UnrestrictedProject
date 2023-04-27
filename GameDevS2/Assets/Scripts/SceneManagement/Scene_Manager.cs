@@ -46,6 +46,8 @@ public class Scene_Manager : MonoBehaviour
                 _uiManager.onLoadSettings += _settingsManager.ListenForSettingsUI;
                 _uiManager.onLoadUI += _settingsManager.SetSceneValues;
             }
+
+            _uiManager.onLoadCards += _cardManager.SetupPauseCards;
         }
     }
 
@@ -81,6 +83,8 @@ public class Scene_Manager : MonoBehaviour
                 _uiManager.onLoadSettings -= _settingsManager.ListenForSettingsUI;
                 _uiManager.onLoadUI -= _settingsManager.SetSceneValues;
             }
+
+            _uiManager.onLoadCards -= _cardManager.SetupPauseCards;
         }
     }
 

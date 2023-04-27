@@ -23,6 +23,7 @@ public class UI_Manager : MonoBehaviour
     public Action<SCENES, int> onChangeScene;
     public Action onLoadUI;
     public Action<UI_Screen> onLoadSettings;
+    public Action<UI_Screen, bool> onLoadCards;
 
     private void Awake()
     {
@@ -86,6 +87,7 @@ public class UI_Manager : MonoBehaviour
         {
             if (_uiStack.Peek().screenType == UI_SCREENS.PAUSE)
             {
+                onLoadCards?.Invoke(_uiStack.Peek(), false);
                 pauseHandler.TogglePause();
             }
             else
@@ -111,6 +113,7 @@ public class UI_Manager : MonoBehaviour
             if(screen == UI_SCREENS.PAUSE)
             {
                 onLoadSettings?.Invoke(uiScreen);
+                onLoadCards?.Invoke(uiScreen, true);
             }
         }
 

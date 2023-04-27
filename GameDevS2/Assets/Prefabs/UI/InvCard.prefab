@@ -293,6 +293,7 @@ MonoBehaviour:
   _cardImageComponent: {fileID: 8028656685572413224}
   _tmpComponent: {fileID: 8028656686467080326}
   _cardSection: {fileID: 8028656686017877851}
+  _cardTypeImage: {fileID: 8058023787962789627}
 --- !u!114 &4072804962764494170
 MonoBehaviour:
   m_ObjectHideFlags: 0

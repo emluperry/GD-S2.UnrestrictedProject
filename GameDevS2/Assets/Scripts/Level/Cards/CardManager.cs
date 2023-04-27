@@ -29,13 +29,36 @@ public class CardManager : MonoBehaviour
         }
     }
 
+    public void SetupPauseCards(UI_Screen screen, bool shouldSetup)
+    {
+        UI_DeckEditor deckEditor = screen.gameObject.GetComponentInChildren<UI_DeckEditor>(true);
+        if (!deckEditor)
+            return;
+
+        if (shouldSetup)
+        {
+            deckEditor.SetupButtons(_cardInventory, _currentDeck);
+            deckEditor.onUpdateDeck += UpdateDeck;
+        }
+        else
+            deckEditor.onUpdateDeck -= UpdateDeck;
+    }
+
+    private void UpdateDeck(string cardName, bool addToDeck) //true = add to deck, false = remove from deck
+    {
+        if (addToDeck)
+            AddToDeck(cardName);
+        else
+            RemoveFromDeck(cardName);
+    }
+
     private void AddToInventory(string cardName)
     {
         if (_cardDictionary.ContainsKey(cardName))
         {
             Inventory_Card_Value_Pair current = _cardDictionary[cardName];
             current.amount += 1;
-            _cardDictionary.Add(cardName, current);
+            _cardDictionary[cardName] = current;
         }
     }
 
@@ -45,14 +68,14 @@ public class CardManager : MonoBehaviour
         {
             Inventory_Card_Value_Pair current = _cardDictionary[cardName];
             current.amount -= 1;
-            _cardDictionary.Add(cardName, current);
+            _cardDictionary[cardName] = current;
         }
 
         if (_deckDictionary.ContainsKey(cardName))
         {
             Inventory_Card_Value_Pair current = _deckDictionary[cardName];
             current.amount += 1;
-            _deckDictionary.Add(cardName, current);
+            _deckDictionary[cardName] = current;
         }
     }
 
@@ -62,18 +85,18 @@ public class CardManager : MonoBehaviour
         {
             Inventory_Card_Value_Pair current = _cardDictionary[cardName];
             current.amount += 1;
-            _cardDictionary.Add(cardName, current);
+            _cardDictionary[cardName] = current;
         }
 
         if (_deckDictionary.ContainsKey(cardName))
         {
             Inventory_Card_Value_Pair current = _deckDictionary[cardName];
             current.amount -= 1;
-            _deckDictionary.Add(cardName, current);
+            _deckDictionary[cardName] = current;
         }
     }
 
-    public Inventory_Card_Value_Pair[] GetDecklist()
+    public void SetDecklist(PlayerCards cardsComponent)
     {
         Inventory_Card_Value_Pair[] currentDecklist = new Inventory_Card_Value_Pair[_deckDictionary.Count];
 
@@ -84,11 +107,6 @@ public class CardManager : MonoBehaviour
             currentIndex++;
         }
 
-        return currentDecklist;
-    }
-
-    public void SetDecklist(PlayerCards cardsComponent)
-    {
-        cardsComponent.SetDeckList(GetDecklist());
+        cardsComponent.SetDeckList(currentDecklist);
     }
 }
