@@ -147,6 +147,7 @@ public class Scene_Manager : MonoBehaviour
     {
         _levelManager = FindObjectOfType<LevelManager>();
         _levelManager.onLoadLevel += LoadScene;
+        _levelManager.onCardCollected += _cardManager.AddCollectable;
 
         _levelManager.battleManager.onGameOver += _uiManager.HandleGameOver;
         _levelManager.battleManager.onDeckRequested += _cardManager.SetDecklist;
@@ -162,6 +163,7 @@ public class Scene_Manager : MonoBehaviour
         if(_levelManager)
         {
             _levelManager.onLoadLevel -= LoadScene;
+            _levelManager.onCardCollected -= _cardManager.AddCollectable;
 
             _levelManager.battleManager.onGameOver -= _uiManager.HandleGameOver;
             _levelManager.battleManager.onDeckRequested -= _cardManager.SetDecklist;

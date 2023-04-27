@@ -52,6 +52,14 @@ public class CardManager : MonoBehaviour
             RemoveFromDeck(cardName);
     }
 
+    public void AddCollectable(string cardName, int amount)
+    {
+        for(int i = 0; i < amount; i++)
+        {
+            AddToInventory(cardName);
+        }
+    }
+
     private void AddToInventory(string cardName)
     {
         if (_cardDictionary.ContainsKey(cardName))
@@ -81,12 +89,7 @@ public class CardManager : MonoBehaviour
 
     private void RemoveFromDeck(string cardName)
     {
-        if (_cardDictionary.ContainsKey(cardName))
-        {
-            Inventory_Card_Value_Pair current = _cardDictionary[cardName];
-            current.amount += 1;
-            _cardDictionary[cardName] = current;
-        }
+        AddToInventory(cardName);
 
         if (_deckDictionary.ContainsKey(cardName))
         {

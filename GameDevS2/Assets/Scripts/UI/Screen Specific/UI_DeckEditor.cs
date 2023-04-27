@@ -46,6 +46,11 @@ public class UI_DeckEditor : MonoBehaviour
         currentLayoutGroup = null;
         foreach (Inventory_Card_Value_Pair pair in _currentDeck)
         {
+            if (pair.amount <= 0)
+            {
+                continue;
+            }
+
             if (currentInRow == 0)
             {
                 //setup hlayout group

@@ -11,7 +11,10 @@ public class LevelManager : MonoBehaviour
 
     [SerializeField] private Exit_Pair[] _levelExits;
 
+    private List<Collectable> _collectables = new List<Collectable>();
+
     public Action<SCENES, int> onLoadLevel;
+    public Action<string, int> onCardCollected;
 
     private void Awake()
     {
@@ -19,6 +22,12 @@ public class LevelManager : MonoBehaviour
         {
             pair.StartListeningForEvents();
             pair.onExitTouched += LoadLevel;
+        }
+
+        _collectables.AddRange(FindObjectsOfType<Collectable>());
+        foreach(Collectable collectable in _collectables)
+        {
+            collectable.onCollected += HandleCollectable;
         }
     }
 
@@ -28,6 +37,11 @@ public class LevelManager : MonoBehaviour
         {
             pair.StopListeningForEvents();
             pair.onExitTouched -= LoadLevel;
+        }
+
+        foreach (Collectable collectable in _collectables)
+        {
+            collectable.onCollected += HandleCollectable;
         }
     }
 
@@ -60,5 +74,14 @@ public class LevelManager : MonoBehaviour
         //move player object there
         player.transform.position = startPoint.playerStartTransform.position;
         player.transform.rotation = startPoint.playerStartTransform.rotation;
+    }
+
+    private void HandleCollectable(Collectable ctx)
+    {
+        //pass up info
+        onCardCollected?.Invoke(ctx.collectableName, ctx.amount);
+
+        ctx.onCollected -= HandleCollectable;
+        _collectables.Remove(ctx);
     }
 }
