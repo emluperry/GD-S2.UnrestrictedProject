@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -23,6 +24,8 @@ public class EntityMovement : MonoBehaviour, IPausable
     [SerializeField][Min(0f)] protected float _rotationDampener = 3;
 
     protected bool _isPaused = false;
+
+    public Action onUpdateRotation;
 
     protected virtual void Awake()
     {
@@ -74,6 +77,8 @@ public class EntityMovement : MonoBehaviour, IPausable
         float rotRadians = rotDegrees * Mathf.Deg2Rad;
 
         _rb.AddTorque((rotAxis * (rotRadians * _maxRotationSpeed * Time.fixedDeltaTime)) - (_rb.angularVelocity * _rotationDampener));
+
+        onUpdateRotation?.Invoke();
     }
 
     protected IEnumerator c_StoppingCoroutine()

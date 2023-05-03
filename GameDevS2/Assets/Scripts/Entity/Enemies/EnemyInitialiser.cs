@@ -6,6 +6,7 @@ public class EnemyInitialiser : MonoBehaviour
 {
     //Component references
     private HealthBar _enemyHealthBar;
+    private UI_WorldCanvasRotation _canvasRotationComponent;
     private EnemyMovement _enemyMovement;
     private EnemyAnimation _enemyAnimation;
     private EnemySound _enemySound;
@@ -14,12 +15,15 @@ public class EnemyInitialiser : MonoBehaviour
 
     private State_Manager _stateMachine;
 
+    private CameraMovement _cameraReference;
+
     [HideInInspector] public bool isDeactivated { private set; get; } = false;
 
     private void Awake()
     {
         _stateMachine = GetComponent<State_Manager>();
-
+        _canvasRotationComponent = GetComponentInChildren<UI_WorldCanvasRotation>();
+        _enemyHealthBar = GetComponentInChildren<HealthBar>();
         _enemyHealthBar = GetComponentInChildren<HealthBar>();
         health = GetComponent<EntityHealth>();
         _enemyMovement = GetComponent<EnemyMovement>();
@@ -36,7 +40,13 @@ public class EnemyInitialiser : MonoBehaviour
         health.onValueIncreased += UpdateValue;
 
         _enemyHealthBar.SetupBar(health.GetMaxHealth());
-        _enemyMovement.SetupCanvasReference(_enemyHealthBar.transform.parent, camera);
+        _canvasRotationComponent.SetupCameraReference(_enemyHealthBar.transform.parent);
+
+        _enemyMovement.onUpdateRotation += _canvasRotationComponent.UpdateCanvasRotation;
+        if (camera.TryGetComponent(out _cameraReference))
+        {
+            _cameraReference.onCameraRotationUpdated += _canvasRotationComponent.UpdateCanvasRotation;
+        }
 
         _stateMachine.StartBehaviour(player, _enemyMovement, _enemyAttack, _enemyAnimation, _enemySound);
 
@@ -47,6 +57,12 @@ public class EnemyInitialiser : MonoBehaviour
     {
         health.onDamageTaken -= _enemyHealthBar.TakeDamage;
         health.onValueIncreased -= UpdateValue;
+
+        _enemyMovement.onUpdateRotation -= _canvasRotationComponent.UpdateCanvasRotation;
+        if (_cameraReference)
+        {
+            _cameraReference.onCameraRotationUpdated -= _canvasRotationComponent.UpdateCanvasRotation;
+        }
 
         _stateMachine.StopBehaviour();
 

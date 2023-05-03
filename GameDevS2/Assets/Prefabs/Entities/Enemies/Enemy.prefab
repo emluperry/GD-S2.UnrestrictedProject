@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 6807518686828500819}
   - component: {fileID: 4864719522543912213}
   - component: {fileID: 3935085450475812689}
+  - component: {fileID: 8815424092762882654}
   m_Layer: 6
   m_Name: HealthCanvas
   m_TagString: Untagged
@@ -102,6 +103,18 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 0
+--- !u!114 &8815424092762882654
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6417252578189511701}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ed9fb2c4978b4d7409f64147e418fe6f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &6782260923424439368
 GameObject:
   m_ObjectHideFlags: 0
