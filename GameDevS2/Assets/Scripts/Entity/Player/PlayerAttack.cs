@@ -10,9 +10,13 @@ public class PlayerAttack : EntityAttack, IInput
     protected InputAction _attackInputAction;
     protected bool _isAttackPressed;
 
+    [SerializeField] private float _maxAttackForce = 5;
+    [SerializeField] private float _verticalComponent = 0.3f;
+
     //saved components
     protected PlayerCards _playerCardsComponent;
     protected EntityHealth _playerHealth;
+    protected Rigidbody _rb;
 
     public Action<GDS2_Cards.CARD_TYPE> onCardUsed;
 
@@ -22,6 +26,7 @@ public class PlayerAttack : EntityAttack, IInput
 
         _playerCardsComponent = GetComponent<PlayerCards>();
         _playerHealth = GetComponent<EntityHealth>();
+        _rb = GetComponent<Rigidbody>();
     }
 
     private void OnDestroy()
@@ -98,7 +103,8 @@ public class PlayerAttack : EntityAttack, IInput
             return base.GetTargetInRange(out target);
         }
 
-        //push player in range here
+        PushPlayerInRange(target);
+
         return true;
     }
 
@@ -127,5 +133,14 @@ public class PlayerAttack : EntityAttack, IInput
 
             onCardUsed?.Invoke(cardType);
         }
+    }
+
+    protected void PushPlayerInRange(EntityHealth target)
+    {
+        //push player in range here - get direction between target and player give slight vertical component, multiply by force, apply to rb
+        Vector3 direction = target.transform.position - transform.position;
+        direction.Normalize();
+
+        _rb.AddForce(new Vector3(direction.x, direction.y + _verticalComponent, direction.z) * _maxAttackForce, ForceMode.Impulse);
     }
 }
