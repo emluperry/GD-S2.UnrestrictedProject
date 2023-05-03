@@ -5,26 +5,25 @@ using UnityEngine;
 public class EnemyInitialiser : MonoBehaviour
 {
     //Component references
-    private HealthBar _enemyHealthBar;
-    private UI_WorldCanvasRotation _canvasRotationComponent;
-    private EnemyMovement _enemyMovement;
-    private EnemyAnimation _enemyAnimation;
-    private EnemySound _enemySound;
-    private EnemyAttack _enemyAttack;
-    public EntityHealth health { private set; get; }
+    protected HealthBar _enemyHealthBar;
+    protected UI_WorldCanvasRotation _canvasRotationComponent;
+    protected EnemyMovement _enemyMovement;
+    protected EnemyAnimation _enemyAnimation;
+    protected EnemySound _enemySound;
+    protected EnemyAttack _enemyAttack;
+    public EntityHealth health { protected set; get; }
 
-    private State_Manager _stateMachine;
+    protected State_Manager _stateMachine;
 
-    private CameraMovement _cameraReference;
+    protected CameraMovement _cameraReference;
 
-    [HideInInspector] public bool isDeactivated { private set; get; } = false;
+    [HideInInspector] public bool isDeactivated { protected set; get; } = false;
 
-    private void Awake()
+    protected virtual void Awake()
     {
         _stateMachine = GetComponent<State_Manager>();
-        _canvasRotationComponent = GetComponentInChildren<UI_WorldCanvasRotation>();
         _enemyHealthBar = GetComponentInChildren<HealthBar>();
-        _enemyHealthBar = GetComponentInChildren<HealthBar>();
+        _canvasRotationComponent = _enemyHealthBar.GetComponentInParent<UI_WorldCanvasRotation>();
         health = GetComponent<EntityHealth>();
         _enemyMovement = GetComponent<EnemyMovement>();
         _enemyAnimation = GetComponent<EnemyAnimation>();
@@ -32,7 +31,7 @@ public class EnemyInitialiser : MonoBehaviour
         _enemyAttack = GetComponent<EnemyAttack>();
     }
 
-    public void SetupEnemy(Transform player, Transform camera)
+    public virtual void SetupEnemy(Transform player, Transform camera)
     {
         _enemyAnimation.SetupValues(_enemyMovement.GetMaxSpeed());
 
@@ -53,7 +52,7 @@ public class EnemyInitialiser : MonoBehaviour
         isDeactivated = false;
     }
 
-    public void DisableEnemy()
+    public virtual void DisableEnemy()
     {
         health.onDamageTaken -= _enemyHealthBar.TakeDamage;
         health.onValueIncreased -= UpdateValue;
@@ -69,7 +68,7 @@ public class EnemyInitialiser : MonoBehaviour
         isDeactivated = true;
     }
 
-    private void UpdateValue(bool whichValue, int amount)
+    protected virtual void UpdateValue(bool whichValue, int amount)
     {
         if (whichValue)
             _enemyHealthBar.HealHealth(amount);

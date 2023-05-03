@@ -4172,6 +4172,12 @@ PrefabInstance:
       propertyPath: m_Name
       value: EnemyEncounter
       objectReference: {fileID: 0}
+    - target: {fileID: 1998363833597144297, guid: 8b11252afca37ff40898bf9f0dbc0ecc,
+        type: 3}
+      propertyPath: _enemiesToSpawn.Array.data[0]
+      value: 
+      objectReference: {fileID: 1976688725164460030, guid: 9bcae391e293c7d43914d111e5f0eb1c,
+        type: 3}
     m_RemovedComponents: []
     m_AddedGameObjects: []
   m_SourcePrefab: {fileID: 100100000, guid: 8b11252afca37ff40898bf9f0dbc0ecc, type: 3}
