@@ -39,7 +39,7 @@ public class EnemyInitialiser : MonoBehaviour
         health.onValueIncreased += UpdateValue;
 
         _enemyHealthBar.SetupBar(health.GetMaxHealth());
-        _canvasRotationComponent.SetupCameraReference(_enemyHealthBar.transform.parent);
+        _canvasRotationComponent.SetupCameraReference(camera);
 
         _enemyMovement.onUpdateRotation += _canvasRotationComponent.UpdateCanvasRotation;
         if (camera.TryGetComponent(out _cameraReference))

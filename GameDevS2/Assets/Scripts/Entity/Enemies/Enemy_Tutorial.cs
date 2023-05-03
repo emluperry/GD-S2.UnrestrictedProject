@@ -25,7 +25,7 @@ public class Enemy_Tutorial : EnemyInitialiser
         health.onValueIncreased += UpdateValue;
 
         _enemyHealthBar.SetupBar(health.GetMaxHealth());
-        _canvasRotationComponent.SetupCameraReference(_enemyHealthBar.transform.parent);
+        _canvasRotationComponent.SetupCameraReference(camera);
 
         if (camera.TryGetComponent(out _cameraReference))
         {
