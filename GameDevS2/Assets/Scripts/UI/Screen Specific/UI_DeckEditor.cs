@@ -27,6 +27,11 @@ public class UI_DeckEditor : MonoBehaviour
 
     public Action<string, bool> onUpdateDeck; //true = add to deck, false = remove from deck
 
+    private void OnDestroy()
+    {
+        DisableButtonEvents();
+    }
+
     public void Initialise(int maxDeckSize)
     {
         _maxDeckSize = maxDeckSize;
@@ -167,6 +172,38 @@ public class UI_DeckEditor : MonoBehaviour
         }
     }
 
+    private bool CurrentSelectionIsValid(UI_Inventory_Pair deckPair)
+    {
+        int amount = deckPair.GetAmount();
+
+        if (amount <= 0) //don't continue if there are no more cards of this type in the deck - failsafe
+            return false;
+
+        //check type as the following only applies to attacking cards
+        if(deckPair.card.GetCardType() == GDS2_Cards.CARD_TYPE.ATTACK)
+        {
+            if (amount - 1 >= 1)
+                return true;
+
+            foreach (UI_Inventory_Pair pair in _deckButtons)
+            {
+                if (pair == deckPair)
+                    continue;
+
+                if (pair.card.GetCardType() != GDS2_Cards.CARD_TYPE.ATTACK)
+                    continue;
+                else
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        return true;
+    }
+
     private void OnDeckButtonClicked(string cardName)
     {
         //decrease deck val, increase inv val
@@ -174,14 +211,12 @@ public class UI_DeckEditor : MonoBehaviour
         {
             if(pair.card.GetName() == cardName)
             {
-                int amount = pair.GetAmount();
-
-                if (amount <= 0) //don't continue if there are no more cards of this type in the deck - failsafe
-                {
+                //VALIDATE SELECTION
+                if (!CurrentSelectionIsValid(pair))
                     return;
-                }
 
-                amount--;
+                int amount = pair.GetAmount() -1;
+
                 pair.UpdateAmount(amount);
 
                 //if new amount is 0 or less, destroy from deck button list
