@@ -7,6 +7,7 @@ using UnityEngine.Windows;
 
 public class PlayerInitialiser : MonoBehaviour
 {
+    public Dictionary<string, InputAction> savedInputs { private set; get; }
     public PlayerMovement movement { private set; get; }
     public EntityHealth health { private set; get; }
     public PlayerCards cards { private set; get; }
@@ -71,6 +72,8 @@ public class PlayerInitialiser : MonoBehaviour
     #region INPUT
     public void InitialisePlayerInput(Dictionary<string, InputAction> inputs)
     {
+        savedInputs = inputs;
+
         IInput[] inputComponents = GetComponents<IInput>();
         if(inputComponents.Length > 0)
         {

@@ -1283,7 +1283,7 @@ Transform:
   - {fileID: 6145217916815669187}
   - {fileID: 1771497162580053653}
   m_Father: {fileID: 0}
-  m_RootOrder: 0
+  m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!54 &4712099641825242219
 Rigidbody:
@@ -1390,6 +1390,8 @@ MonoBehaviour:
   _layersToInclude:
     serializedVersion: 2
     m_Bits: 64
+  _maxAttackForce: 4
+  _verticalComponent: 0.75
 --- !u!114 &3456276136509971084
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1424,7 +1426,6 @@ MonoBehaviour:
     amount: 5
   - card: {fileID: 11400000, guid: 640b954ad2351924e939c9b6586c0e3b, type: 2}
     amount: 5
-  _totalMaxCards: 20
   _maxHandDraw: 5
   _swapDelay: 0.1
   _maxDrawDelay: 1

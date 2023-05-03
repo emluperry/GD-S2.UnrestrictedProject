@@ -39,6 +39,8 @@ public class CameraMovement : MonoBehaviour, IInput
     private Coroutine _rotateCoroutine;
     private bool _isRotating = false;
 
+    public Action onCameraRotationUpdated;
+
     private void Awake()
     {
         _player = _playerTransform.GetComponent<PlayerInitialiser>();
@@ -314,11 +316,15 @@ public class CameraMovement : MonoBehaviour, IInput
         }
 
         transform.RotateAround(_playerTransform.position, new Vector3(axis.x, 0, axis.y), -deltaVertical);
+
+        onCameraRotationUpdated?.Invoke();
     }
 
     private void RotateHorizontally(float maxAngle)
     {
         transform.RotateAround(_playerTransform.position, Vector3.up, maxAngle);
+
+        onCameraRotationUpdated?.Invoke();
     }
 
     private void SetTarget(Transform target)
