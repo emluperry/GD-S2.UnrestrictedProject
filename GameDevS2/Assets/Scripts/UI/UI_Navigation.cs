@@ -265,15 +265,75 @@ public class UI_Navigation : MonoBehaviour, IInput
                 {
                     siblingIndex += directionIncrement;
 
+                    //if child exceeds limits, try to get to sibling layout group instead, else loop
                     if (siblingIndex >= parent.childCount)
-                        siblingIndex = 0;
+                    {
+                        bool foundCousin = NavigateToNextGroup<T>(currentNode.parent, directionIncrement);
+                        if (!foundCousin)
+                            siblingIndex = 0;
+                        else
+                            return foundCousin;
+                    }
                     else if (siblingIndex < 0)
-                        siblingIndex = parent.childCount - 1;
+                    {
+                        bool foundCousin = NavigateToNextGroup<T>(currentNode.parent, directionIncrement);
+                        if (!foundCousin)
+                            siblingIndex = parent.childCount - 1;
+                        else
+                            return foundCousin;
+                    }
 
                     UI_Element tempElement = parent.GetChild(siblingIndex).GetComponentInChildren<UI_Element>();
                     if (tempElement != null)
                     {
                         _currentUIElement = tempElement;
+                        break;
+                    }
+                }
+                while (siblingIndex != currentSiblingIndex);
+
+                return _currentUIElement != null;
+            }
+            else
+            {
+                currentNode = parent;
+                parent = currentNode.parent;
+            }
+        }
+
+        return false;
+    }
+
+    private bool NavigateToNextGroup<T>(Transform startingNode, int directionIncrement)
+    {
+        Transform currentNode = startingNode;
+        Transform parent = currentNode.parent;
+        while (parent != _movementParent.parent)
+        {
+            if (parent.TryGetComponent(out T parentlayoutGroup))
+            {
+                int currentSiblingIndex = currentNode.GetSiblingIndex();
+                int siblingIndex = currentSiblingIndex;
+
+                //check each child in order
+                do
+                {
+                    siblingIndex += directionIncrement;
+
+                    //if child exceeds limits, try to get to sibling layout group instead, else loop
+                    if (siblingIndex >= parent.childCount)
+                    {
+                        siblingIndex = 0;
+                    }
+                    else if (siblingIndex < 0)
+                    {
+                        siblingIndex = parent.childCount - 1;
+                    }
+
+                    UI_Element tempSecondElement = parent.GetChild(siblingIndex).GetComponentInChildren<UI_Element>();
+                    if (tempSecondElement != null)
+                    {
+                        _currentUIElement = tempSecondElement;
                         break;
                     }
                 }

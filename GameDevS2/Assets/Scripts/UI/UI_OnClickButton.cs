@@ -1,5 +1,6 @@
 using System;
 using UnityEngine.EventSystems;
+using TMPro;
 
 public class UI_OnClickButton : UI_Element, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler
 {
@@ -32,5 +33,23 @@ public class UI_OnClickButton : UI_Element, IPointerClickHandler, IPointerEnterH
         _staysActive = enabled;
 
         UpdateButtonColour(false);
+    }
+
+    public void UpdateText(string newText)
+    {
+        TextMeshProUGUI textComp = _textRenderer.GetComponent<TextMeshProUGUI>();
+        if (textComp)
+        {
+            textComp.text = newText;
+        }
+    }
+
+    public string GetText()
+    {
+        TextMeshProUGUI textComp = _textRenderer.GetComponent<TextMeshProUGUI>();
+        if (textComp)
+            return textComp.text;
+        else
+            return null;
     }
 }

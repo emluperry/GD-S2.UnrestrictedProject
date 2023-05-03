@@ -144,7 +144,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 4077d009d12687e40abbcddb31c0690e, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 17eafcb810b682c4a84bd40988899f91, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -293,6 +293,7 @@ MonoBehaviour:
   _cardImageComponent: {fileID: 8028656685572413224}
   _tmpComponent: {fileID: 8028656686467080326}
   _cardSection: {fileID: 8028656686017877851}
+  _cardTypeImage: {fileID: 8058023787962789627}
 --- !u!114 &4072804962764494170
 MonoBehaviour:
   m_ObjectHideFlags: 0

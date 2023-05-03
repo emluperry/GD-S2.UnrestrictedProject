@@ -6,15 +6,6 @@ using UnityEngine.UI;
 
 public class HUD_Manager : MonoBehaviour
 {
-    private enum HUD_STATE
-    {
-        NONE, //standard state - no ui other than button prompts?
-        IDLE, //player stands still for too long, ui such as health(?) and current amount of money shows up
-        BATTLE //full ui, health, defense, cards
-    }
-
-    private HUD_STATE _state = HUD_STATE.NONE;
-
     [Header("External References")]
     [SerializeField] private PlayerCards _playerCardsComponent;
 
@@ -34,8 +25,6 @@ public class HUD_Manager : MonoBehaviour
     //BATTLE FUNCTIONS
     public void StartBattle(Inventory_Card_Value_Pair[] deckList, int deckSize, EntityHealth playerHealth)
     {
-        _state = HUD_STATE.BATTLE;
-
         _health.SetupBar(playerHealth.GetMaxHealth());
 
         _health.transform.parent.gameObject.SetActive(true);
@@ -58,8 +47,6 @@ public class HUD_Manager : MonoBehaviour
 
     public void EndBattle()
     {
-        _state = HUD_STATE.NONE;
-
         _health.transform.parent.gameObject.SetActive(false);
 
         _deckList = null;
