@@ -21,19 +21,28 @@ public class HUD_Manager : MonoBehaviour
     private int _currentCard = 0;
     private int _deckMaxSize = 0;
 
+    private void Awake()
+    {
+        _deckText = _deckObject.GetComponentInChildren<TextMeshProUGUI>(true);
+    }
 
     //BATTLE FUNCTIONS
     public void StartBattle(Inventory_Card_Value_Pair[] deckList, int deckSize, EntityHealth playerHealth)
     {
+        //setup healthbar
         _health.SetupBar(playerHealth.GetMaxHealth());
-
         _health.transform.parent.gameObject.SetActive(true);
-        _deckText = _deckObject.GetComponentInChildren<TextMeshProUGUI>();
 
+        //setup deck
         _deckList = deckList;
-        //get the size of the deck
         _deckMaxSize = deckSize;
         _deckText.text = _deckMaxSize.ToString();
+
+        //empty hand
+        foreach (Transform card in _handLayoutGroup.transform)
+        {
+            Destroy(card.gameObject);
+        }
 
         //listen for events in player cards
         if (_playerCardsComponent != null)
