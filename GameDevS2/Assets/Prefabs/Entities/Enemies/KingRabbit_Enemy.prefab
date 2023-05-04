@@ -107,7 +107,7 @@ PrefabInstance:
         type: 3}
       propertyPath: _currentState
       value: 
-      objectReference: {fileID: 11400000, guid: e8e9e0a052e8e5540b6e902ea861bda4,
+      objectReference: {fileID: 11400000, guid: 02f93f5b46c829e418d9370cfb6b8ab3,
         type: 2}
     m_RemovedComponents:
     - {fileID: 6000485653356593351, guid: 4dad3774e41f82443839c9f16b8e7a1a, type: 3}
