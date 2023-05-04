@@ -49,6 +49,7 @@ public class CameraMovement : MonoBehaviour, IInput
     private void Start()
     {
         _player.targeting.onTargetChanged += SetTarget;
+        _player.health.onDead += OnDead;
         _playerRb = _player.entityRb;
 
         //reset camera pos & rot
@@ -62,6 +63,9 @@ public class CameraMovement : MonoBehaviour, IInput
     private void OnDestroy()
     {
         DisableInput();
+
+        _player.targeting.onTargetChanged -= SetTarget;
+        _player.health.onDead -= OnDead;
     }
 
     #region INPUT SETUP
@@ -352,5 +356,10 @@ public class CameraMovement : MonoBehaviour, IInput
 
             _targetCoroutine = StartCoroutine(c_TargetFocusCoroutine());
         }
+    }
+
+    private void OnDead(EntityHealth health)
+    {
+        DisableInput();
     }
 }

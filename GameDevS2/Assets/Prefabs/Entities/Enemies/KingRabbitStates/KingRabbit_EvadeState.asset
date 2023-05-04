@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa02171d66107204fad3e05a0a03b4ae, type: 3}
+  m_Name: KingRabbit_EvadeState
+  m_EditorClassIdentifier: 
+  actions:
+  - {fileID: 11400000, guid: 5f1161d4b7ca1e448831bdcecb25c46d, type: 2}
+  transitions:
+  - decision: {fileID: 11400000, guid: 74163d7d6b78731428634dca6ab017ec, type: 2}
+    trueState: {fileID: 11400000, guid: 03909ced94d21c242ba28a8a6ca837c0, type: 2}
+    falseState: {fileID: 0}

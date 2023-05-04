@@ -138,5 +138,7 @@ public class PlayerInitialiser : MonoBehaviour
     private void PlayerKilled(EntityHealth playerHealth)
     {
         StopListeningForPlayerInput();
+
+        movement.OnDead();
     }
 }

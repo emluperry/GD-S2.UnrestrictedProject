@@ -345,7 +345,7 @@ PrefabInstance:
     - target: {fileID: 3850030005679919899, guid: d80fe8656c47d5b49868c581d4746d1c,
         type: 3}
       propertyPath: _debugSetupLevelListeners
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_AddedGameObjects: []

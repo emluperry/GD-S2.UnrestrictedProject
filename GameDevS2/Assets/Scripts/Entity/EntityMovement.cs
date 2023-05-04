@@ -67,9 +67,7 @@ public class EntityMovement : MonoBehaviour, IPausable
         Quaternion targetRotation = Quaternion.LookRotation(_moveDirection, Vector3.up);
         Quaternion toGoal = targetRotation * Quaternion.Inverse(transform.rotation);
 
-        Vector3 rotAxis;
-        float rotDegrees;
-        toGoal.ToAngleAxis(out rotDegrees, out rotAxis);
+        toGoal.ToAngleAxis(out float rotDegrees, out Vector3 rotAxis);
         rotAxis.Normalize();
 
         rotDegrees -= (rotDegrees > 180) ? 360 : 0;
@@ -100,5 +98,19 @@ public class EntityMovement : MonoBehaviour, IPausable
     public void PauseGame(bool isPaused)
     {
         _isPaused = isPaused;
+    }
+
+    public void OnDead()
+    {
+        //reset all values
+        _moveInput = Vector3.zero;
+        _moveDirection = Vector3.zero;
+
+        StopAllCoroutines();
+        _movementCoroutine = null;
+        _isMoving = false;
+
+        _rb.velocity = Vector3.zero;
+        _rb.angularVelocity = Vector3.zero;
     }
 }
