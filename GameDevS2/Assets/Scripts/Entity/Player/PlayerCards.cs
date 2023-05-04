@@ -64,6 +64,11 @@ public class PlayerCards : MonoBehaviour, IInput, IPausable
             _swapInputAction.performed += Input_SwapPerformed;
             _swapInputAction.canceled += Input_SwapCancelled;
         }
+
+        if (_drawInputAction != null)
+        {
+            _drawInputAction.performed += Input_DrawPerformed;
+        }
     }
 
     public void DisableInput()
@@ -72,6 +77,11 @@ public class PlayerCards : MonoBehaviour, IInput, IPausable
         {
             _swapInputAction.performed -= Input_SwapPerformed;
             _swapInputAction.canceled -= Input_SwapCancelled;
+        }
+
+        if (_drawInputAction != null)
+        {
+            _drawInputAction.performed -= Input_DrawPerformed;
         }
     }
 
@@ -124,11 +134,8 @@ public class PlayerCards : MonoBehaviour, IInput, IPausable
     {
         isInCombat = true;
 
-        //input to swap active card
+        //enable all inputs
         EnableInput();
-
-        //input to discard and draw hand
-        _drawInputAction.performed += Input_DrawPerformed;
 
         _currentHand = new List<int>();
 

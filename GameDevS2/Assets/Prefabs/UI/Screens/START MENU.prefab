@@ -262,10 +262,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _selectClip: {fileID: 8300000, guid: 6517d49dbb2db374d9c11f595b472343, type: 3}
   screenType: 3
-  _uiButtons:
-  - button: {fileID: 1747058317617635340}
-    screen: 4
+  _uiButtons: []
   _sceneButtons:
+  - button: {fileID: 1747058317617635340}
+    scene: 4
+    levelNum: 1
   - button: {fileID: 8307014297216574074}
     scene: 0
     levelNum: -1
