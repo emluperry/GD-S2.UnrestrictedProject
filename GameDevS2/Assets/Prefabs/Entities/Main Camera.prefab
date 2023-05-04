@@ -33,7 +33,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 2
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 31.307, y: 0, z: 0}
 --- !u!20 &518912687257478245
 Camera:
@@ -132,7 +132,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _playerTransform: {fileID: 0}
-  _maxDistFromPlayer: 5
+  _maxDistFromPlayer: 7
   _decelerationFactor: 0.65
   _focusSpeed: 0.5
   _maxRotationBoundary: 20

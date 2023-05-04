@@ -92,7 +92,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1594950849484802745
 RectTransform:
   m_ObjectHideFlags: 0
@@ -472,7 +472,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 35.45
+  m_fontSize: 35.55
   m_fontSizeBase: 22.7
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -822,7 +822,7 @@ PrefabInstance:
     - target: {fileID: 110204017633208579, guid: 6cb44fa959c091448ba3843669533868,
         type: 3}
       propertyPath: m_fontSize
-      value: 35.15
+      value: 35.3
       objectReference: {fileID: 0}
     - target: {fileID: 110204017989427554, guid: 6cb44fa959c091448ba3843669533868,
         type: 3}

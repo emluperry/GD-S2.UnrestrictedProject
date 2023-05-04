@@ -33,7 +33,7 @@ Transform:
   - {fileID: 6539792423405591247}
   - {fileID: 8757720926543197048}
   m_Father: {fileID: 0}
-  m_RootOrder: 0
+  m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!65 &350392699008761649
 BoxCollider:
@@ -46,7 +46,7 @@ BoxCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 4, y: 4, z: 4}
+  m_Size: {x: 7, y: 7, z: 7}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &1998363833597144297
 MonoBehaviour:
